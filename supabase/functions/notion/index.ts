@@ -76,8 +76,12 @@ Deno.serve(async (req) => {
 
   try {
     if (req.method !== 'POST') throw new HttpError(405, 'method_not_allowed')
-    const userId = await authenticate(req)
     const body = await readBody(req)
+    // Public: says only whether the Notion keys are set, so setup can be checked without signing in.
+    if (body.action === 'health') {
+      return new Response(JSON.stringify({ configured: Boolean(CLIENT_ID && CLIENT_SECRET) }), { status: 200, headers })
+    }
+    const userId = await authenticate(req)
     const result = await dispatch(userId, body)
     return new Response(JSON.stringify(result), { status: 200, headers })
   } catch (error) {
@@ -192,7 +196,45 @@ async function finish(userId: string, code: unknown, state: unknown) {
 
   const token = await tokenRequest({ grant_type: 'authorization_code', code, redirect_uri: saved.redirect_uri })
   await saveConnection(userId, token, token.refresh_token ?? null)
-  return { workspace_name: token.workspace_name ?? null }
+  // The connection is saved by now; if auto-linking fails, the table picker takes over.
+  const autoLinked = await autoLink(userId).catch((error) => {
+    console.error('auto-link failed', error)
+    return []
+  })
+  return { workspace_name: token.workspace_name ?? null, auto_linked: autoLinked }
+}
+
+/**
+ * Right after connecting, links the tables that clearly hold words (word + translation) and
+ * rules (rule + explanation) and syncs them, so most people never see the table picker.
+ * Only runs for accounts that have no linked tables yet; at most one table of each kind.
+ */
+async function autoLink(userId: string) {
+  const { count } = await admin.from('notion_sources').select('id', { count: 'exact', head: true }).eq('user_id', userId)
+  if (count) return []
+
+  const notion = await notionFor(userId)
+  const { sources } = await discoverSources(notion)
+  const required: Record<Kind, Array<keyof Mapping>> = { words: ['word', 'translation'], rules: ['rule', 'explanation'] }
+  const best = new Map<Kind, { id: string; title: string; mapping: Mapping; score: number }>()
+
+  for (const option of sources) {
+    const mapping = option.suggested[option.kind]
+    if (!required[option.kind].every((field) => mapping[field])) continue
+    const score = Object.keys(mapping).length
+    if ((best.get(option.kind)?.score ?? -1) < score) best.set(option.kind, { id: option.id, title: option.title, mapping, score })
+  }
+
+  const linked = []
+  for (const [kind, option] of best) {
+    try {
+      const summary = await linkSource(notion, userId, option.id, kind, option.mapping)
+      linked.push({ title: option.title, kind, pulled: summary.pulled })
+    } catch (error) {
+      console.error('auto-link failed', error)
+    }
+  }
+  return linked
 }
 
 async function disconnect(userId: string) {
@@ -319,8 +361,17 @@ async function persistRefreshedToken(userId: string, token: TokenResponse, refre
 // ---------- Linking tables ----------
 
 async function listSources(userId: string) {
-  const notion = await notionFor(userId)
-  const sources = []
+  return discoverSources(await notionFor(userId))
+}
+
+async function discoverSources(notion: Notion) {
+  const sources: Array<{
+    id: string
+    title: string
+    kind: Kind
+    properties: Array<{ name: string; type: string }>
+    suggested: Record<Kind, Mapping>
+  }> = []
   let cursor: string | undefined
 
   do {
@@ -362,10 +413,14 @@ async function addSource(userId: string, body: Record<string, unknown>) {
   const { count } = await admin.from('notion_sources').select('id', { count: 'exact', head: true }).eq('user_id', userId)
   if ((count ?? 0) >= MAX_SOURCES) throw new HttpError(400, 'too_many_sources', `Up to ${MAX_SOURCES} tables can be linked`)
 
-  const notion = await notionFor(userId)
+  return linkSource(await notionFor(userId), userId, dataSourceId, kind, body.mapping)
+}
+
+/** Saves a table with its column mapping (validated against the live schema), then syncs it. */
+async function linkSource(notion: Notion, userId: string, dataSourceId: string, kind: Kind, requested: unknown) {
   const dataSource = await notion('GET', `/data_sources/${dataSourceId}`)
   const types = propertyTypesOf(dataSource.properties)
-  const mapping = body.mapping ?? suggestMapping(kind, types)
+  const mapping = requested ?? suggestMapping(kind, types)
   const problem = validateMapping(kind, mapping, types)
   if (problem) throw new HttpError(400, 'bad_mapping', problem)
 

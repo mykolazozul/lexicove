@@ -350,7 +350,8 @@
   "notion": {
     "notConfigured": "The Notion integration isn't set up on the server yet. See docs/SETUP.md.",
     "connectTitle": "Connect your Notion",
-    "connectText": "Lexicove reads the word and rule tables you choose and keeps them in sync both ways.",
+    "connectText": "Press the button and allow access to the page that holds your tables. Lexicove finds the words and rules by itself and keeps them in sync both ways.",
+    "autoLinked": "Done! Linked and synced: {{list}}",
     "desktopNote": "Connect Notion on lexicove.vercel.app, and syncing will work here too.",
     "connect": "Connect Notion",
     "connectedTo": "Notion: {{name}}",

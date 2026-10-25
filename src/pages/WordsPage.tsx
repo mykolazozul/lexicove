@@ -1,5 +1,5 @@
 import { useDeferredValue, useEffect, useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router'
+import { useLocation, useNavigate, useSearchParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { AnimatePresence, motion } from 'motion/react'
 import { BookOpen, CloudOff, Download, History, Plus, Search, Upload } from 'lucide-react'
@@ -12,7 +12,7 @@ import { ItemEditor } from '../components/words/WordEditor'
 import { Badge, Card, Reveal, Segmented } from '../components/ui'
 import { cx } from '../lib/cx'
 import { downloadText, toCsv } from '../lib/csv'
-import { NotionError } from '../lib/notion'
+import { NotionError, type AutoLinked } from '../lib/notion'
 import { useViewer } from '../lib/viewer'
 import { useLibrary, type Rule, type Word } from '../stores/library'
 
@@ -24,6 +24,8 @@ export function WordsPage() {
   const viewer = useViewer()
   const { loaded, loading, error, words, rules, sources, load, sync } = useLibrary()
   const [params, setParams] = useSearchParams()
+  const location = useLocation()
+  const navigate = useNavigate()
 
   const [tab, setTab] = useState<Tab>('words')
   const [query, setQuery] = useState('')
@@ -39,13 +41,22 @@ export function WordsPage() {
     if (!viewer.isGuest && !loaded) void load()
   }, [viewer.isGuest, loaded, load])
 
-  // Coming back from Notion: open the table picker straight away.
+  // Coming back from Notion: say what was linked automatically, or open the table picker.
   useEffect(() => {
     if (params.get('connected') === '1') {
       setPickerOpen(true)
       setParams({}, { replace: true })
     }
   }, [params, setParams])
+
+  useEffect(() => {
+    const autoLinked = (location.state as { autoLinked?: AutoLinked[] } | null)?.autoLinked
+    if (!autoLinked?.length) return
+    const list = autoLinked.map((item) => `${item.title || t('notion.untitled')} (${item.pulled})`).join(', ')
+    setToast({ text: t('notion.autoLinked', { list }), tone: 'ok' })
+    void load()
+    navigate(location.pathname, { replace: true, state: null })
+  }, [location, navigate, load, t])
 
   useEffect(() => {
     if (!toast) return

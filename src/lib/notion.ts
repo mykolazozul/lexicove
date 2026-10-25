@@ -54,6 +54,9 @@ export type NotionSourceOption = {
   suggested: { words: Record<string, string>; rules: Record<string, string> }
 }
 
+/** A table linked automatically right after connecting. */
+export type AutoLinked = { title: string; kind: 'words' | 'rules'; pulled: number }
+
 export type SyncSummary = {
   pulled: number
   removed: number

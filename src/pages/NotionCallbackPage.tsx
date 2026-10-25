@@ -6,7 +6,7 @@ import { BrandIcon } from '../components/BrandIcon'
 import { notionErrorText } from '../components/words/notionErrors'
 import { Card } from '../components/ui'
 import { track } from '../lib/analytics'
-import { notionCall } from '../lib/notion'
+import { notionCall, type AutoLinked } from '../lib/notion'
 import { useLibrary } from '../stores/library'
 
 /** Notion sends people here after they approve (or cancel) access. */
@@ -29,11 +29,13 @@ export function NotionCallbackPage() {
       setError(t('notion.callback.cancelled'))
       return
     }
-    notionCall('finish', { code, state })
-      .then(async () => {
+    notionCall<{ auto_linked?: AutoLinked[] }>('finish', { code, state })
+      .then(async ({ auto_linked: autoLinked = [] }) => {
         track('notion_connected')
         await refreshNotion()
-        navigate('/words?connected=1', { replace: true })
+        // Familiar tables were linked and synced already; otherwise open the table picker.
+        if (autoLinked.length > 0) navigate('/words', { replace: true, state: { autoLinked } })
+        else navigate('/words?connected=1', { replace: true })
       })
       .catch((err) => setError(notionErrorText(t, err)))
   }, [params, navigate, refreshNotion, t])
