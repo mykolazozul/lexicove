@@ -31,7 +31,6 @@ export const NAV: NavItem[] = [
 
 /** Sections that are planned but not built yet, with the phase from SPEC.md that delivers them. */
 export const UPCOMING = {
-  words: { phase: 1, icon: BookOpen },
   learn: { phase: 2, icon: GraduationCap },
   shop: { phase: 3, icon: ShoppingBag },
   community: { phase: 4, icon: Users },

@@ -26,6 +26,7 @@
     "signIn": "Sign in",
     "signOut": "Sign out",
     "backHome": "Back home",
+    "close": "Close",
     "loading": "Loading…"
   },
   "home": {
@@ -83,17 +84,6 @@
         "Spelling, fill in the blank and sentence builder",
         "Listening, dictation and pronunciation with a microphone",
         "Grammar quizzes from your English Rules table"
-      ]
-    },
-    "words": {
-      "title": "Your words",
-      "text": "All your words in one place, synced with Notion.",
-      "features": [
-        "Two-way sync with Notion",
-        "A ready-made Notion template, or your own table",
-        "Add words right in the app",
-        "Import and export CSV and Excel",
-        "Works offline"
       ]
     },
     "games": {
@@ -218,6 +208,141 @@
       { "word": "look forward to", "meaning": "to wait for something with excitement" },
       { "word": "breeze", "meaning": "a light, gentle wind" }
     ]
+  },
+  "words": {
+    "tabs": { "words": "Words", "rules": "Rules" },
+    "addWord": "New word",
+    "addRule": "New rule",
+    "editWord": "Word",
+    "editRule": "Rule",
+    "search": "Search words or translations",
+    "searchRules": "Search rules",
+    "allGroups": "All",
+    "nothingFound": "Nothing found",
+    "empty": {
+      "title": "Nothing here yet",
+      "text": "Add your first word by hand, import a CSV or connect your Notion table.",
+      "synced": "The linked table has no rows yet. Add a word here and it shows up in Notion too."
+    },
+    "fields": {
+      "word": "Word",
+      "translation": "Translation",
+      "pronunciation": "Pronunciation",
+      "examples": "Examples",
+      "explanation": "Explanation",
+      "category": "Category",
+      "added": "Date added",
+      "rule": "Rule",
+      "topic": "Topic"
+    },
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirmDelete": "Delete “{{name}}”? The Notion page moves to the trash too.",
+    "confirmDeleteLocal": "Delete “{{name}}”?",
+    "pending": "Waiting to sync with Notion",
+    "local": "Only in Lexicove",
+    "syncedHint": "Changes go to Notion right after saving, or with the next sync.",
+    "guestTitle": "Words live in your account",
+    "guestText": "Sign in to add words, import a CSV and connect your Notion.",
+    "csv": {
+      "import": "Import CSV",
+      "export": "Export CSV",
+      "importTitle": "Import words from CSV",
+      "pick": "Choose a .csv file",
+      "pickHint": "The first row holds column names such as Word, Translation, Category. Excel exports work too.",
+      "detected_one": "Found {{count}} word. Columns:",
+      "detected_other": "Found {{count}} words. Columns:",
+      "toNotion": "Add them to Notion too",
+      "toNotionHint": "They appear in Notion as you sync, up to 200 words at a time.",
+      "run": "Import",
+      "done_one": "Imported {{count}} word",
+      "done_other": "Imported {{count}} words",
+      "noWordColumn": "Couldn't find a column with words. The first row must hold column names.",
+      "tooBig": "The file is too large: up to 5 MB."
+    }
+  },
+  "notion": {
+    "notConfigured": "The Notion integration isn't set up on the server yet. See docs/SETUP.md.",
+    "connectTitle": "Connect your Notion",
+    "connectText": "Lexicove reads the word and rule tables you choose and keeps them in sync both ways.",
+    "desktopNote": "Connect Notion on lexicove.vercel.app, and syncing will work here too.",
+    "connect": "Connect Notion",
+    "connectedTo": "Notion: {{name}}",
+    "workspaceFallback": "your workspace",
+    "untitled": "Untitled",
+    "sourcesCount_one": "{{count}} linked table",
+    "sourcesCount_other": "{{count}} linked tables",
+    "noSources": "No tables linked yet",
+    "rows_one": "{{count}} row",
+    "rows_other": "{{count}} rows",
+    "addSource": "Add a table",
+    "disconnect": "Disconnect",
+    "confirmDisconnect": "Disconnect Notion? Your words stay in Lexicove but stop syncing.",
+    "removeSource": "Unlink table",
+    "confirmRemoveSource": "Unlink “{{name}}”? Its words stay in Lexicove as local words.",
+    "sync": "Sync",
+    "syncing": "Syncing…",
+    "syncedAgo": "synced {{time}}",
+    "neverSynced": "not synced yet",
+    "syncDone": "Done: {{pulled}} from Notion, {{created}} new and {{updated}} updated in Notion",
+    "linked_one": "Table linked: {{count}} row",
+    "linked_other": "Table linked: {{count}} rows",
+    "kinds": { "words": "Words", "rules": "Rules" },
+    "picker": {
+      "title": "Table from Notion",
+      "loading": "Looking for tables Lexicove can access…",
+      "empty": "No tables found. When connecting Notion, select the pages that hold your tables, then connect again.",
+      "columns_one": "{{count}} column",
+      "columns_other": "{{count}} columns",
+      "alreadyLinked": "already linked",
+      "kind": "What's in this table",
+      "mapping": "Column mapping",
+      "none": "— don't use —",
+      "submit": "Link and sync"
+    },
+    "callback": {
+      "connecting": "Connecting Notion…",
+      "failed": "Couldn't connect Notion",
+      "cancelled": "The connection was cancelled or the link has expired.",
+      "back": "Back to words"
+    },
+    "errors": {
+      "not_configured": "The Notion integration isn't set up on the server yet.",
+      "not_connected": "Connect Notion first.",
+      "reconnect_required": "Notion access has expired. Please connect again.",
+      "too_soon": "Synced a moment ago. Try again in a few seconds.",
+      "notion_busy": "Notion is busy right now. Try again in a minute.",
+      "bad_state": "The connection link has expired. Please try again.",
+      "account_required": "You need an account to connect Notion.",
+      "unauthorized": "Please sign in.",
+      "too_many_sources": "Up to 10 tables can be linked."
+    }
+  },
+  "legal": {
+    "updated": "Updated {{date}}",
+    "contact": "Questions and data requests:",
+    "privacy": {
+      "title": "Privacy policy",
+      "sections": [
+        { "title": "What we store", "body": "Your account email and name, settings, the words and rules you add or sync, and your learning progress. If you connect Notion, a copy of the rows from the tables you choose and an encrypted Notion access token." },
+        { "title": "Why", "body": "Only to run the app: show your words, sync them with Notion and keep your progress on every device. We don't sell data or show ads." },
+        { "title": "Where", "body": "Data is stored with Supabase (servers in the EU, Frankfurt). The website is served by Vercel. The Notion token is stored encrypted and is only available to a server function, never to the browser." },
+        { "title": "Notion", "body": "Lexicove only sees the pages you allowed when connecting. You can disconnect Notion at any time on the Words page, which deletes the token." },
+        { "title": "Your rights", "body": "You can export your words as CSV, disconnect Notion and ask for your account to be deleted with all its data." },
+        { "title": "Open source", "body": "All of Lexicove's code is public, so anyone can check exactly what happens to data." }
+      ]
+    },
+    "terms": {
+      "title": "Terms of use",
+      "sections": [
+        { "title": "The service", "body": "Lexicove is a free, open-source app for learning English. It is provided as is, without a guarantee of uninterrupted service." },
+        { "title": "Your account", "body": "You are responsible for keeping your account secure. One account per person; the community is open from age 13." },
+        { "title": "Your content", "body": "Your words, rules and other content stay yours. You allow Lexicove to store and process them only to run the app." },
+        { "title": "Community rules", "body": "No harassment, spam, scams or illegal content. Moderators may warn, temporarily restrict or ban an account." },
+        { "title": "Changes", "body": "These terms may be updated; the date at the top shows the latest version." }
+      ]
+    }
   },
   "notFound": {
     "title": "This island isn't on the map",

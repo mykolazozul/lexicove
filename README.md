@@ -17,9 +17,12 @@
 
 ## Status
 
-Phase 0 (foundation) is done: app shell, four themes, Ukrainian and English, sign-in, guest mode,
-installable PWA, the Tauri desktop shell and the first database tables. Lessons, Notion sync,
-the shop and the community arrive phase by phase. See the roadmap in [SPEC.md](SPEC.md#16-етапи).
+- **Phase 0, foundation:** app shell, ten themes plus an optional Apple-style interface, Ukrainian
+  and English, sign-in, guest mode, installable PWA, the Tauri desktop shell.
+- **Phase 1, words:** two-way Notion sync for word and rule tables (with automatic column
+  matching), adding and editing words in the app, CSV import and export.
+
+Lessons, the shop and the community arrive phase by phase. See the roadmap in [SPEC.md](SPEC.md#16-етапи).
 
 ## Features (planned)
 

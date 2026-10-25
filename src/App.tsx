@@ -6,15 +6,20 @@ import { LogoMark } from './components/Logo'
 import i18n from './lib/i18n'
 import { ComingSoonPage } from './pages/ComingSoonPage'
 import { HomePage } from './pages/HomePage'
+import { LegalPage } from './pages/LegalPage'
 import { NotFoundPage } from './pages/NotFoundPage'
+import { NotionCallbackPage } from './pages/NotionCallbackPage'
 import { ProfilePage } from './pages/ProfilePage'
 import { SettingsPage } from './pages/SettingsPage'
 import { WelcomePage } from './pages/WelcomePage'
+import { WordsPage } from './pages/WordsPage'
 import { useAuth } from './stores/auth'
 import { resolveTheme, useSettings } from './stores/settings'
 
 const router = createBrowserRouter([
   { path: '/welcome', element: <WelcomePage /> },
+  { path: '/privacy', element: <LegalPage doc="privacy" /> },
+  { path: '/terms', element: <LegalPage doc="terms" /> },
   {
     path: '/',
     element: (
@@ -25,7 +30,8 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: 'learn', element: <ComingSoonPage section="learn" /> },
-      { path: 'words', element: <ComingSoonPage section="words" /> },
+      { path: 'words', element: <WordsPage /> },
+      { path: 'notion/callback', element: <NotionCallbackPage /> },
       { path: 'games', element: <ComingSoonPage section="games" /> },
       { path: 'shop', element: <ComingSoonPage section="shop" /> },
       { path: 'community', element: <ComingSoonPage section="community" /> },

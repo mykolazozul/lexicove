@@ -1,0 +1,7 @@
+# Settings for the Supabase CLI (`supabase functions deploy`, `supabase db push`).
+project_id = "lexicove"
+
+[functions.notion]
+# The function checks the caller's session itself (supabase.auth.getUser), which works with
+# both the new publishable keys and legacy JWT keys.
+verify_jwt = false

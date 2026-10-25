@@ -58,13 +58,42 @@ A tester is hidden from leagues, leaderboards and public stats, and starts with 
 and enough XP to reach about level 98. Only the database owner can run `grant_role`; it isn't
 exposed through the API.
 
-## 3. Website on Vercel
+## 3. Notion sync
+
+Lexicove talks to Notion through the `notion` Edge Function
+([`supabase/functions/notion`](../supabase/functions/notion)). Tokens are kept in Supabase Vault
+and never reach the browser.
+
+1. Open [Notion integrations](https://www.notion.so/profile/integrations) and create a
+   **Public** integration.
+2. Fill in the basic information:
+   - Name: `Lexicove`, website `https://lexicove.vercel.app`
+   - Privacy policy: `https://lexicove.vercel.app/privacy`
+   - Terms of use: `https://lexicove.vercel.app/terms`
+   - Redirect URIs:
+     - `https://lexicove.vercel.app/notion/callback`
+     - `http://localhost:5173/notion/callback`
+     - `https://<ref>.supabase.co/auth/v1/callback` (only if you also want "Sign in with Notion")
+3. Capabilities: **Read content**, **Update content**, **Insert content**.
+4. Copy the OAuth **client ID** and **client secret** into Supabase:
+   **Edge Functions → Secrets**, as `NOTION_CLIENT_ID` and `NOTION_CLIENT_SECRET`.
+   The same pair can be pasted into **Authentication → Providers → Notion** for sign-in.
+5. Deploy the function: `supabase functions deploy notion`.
+
+On your own fork, change `ALLOWED_ORIGINS` and `REDIRECT_URIS` at the top of
+[`index.ts`](../supabase/functions/notion/index.ts) to your domain.
+
+How sync works: each sync first sends rows edited in Lexicove to Notion, then reads the whole
+table back. Notion wins for rows without local edits; pages deleted in Notion are removed in
+Lexicove; words deleted in Lexicove go to the Notion trash.
+
+## 4. Website on Vercel
 
 1. Import the GitHub repository in Vercel. The settings come from [`vercel.json`](../vercel.json).
 2. Add the two `VITE_SUPABASE_*` variables in **Project → Settings → Environment Variables**.
 3. Every push to `main` deploys automatically.
 
-## 4. Desktop app
+## 5. Desktop app
 
 Install [Rust](https://rustup.rs) once, then:
 

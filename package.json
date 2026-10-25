@@ -10,6 +10,7 @@
     "build": "npm run typecheck && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json",
+    "test": "vitest run",
     "lint:secrets": "secretlint \"**/*\"",
     "icons": "pwa-assets-generator && tauri icon public/logo.svg",
     "tauri": "tauri"
@@ -41,6 +42,7 @@
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
     "vite": "^8.3.5",
-    "vite-plugin-pwa": "^2.0.0"
+    "vite-plugin-pwa": "^2.0.0",
+    "vitest": "^5.0.5"
   }
 }

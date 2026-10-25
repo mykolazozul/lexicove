@@ -2,7 +2,7 @@ import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { ArrowRight, Coins, Flame, Lock, Sparkles, Target, Trophy } from 'lucide-react'
 import { BrandIcon } from '../components/BrandIcon'
-import { Badge, Card, IconChip, ProgressRing, Reveal, type ChipTone } from '../components/ui'
+import { Card, IconChip, ProgressRing, Reveal, type ChipTone } from '../components/ui'
 import { cx } from '../lib/cx'
 import { useViewer } from '../lib/viewer'
 import { useSettings } from '../stores/settings'
@@ -98,7 +98,6 @@ export function HomePage() {
               <span className="grid size-12 place-items-center rounded-control bg-fg text-bg">
                 <BrandIcon provider="notion" className="size-6" />
               </span>
-              <Badge>{t('common.phase', { n: 1 })}</Badge>
             </div>
             <h3 className="mt-4 font-display text-lg font-semibold">{t('home.notion.title')}</h3>
             <p className="mt-2 flex-1 text-muted">{t('home.notion.text')}</p>

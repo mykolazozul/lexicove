@@ -7,6 +7,7 @@ import { NAV, type NavKey } from '../app/nav'
 import { cx } from '../lib/cx'
 import { useViewer } from '../lib/viewer'
 import { useAuth } from '../stores/auth'
+import { useLibrary } from '../stores/library'
 import { useProfile } from '../stores/profile'
 import { Logo } from './Logo'
 import { Avatar, ProgressBar } from './ui'
@@ -17,11 +18,14 @@ export function AppShell() {
   const clearProfile = useProfile((s) => s.clear)
   const { pathname } = useLocation()
 
+  const resetLibrary = useLibrary((s) => s.reset)
+
   const userId = session?.user.id
   useEffect(() => {
+    resetLibrary()
     if (userId) void loadProfile(userId)
     else clearProfile()
-  }, [userId, loadProfile, clearProfile])
+  }, [userId, loadProfile, clearProfile, resetLibrary])
 
   useEffect(() => {
     window.scrollTo({ top: 0 })
