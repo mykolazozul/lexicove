@@ -9,6 +9,10 @@
   Web, phone (installable PWA) and desktop (Windows, macOS, Linux). Free and open source.
 </p>
 
+<p align="center">
+  <a href="https://lexicove.vercel.app"><strong>lexicove.vercel.app</strong></a>
+</p>
+
 > 🇺🇦 **Українською:** Lexicove — безкоштовний додаток для вивчення англійських слів з твоїх таблиць Notion: уроки з інтервальним повторенням, ігри, дуелі, ліги, магазин і чат. Працює в браузері, на телефоні та як програма для ноутбука. Повний план — у [SPEC.md](SPEC.md).
 
 ## Status
