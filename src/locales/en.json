@@ -76,17 +76,6 @@
   "soon": {
     "badge": "In progress",
     "planned": "What's coming",
-    "learn": {
-      "title": "Lessons",
-      "text": "Spaced repetition and a dozen ways to lock in every word.",
-      "features": [
-        "Flashcards with spaced repetition (FSRS)",
-        "Multiple choice in both directions",
-        "Spelling, fill in the blank and sentence builder",
-        "Listening, dictation and pronunciation with a microphone",
-        "Grammar quizzes from your English Rules table"
-      ]
-    },
     "games": {
       "title": "Games",
       "text": "Quick memory and speed games built from your own words.",
@@ -213,6 +202,97 @@
       { "word": "look forward to", "meaning": "to wait for something with excitement" },
       { "word": "breeze", "meaning": "a light, gentle wind" }
     ]
+  },
+  "learn": {
+    "guestTitle": "Learning needs an account",
+    "guestText": "Your progress and review schedule live in your account. Sign in to start.",
+    "noWords": "Add some words first",
+    "noWordsText": "Connect a Notion table, import a CSV or add a few words by hand.",
+    "lesson": {
+      "title": "Today's lesson",
+      "text": "To review: {{due}}, new words: {{fresh}}. The modes rotate on their own.",
+      "start": "Start the lesson"
+    },
+    "stats": {
+      "due": "To review",
+      "new": "New words",
+      "learned": "Learned",
+      "accuracy": "Accuracy, 30 days"
+    },
+    "modesTitle": "Modes",
+    "available_one": "{{count}} word",
+    "available_other": "{{count}} words",
+    "locked": {
+      "words": "No words",
+      "examples": "Needs example sentences",
+      "speech": "This browser can't read words aloud",
+      "microphone": "This browser can't recognise speech — try Chrome, Edge or Safari",
+      "categories": "Needs at least 3 categories",
+      "rules": "Needs at least 4 rules with explanations"
+    },
+    "modes": {
+      "mix": { "title": "Today's lesson", "text": "All modes mixed" },
+      "cards": { "title": "Flashcards", "text": "Recall the translation and rate how easy it was" },
+      "choice": { "title": "Quiz", "text": "Pick the right translation out of four" },
+      "typing": { "title": "Spell it", "text": "See the translation, type the English" },
+      "cloze": { "title": "Fill the gap", "text": "Put the word back into your own example" },
+      "builder": { "title": "Build the sentence", "text": "Put the words of an example in order" },
+      "listening": { "title": "Listen and pick", "text": "Hear a word, choose which one it was" },
+      "dictation": { "title": "Dictation", "text": "Hear a word and write it" },
+      "speaking": { "title": "Pronunciation", "text": "Say the word into the microphone" },
+      "sorting": { "title": "Categories", "text": "Tell which category a word belongs to" },
+      "rules": { "title": "Rules quiz", "text": "Match a rule to its explanation" }
+    },
+    "newWord": "New word",
+    "listen": "Listen",
+    "listenSlow": "Slower",
+    "show": "Show answer",
+    "grades": { "again": "Forgot", "hard": "Hard", "good": "Good", "easy": "Easy" },
+    "typeHere": "Type in English…",
+    "hint": "Hint",
+    "check": "Check",
+    "reset": "Reset",
+    "next": "Next",
+    "skip": "Skip",
+    "record": "Record pronunciation",
+    "builderHint": "Tap the words below in order",
+    "prompts": {
+      "chooseTranslation": "Choose the translation",
+      "chooseWord": "Choose the word",
+      "typing": "Type it in English",
+      "dictation": "Listen and type",
+      "cloze": "Fill in the missing word",
+      "builder": "Build the sentence",
+      "listening": "Which word did you hear?",
+      "speaking": "Say it out loud",
+      "sorting": "Which category does it belong to?",
+      "rules": "Which explanation fits this rule?"
+    },
+    "speak": {
+      "tap": "Tap and say the word",
+      "listening": "Listening…",
+      "noSpeech": "Didn't catch that — try again",
+      "notAllowed": "No microphone access. Allow it in your browser settings.",
+      "error": "Speech recognition failed",
+      "heard": "Heard: “{{text}}” · {{score}}% match"
+    },
+    "feedback": {
+      "correct": "Correct!",
+      "close": "Almost! One small typo",
+      "wrong": "Not quite",
+      "answer": "Correct answer: {{answer}}"
+    },
+    "summary": {
+      "title": "Lesson complete",
+      "correct": "{{correct}} of {{total}} correct",
+      "seconds": "{{n}} s",
+      "again": "Another round",
+      "back": "Back to Learn"
+    },
+    "nothingToStudy": "Nothing to study here yet",
+    "nothingToStudyText": "The words for this mode are all reviewed. Come back later or pick another mode.",
+    "needRules": "The quiz needs at least 4 rules with explanations.",
+    "saveError": "Couldn't save the answer: {{message}}"
   },
   "words": {
     "tabs": { "words": "Words", "rules": "Rules" },

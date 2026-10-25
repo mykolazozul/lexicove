@@ -1,8 +1,9 @@
 import { useDeferredValue, useEffect, useMemo, useState } from 'react'
-import { Link, useSearchParams } from 'react-router'
+import { useSearchParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { AnimatePresence, motion } from 'motion/react'
-import { BookOpen, CloudOff, Download, History, Plus, Search, Upload, UserPlus } from 'lucide-react'
+import { BookOpen, CloudOff, Download, History, Plus, Search, Upload } from 'lucide-react'
+import { GuestNotice } from '../components/GuestNotice'
 import { ImportDialog } from '../components/words/ImportDialog'
 import { NotionPanel } from '../components/words/NotionPanel'
 import { notionErrorText } from '../components/words/notionErrors'
@@ -71,7 +72,7 @@ export function WordsPage() {
     })
   }, [items, group, deferredQuery])
 
-  if (viewer.isGuest) return <GuestNotice />
+  if (viewer.isGuest) return <GuestNotice title={t('words.guestTitle')} text={t('words.guestText')} />
 
   function message(text: string, tone: 'ok' | 'error' = 'ok') {
     setToast({ text, tone })
@@ -305,16 +306,3 @@ function ListSkeleton() {
   )
 }
 
-function GuestNotice() {
-  const { t } = useTranslation()
-  return (
-    <Card glow className="mx-auto mt-4 flex max-w-xl flex-col items-center gap-3 py-10 text-center">
-      <UserPlus className="size-10 text-accent" strokeWidth={1.8} />
-      <h2 className="font-display text-xl font-semibold">{t('words.guestTitle')}</h2>
-      <p className="max-w-sm text-muted">{t('words.guestText')}</p>
-      <Link to="/welcome" className="btn btn-primary mt-2">
-        {t('profile.createAccount')}
-      </Link>
-    </Card>
-  )
-}

@@ -6,6 +6,7 @@ import { Card, IconChip, ProgressRing, Reveal, type ChipTone } from '../componen
 import { cx } from '../lib/cx'
 import { useViewer } from '../lib/viewer'
 import { useSettings } from '../stores/settings'
+import { useStudy } from '../stores/study'
 
 function greetingKey(hour: number) {
   if (hour >= 5 && hour < 12) return 'morning'
@@ -27,7 +28,12 @@ export function HomePage() {
   const { t, i18n } = useTranslation()
   const viewer = useViewer()
   const dailyGoal = useSettings((s) => s.dailyGoal)
-  const learnedToday = 0
+  const summary = useStudy((s) => s.summary)
+  const learnedToday = summary?.today ?? 0
+  const accuracy =
+    summary && summary.accuracy_30d.total > 0
+      ? `${Math.round((summary.accuracy_30d.correct / summary.accuracy_30d.total) * 100)}%`
+      : '—'
 
   const name = viewer.isGuest ? t('home.friend') : viewer.name.split(' ')[0]
 
@@ -86,8 +92,8 @@ export function HomePage() {
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           <StatTile icon={Coins} tone="coin" label={t('home.stats.coins')} value={viewer.coins.toLocaleString()} />
           <StatTile icon={Sparkles} tone="xp" label={t('home.stats.level')} value={String(viewer.level)} />
-          <StatTile icon={Trophy} tone="success" label={t('home.stats.learned')} value="0" />
-          <StatTile icon={Target} tone="accent-2" label={t('home.stats.accuracy')} value="—" />
+          <StatTile icon={Trophy} tone="success" label={t('home.stats.learned')} value={String(summary?.learned ?? 0)} />
+          <StatTile icon={Target} tone="accent-2" label={t('home.stats.accuracy')} value={accuracy} />
         </div>
       </Reveal>
 

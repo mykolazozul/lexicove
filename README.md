@@ -21,6 +21,10 @@
   and English, sign-in, guest mode, installable PWA, the Tauri desktop shell.
 - **Phase 1, words:** two-way Notion sync for word and rule tables (with automatic column
   matching), adding and editing words in the app, CSV import and export.
+- **Phase 2, learning:** FSRS spaced repetition and ten modes — flashcards, multiple choice,
+  spelling, fill the gap, sentence builder, listening, dictation, pronunciation, categories
+  and a rules quiz — plus a mixed daily lesson, daily goal, streak and accuracy.
+- **Admin panel:** usage statistics, users and roles, Notion sync health, free-plan limits.
 
 Lessons, the shop and the community arrive phase by phase. See the roadmap in [SPEC.md](SPEC.md#16-етапи).
 

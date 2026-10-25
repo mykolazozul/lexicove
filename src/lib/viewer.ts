@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../stores/auth'
 import { useProfile } from '../stores/profile'
+import { useStudy } from '../stores/study'
 import { levelFromXp } from './progression'
 
 /** Everything the UI needs to know about the person using the app, guest or signed in. */
@@ -8,6 +9,7 @@ export function useViewer() {
   const { t } = useTranslation()
   const session = useAuth((s) => s.session)
   const profile = useProfile((s) => s.profile)
+  const streak = useStudy((s) => s.streak)
   const user = session?.user ?? null
 
   const metaName = user?.user_metadata?.full_name ?? user?.user_metadata?.name
@@ -27,7 +29,7 @@ export function useViewer() {
     role: profile?.role ?? 'user',
     xp,
     coins: profile?.coins ?? 0,
-    streak: 0,
+    streak,
     memberSince: profile?.created_at ?? null,
     ...levelFromXp(xp),
   }

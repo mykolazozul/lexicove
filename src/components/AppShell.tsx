@@ -9,6 +9,7 @@ import { cx } from '../lib/cx'
 import { useViewer } from '../lib/viewer'
 import { useAuth } from '../stores/auth'
 import { useLibrary } from '../stores/library'
+import { useStudy } from '../stores/study'
 import { useProfile } from '../stores/profile'
 import { Logo } from './Logo'
 import { Avatar, ProgressBar } from './ui'
@@ -20,13 +21,18 @@ export function AppShell() {
   const { pathname } = useLocation()
 
   const resetLibrary = useLibrary((s) => s.reset)
+  const resetStudy = useStudy((s) => s.reset)
+  const refreshSummary = useStudy((s) => s.refreshSummary)
 
   const userId = session?.user.id
   useEffect(() => {
     resetLibrary()
-    if (userId) void loadProfile(userId)
-    else clearProfile()
-  }, [userId, loadProfile, clearProfile, resetLibrary])
+    resetStudy()
+    if (userId) {
+      void loadProfile(userId)
+      void refreshSummary()
+    } else clearProfile()
+  }, [userId, loadProfile, clearProfile, resetLibrary, resetStudy, refreshSummary])
 
   useEffect(() => {
     window.scrollTo({ top: 0 })

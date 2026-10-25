@@ -1,27 +1,34 @@
-import { useEffect, type ReactNode } from 'react'
+import { lazy, Suspense, useEffect, type ComponentType, type ReactNode } from 'react'
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router'
 import { motion } from 'motion/react'
 import { AppShell } from './components/AppShell'
 import { LogoMark } from './components/Logo'
 import { pageOf, track } from './lib/analytics'
 import i18n from './lib/i18n'
-import { AdminPage } from './pages/AdminPage'
 import { ComingSoonPage } from './pages/ComingSoonPage'
 import { HomePage } from './pages/HomePage'
-import { LegalPage } from './pages/LegalPage'
 import { NotFoundPage } from './pages/NotFoundPage'
-import { NotionCallbackPage } from './pages/NotionCallbackPage'
 import { ProfilePage } from './pages/ProfilePage'
 import { SettingsPage } from './pages/SettingsPage'
 import { WelcomePage } from './pages/WelcomePage'
-import { WordsPage } from './pages/WordsPage'
 import { useAuth } from './stores/auth'
 import { resolveTheme, useSettings } from './stores/settings'
 
+// Bigger pages load on first visit, so the first screen downloads less.
+function page<K extends string, P>(load: () => Promise<Record<K, ComponentType<P>>>, name: K) {
+  return lazy(() => load().then((module) => ({ default: module[name] })))
+}
+const AdminPage = page(() => import('./pages/AdminPage'), 'AdminPage')
+const LearnPage = page(() => import('./pages/LearnPage'), 'LearnPage')
+const SessionPage = page(() => import('./pages/SessionPage'), 'SessionPage')
+const WordsPage = page(() => import('./pages/WordsPage'), 'WordsPage')
+const NotionCallbackPage = page(() => import('./pages/NotionCallbackPage'), 'NotionCallbackPage')
+const LegalPage = page(() => import('./pages/LegalPage'), 'LegalPage')
+
 const router = createBrowserRouter([
   { path: '/welcome', element: <WelcomePage /> },
-  { path: '/privacy', element: <LegalPage doc="privacy" /> },
-  { path: '/terms', element: <LegalPage doc="terms" /> },
+  { path: '/privacy', element: <Lazy><LegalPage doc="privacy" /></Lazy> },
+  { path: '/terms', element: <Lazy><LegalPage doc="terms" /></Lazy> },
   {
     path: '/',
     element: (
@@ -31,15 +38,16 @@ const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <HomePage /> },
-      { path: 'learn', element: <ComingSoonPage section="learn" /> },
-      { path: 'words', element: <WordsPage /> },
-      { path: 'notion/callback', element: <NotionCallbackPage /> },
+      { path: 'learn', element: <Lazy><LearnPage /></Lazy> },
+      { path: 'learn/:mode', element: <Lazy><SessionPage /></Lazy> },
+      { path: 'words', element: <Lazy><WordsPage /></Lazy> },
+      { path: 'notion/callback', element: <Lazy><NotionCallbackPage /></Lazy> },
       { path: 'games', element: <ComingSoonPage section="games" /> },
       { path: 'shop', element: <ComingSoonPage section="shop" /> },
       { path: 'community', element: <ComingSoonPage section="community" /> },
       { path: 'profile', element: <ProfilePage /> },
       { path: 'settings', element: <SettingsPage /> },
-      { path: 'admin', element: <AdminPage /> },
+      { path: 'admin', element: <Lazy><AdminPage /></Lazy> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },
@@ -71,6 +79,20 @@ function RequireViewer({ children }: { children: ReactNode }) {
   if (!ready) return <Splash />
   if (!session && !localGuest) return <Navigate to="/welcome" replace />
   return children
+}
+
+function Lazy({ children }: { children: ReactNode }) {
+  return (
+    <Suspense
+      fallback={
+        <div className="grid min-h-60 place-items-center">
+          <LogoMark className="size-10 animate-pulse" />
+        </div>
+      }
+    >
+      {children}
+    </Suspense>
+  )
 }
 
 function Splash() {

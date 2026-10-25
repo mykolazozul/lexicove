@@ -28,6 +28,9 @@ The code is public, so the app assumes anyone can read it and call the API direc
   theme; guests carry no identifier, no IP is stored, inserts are rate-limited by a trigger and
   rows are purged after 90 days by `pg_cron`. Nobody can read events back except through
   `admin_overview()`.
+- **The answer log can't be rewritten.** `review_log` is insert-only for users and capped at
+  120 answers a minute, so future XP and coin rewards can be computed from it on the server.
+  Progress rows and log entries may only point at the user's own words and rules.
 - **Strict Content-Security-Policy** on the website and in the desktop app.
 - **Automated checks:** secretlint locally and gitleaks in CI scan for leaked credentials,
   `npm audit` and Dependabot watch dependencies.
