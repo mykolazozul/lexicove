@@ -1,0 +1,213 @@
+{
+  "app": {
+    "tagline": "Learn English from your own Notion tables"
+  },
+  "nav": {
+    "main": "Main menu",
+    "home": "Home",
+    "learn": "Learn",
+    "words": "Words",
+    "games": "Games",
+    "shop": "Shop",
+    "community": "Community",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "common": {
+    "guest": "Guest",
+    "level": "Level {{level}}",
+    "soon": "Soon",
+    "phase": "Phase {{n}}",
+    "streak": "Streak",
+    "coins": "Coins",
+    "xp": "XP",
+    "days_one": "{{count}} day",
+    "days_other": "{{count}} days",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "backHome": "Back home",
+    "loading": "Loading…"
+  },
+  "home": {
+    "friend": "friend",
+    "greeting": {
+      "morning": "Good morning, {{name}}",
+      "day": "Good afternoon, {{name}}",
+      "evening": "Good evening, {{name}}",
+      "night": "Up late, {{name}}?"
+    },
+    "subtitle": "Time for a few new words?",
+    "goal": {
+      "title": "Daily goal",
+      "text": "Learn {{goal}} words today to keep your flame alive.",
+      "progress": "of {{goal}}",
+      "start": "Start a lesson",
+      "addWords": "Add words"
+    },
+    "streak": {
+      "title": "Streak",
+      "text": "Study every day and your flame grows."
+    },
+    "stats": {
+      "coins": "Coins",
+      "level": "Level",
+      "learned": "Words learned",
+      "accuracy": "Accuracy"
+    },
+    "notion": {
+      "title": "Connect your Notion",
+      "text": "Pick a table with words and Lexicove turns it into lessons and games. Words you add here go back to Notion too.",
+      "cta": "Connect Notion"
+    },
+    "islands": {
+      "title": "Islands of Lexicove",
+      "text": "Every word category is an island. Learn its words to unlock it.",
+      "locked": "Locked",
+      "food": "Food",
+      "animals": "Animals",
+      "travel": "Travel",
+      "work": "Work",
+      "phrasal": "Phrasal verbs",
+      "feelings": "Feelings"
+    }
+  },
+  "soon": {
+    "badge": "In progress",
+    "planned": "What's coming",
+    "learn": {
+      "title": "Lessons",
+      "text": "Spaced repetition and a dozen ways to lock in every word.",
+      "features": [
+        "Flashcards with spaced repetition (FSRS)",
+        "Multiple choice in both directions",
+        "Spelling, fill in the blank and sentence builder",
+        "Listening, dictation and pronunciation with a microphone",
+        "Grammar quizzes from your English Rules table"
+      ]
+    },
+    "words": {
+      "title": "Your words",
+      "text": "All your words in one place, synced with Notion.",
+      "features": [
+        "Two-way sync with Notion",
+        "A ready-made Notion template, or your own table",
+        "Add words right in the app",
+        "Import and export CSV and Excel",
+        "Works offline"
+      ]
+    },
+    "games": {
+      "title": "Games",
+      "text": "Quick memory and speed games built from your own words.",
+      "features": [
+        "Match pairs and a 60-second speed round",
+        "Word rain: type each word before it lands",
+        "Hangman, Wordle and crosswords from your words",
+        "Word search and anagrams",
+        "True or false blitz"
+      ]
+    },
+    "shop": {
+      "title": "Shop",
+      "text": "Spend the coins you earn in lessons. They can't be bought with money.",
+      "features": [
+        "Animated avatars, frames and profile banners",
+        "Themes and card designs",
+        "Chat name colours, stickers and titles",
+        "Streak freezes, 2x XP and hints"
+      ]
+    },
+    "community": {
+      "title": "Community",
+      "text": "Learn with others: chat, friends, duels and leagues.",
+      "features": [
+        "Global chat and rooms by level and topic",
+        "Friends and direct messages",
+        "Real-time 1-on-1 duels",
+        "Weekly leagues from Bronze to Legend",
+        "Clans, tournaments and a weekly boss"
+      ]
+    }
+  },
+  "profile": {
+    "guestTitle": "You're in guest mode",
+    "guestText": "Create an account to keep your progress on every device and unlock chat, duels and leagues.",
+    "createAccount": "Create account",
+    "levelProgress": "{{current}} / {{needed}} XP to level {{next}}",
+    "memberSince": "Member since {{date}}",
+    "stats": {
+      "bestStreak": "Best streak",
+      "learned": "Words learned",
+      "duels": "Duels won",
+      "league": "League"
+    },
+    "achievements": "Achievements",
+    "achievementsSoon": "Badges unlock in phase 3.",
+    "roles": {
+      "owner": "Owner",
+      "admin": "Admin",
+      "moderator": "Moderator",
+      "tester": "Tester"
+    }
+  },
+  "settings": {
+    "appearance": "Appearance",
+    "themes": {
+      "auto": "Auto",
+      "midnight": "Midnight",
+      "daylight": "Daylight",
+      "arcade": "Arcade",
+      "mono": "Mono"
+    },
+    "themeDescriptions": {
+      "auto": "Follows your system",
+      "midnight": "Dark premium",
+      "daylight": "Light and calm",
+      "arcade": "Bright and playful",
+      "mono": "Minimal"
+    },
+    "themeHint": "More themes are coming to the shop.",
+    "language": "Language",
+    "account": "Account",
+    "signedInAs": "Account: {{name}}",
+    "guestMode": "Guest mode: your progress stays on this device only.",
+    "about": "About",
+    "version": "Version {{version}}",
+    "license": "Open source under the MIT license",
+    "source": "Source code on GitHub"
+  },
+  "welcome": {
+    "line1": "Your words.",
+    "line2": "Your Notion.",
+    "line3": "Your game.",
+    "subtitle": "Lexicove turns your word lists into spaced-repetition lessons, games and duels. Free and open source.",
+    "cardTitle": "Let's begin",
+    "cardText": "Sign in to keep your progress on every device.",
+    "continueWith": "Continue with {{provider}}",
+    "or": "or",
+    "email": "Email",
+    "password": "Password",
+    "passwordHint": "At least 8 characters",
+    "tabSignIn": "Sign in",
+    "tabSignUp": "Sign up",
+    "signIn": "Sign in",
+    "signUp": "Create account",
+    "guest": "Try it without an account",
+    "guestHint": "Progress stays on this device. Chat and duels need an account.",
+    "checkEmail": "We sent a link to {{email}}. Confirm your email to sign in.",
+    "notConfigured": "The server isn't connected yet, so only guest mode works for now.",
+    "desktopOauth": "In the desktop app, email sign-in works for now. Google, GitHub, Discord and Notion are coming in an update.",
+    "samples": [
+      { "word": "serendipity", "meaning": "a happy accident" },
+      { "word": "look forward to", "meaning": "to wait for something with excitement" },
+      { "word": "breeze", "meaning": "a light, gentle wind" }
+    ]
+  },
+  "notFound": {
+    "title": "This island isn't on the map",
+    "text": "We couldn't find the page you were looking for."
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again."
+  }
+}

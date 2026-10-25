@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Builds
+dist/
+dev-dist/
+src-tauri/target/
+src-tauri/gen/schemas/
+
+# Secrets: never commit these. .env.example shows which variables exist.
+.env
+.env.*
+!.env.example
+
+# Tooling
+.vercel/
+.claude/
+*.log
+coverage/
+
+# OS
+.DS_Store
+Thumbs.db
