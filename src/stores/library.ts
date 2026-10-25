@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { track } from '../lib/analytics'
 import { notionCall, type NotionStatus, type SyncSummary } from '../lib/notion'
 import { supabase } from '../lib/supabase'
 
@@ -148,6 +149,7 @@ export const useLibrary = create<LibraryState>()((set, get) => ({
     set({ syncing: true })
     try {
       const { results } = await notionCall<{ results: Array<SyncSummary & { error?: string }> }>('sync')
+      track('notion_synced')
       await get().load()
       const failed = results.find((result) => result.error)
       if (failed?.error) throw new Error(failed.error)
@@ -172,6 +174,7 @@ export const useLibrary = create<LibraryState>()((set, get) => ({
         .insert({ ...input, added_on: input.added_on ?? today(), source_id: source?.id ?? null, needs_push: source !== null })
       if (error) throw error
     }
+    track('word_saved')
     await get().load()
   },
 
@@ -223,6 +226,7 @@ export const useLibrary = create<LibraryState>()((set, get) => ({
       const { error } = await client().from('words').insert(records.slice(i, i + 500))
       if (error) throw error
     }
+    track('words_imported')
     await get().load()
     return records.length
   },

@@ -1,6 +1,7 @@
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { Check, ExternalLink, LogIn, LogOut } from 'lucide-react'
+import { Check, ChevronRight, ExternalLink, LogIn, LogOut, Shield } from 'lucide-react'
+import { isAdmin } from '../lib/admin'
 import { siApple, siGithub } from 'simple-icons'
 import { Card, Reveal, SectionTitle, Segmented, Switch } from '../components/ui'
 import { cx } from '../lib/cx'
@@ -20,7 +21,7 @@ export function SettingsPage() {
   const navigate = useNavigate()
   const viewer = useViewer()
   const signOut = useAuth((s) => s.signOut)
-  const { theme, setTheme, appleStyle, setAppleStyle, locale, setLocale } = useSettings()
+  const { theme, setTheme, appleStyle, setAppleStyle, analytics, setAnalytics, locale, setLocale } = useSettings()
 
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-8">
@@ -96,6 +97,31 @@ export function SettingsPage() {
               </button>
             )}
           </Card>
+        </section>
+      </Reveal>
+
+      <Reveal delay={0.12}>
+        <section>
+          <SectionTitle>{t('settings.privacy')}</SectionTitle>
+          <Card className="flex items-center gap-4">
+            <div className="min-w-0 flex-1">
+              <div className="font-semibold">{t('settings.analytics')}</div>
+              <p className="mt-0.5 text-sm text-muted">
+                {t('settings.analyticsHint')}{' '}
+                <Link to="/privacy" className="text-accent underline-offset-4 hover:underline">
+                  {t('settings.privacyLink')}
+                </Link>
+              </p>
+            </div>
+            <Switch checked={analytics} onChange={setAnalytics} label={t('settings.analytics')} />
+          </Card>
+          {isAdmin(viewer.role) && (
+            <Link to="/admin" className="glass ring-gradient mt-3 flex items-center gap-3 rounded-card p-4 transition-transform hover:-translate-y-0.5">
+              <Shield className="size-5 text-accent" />
+              <span className="flex-1 font-semibold">{t('nav.admin')}</span>
+              <ChevronRight className="size-4 text-subtle" />
+            </Link>
+          )}
         </section>
       </Reveal>
 

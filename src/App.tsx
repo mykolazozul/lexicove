@@ -3,7 +3,9 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router'
 import { motion } from 'motion/react'
 import { AppShell } from './components/AppShell'
 import { LogoMark } from './components/Logo'
+import { pageOf, track } from './lib/analytics'
 import i18n from './lib/i18n'
+import { AdminPage } from './pages/AdminPage'
 import { ComingSoonPage } from './pages/ComingSoonPage'
 import { HomePage } from './pages/HomePage'
 import { LegalPage } from './pages/LegalPage'
@@ -37,6 +39,7 @@ const router = createBrowserRouter([
       { path: 'community', element: <ComingSoonPage section="community" /> },
       { path: 'profile', element: <ProfilePage /> },
       { path: 'settings', element: <SettingsPage /> },
+      { path: 'admin', element: <AdminPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },
@@ -44,8 +47,18 @@ const router = createBrowserRouter([
 
 export function App() {
   const init = useAuth((s) => s.init)
+  const ready = useAuth((s) => s.ready)
   useEffect(() => init(), [init])
   useThemeAndLanguage()
+
+  // Usage statistics start once we know whether someone is signed in.
+  useEffect(() => {
+    if (!ready) return
+    track('app_open')
+    track('page_view', pageOf(router.state.location.pathname))
+    return router.subscribe((state) => track('page_view', pageOf(state.location.pathname)))
+  }, [ready])
+
   return <RouterProvider router={router} />
 }
 

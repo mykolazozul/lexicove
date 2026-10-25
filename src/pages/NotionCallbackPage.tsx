@@ -5,6 +5,7 @@ import { AlertTriangle, Loader2 } from 'lucide-react'
 import { BrandIcon } from '../components/BrandIcon'
 import { notionErrorText } from '../components/words/notionErrors'
 import { Card } from '../components/ui'
+import { track } from '../lib/analytics'
 import { notionCall } from '../lib/notion'
 import { useLibrary } from '../stores/library'
 
@@ -30,6 +31,7 @@ export function NotionCallbackPage() {
     }
     notionCall('finish', { code, state })
       .then(async () => {
+        track('notion_connected')
         await refreshNotion()
         navigate('/words?connected=1', { replace: true })
       })

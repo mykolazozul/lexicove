@@ -2,7 +2,8 @@ import { useEffect } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'motion/react'
-import { Coins, Flame, Settings, Sparkles, type LucideIcon } from 'lucide-react'
+import { Coins, Flame, Settings, Shield, Sparkles, type LucideIcon } from 'lucide-react'
+import { isAdmin } from '../lib/admin'
 import { NAV, type NavKey } from '../app/nav'
 import { cx } from '../lib/cx'
 import { useViewer } from '../lib/viewer'
@@ -52,9 +53,10 @@ export function AppShell() {
   )
 }
 
-function currentKey(pathname: string): NavKey | 'settings' | null {
+function currentKey(pathname: string): NavKey | 'settings' | 'admin' | null {
   if (pathname === '/') return 'home'
   if (pathname.startsWith('/settings')) return 'settings'
+  if (pathname.startsWith('/admin')) return 'admin'
   return NAV.find((item) => item.to !== '/' && pathname.startsWith(item.to))?.key ?? null
 }
 
@@ -75,6 +77,7 @@ function Sidebar() {
       </nav>
 
       <div className="flex flex-col gap-1">
+        {isAdmin(viewer.role) && <SidebarLink to="/admin" icon={Shield} label={t('nav.admin')} />}
         <SidebarLink to="/settings" icon={Settings} label={t('nav.settings')} />
         <Link
           to="/profile"

@@ -11,7 +11,8 @@
     "shop": "Shop",
     "community": "Community",
     "profile": "Profile",
-    "settings": "Settings"
+    "settings": "Settings",
+    "admin": "Admin"
   },
   "common": {
     "guest": "Guest",
@@ -174,6 +175,10 @@
     },
     "themeHint": "More themes are coming to the shop.",
     "language": "Language",
+    "privacy": "Privacy",
+    "analytics": "Usage statistics",
+    "analyticsHint": "Helps us see what works in Lexicove: which sections people open, on which device, in which language and theme. No ads, no third-party trackers.",
+    "privacyLink": "What exactly is collected",
     "account": "Account",
     "signedInAs": "Account: {{name}}",
     "guestMode": "Guest mode: your progress stays on this device only.",
@@ -319,6 +324,103 @@
       "too_many_sources": "Up to 10 tables can be linked."
     }
   },
+  "admin": {
+    "title": "Admin",
+    "noAccess": "No access",
+    "noAccessText": "Only the owner and administrators can open the admin panel.",
+    "tabs": { "overview": "Overview", "users": "Users", "notion": "Notion", "system": "System", "audit": "Audit log" },
+    "refresh": "Refresh",
+    "updated": "updated {{time}}",
+    "kpi": {
+      "users": "Users",
+      "newThisWeek": "+{{n}} this week",
+      "dau": "Active today",
+      "wau": "Active this week",
+      "mau": "Active this month",
+      "words": "Words stored",
+      "rules": "Rules stored",
+      "notion": "Notion connections",
+      "retention": "Come back after a week"
+    },
+    "charts": {
+      "signups": "Sign-ups",
+      "active": "Active users",
+      "last30": "Last 30 days, Kyiv time",
+      "heatmap": "When people use Lexicove",
+      "heatmapHint": "App opens and page views over 30 days: weekday × hour (Kyiv)",
+      "less": "Less",
+      "more": "More",
+      "funnel": "Funnel",
+      "funnelHint": "How many accounts reached each step",
+      "wordsPerUser": "Words per user",
+      "wordsPerUserHint": "How many accounts have this many words",
+      "platforms": "Platforms",
+      "opens_one": "{{count, number}} app open in 30 days",
+      "opens_other": "{{count, number}} app opens in 30 days",
+      "locales": "Interface language",
+      "providers": "Sign-in method",
+      "themes": "Themes",
+      "appleStyle": "Apple style",
+      "pages": "Popular sections",
+      "categories": "Most popular word categories",
+      "actions": "Actions in 30 days"
+    },
+    "funnel": {
+      "signed_up": "Signed up",
+      "has_words": "Added words",
+      "notion_connected": "Connected Notion",
+      "notion_linked": "Linked a table"
+    },
+    "platforms": { "web": "Browser", "pwa": "Installed app", "desktop": "Desktop app" },
+    "providers": { "email": "Email", "google": "Google", "github": "GitHub", "discord": "Discord", "notion": "Notion" },
+    "onOff": { "on": "On", "off": "Off" },
+    "actions": {
+      "word_saved": "Word saved",
+      "words_imported": "CSV import",
+      "notion_connected": "Notion connected",
+      "notion_synced": "Sync",
+      "source_linked": "Table linked"
+    },
+    "roles": { "user": "User", "tester": "Tester", "moderator": "Moderator", "admin": "Admin", "owner": "Owner" },
+    "recentSignups": "Newest users",
+    "footnote": "Test accounts ({{testers}}) are left out of the statistics. Guest app opens in 7 days: {{guests}}.",
+    "users": {
+      "search": "Search by name or email",
+      "person": "User",
+      "role": "Role",
+      "words": "Words",
+      "joined": "Joined",
+      "lastSeen": "Last active",
+      "hidden": "excluded from stats",
+      "none": "Nobody found",
+      "more": "Show more",
+      "confirmRole": "Change the role of “{{name}}” to “{{role}}”?"
+    },
+    "notion": {
+      "summary": "Tables: {{n}}, with errors: {{failing}}",
+      "table": "Table",
+      "owner": "Owner",
+      "rows": "Rows",
+      "synced": "Synced",
+      "none": "Nobody has linked a table yet"
+    },
+    "system": {
+      "limits": "Supabase free-plan limits",
+      "limitsHint": "When a bar turns amber, it's time to optimise or consider a paid plan.",
+      "database": "Database",
+      "mau": "Monthly active users",
+      "tables": "Tables by size",
+      "events_one": "{{count, number}} analytics event in 30 days; events are kept for 90 days",
+      "events_other": "{{count, number}} analytics events in 30 days; events are kept for 90 days",
+      "links": "Service dashboards",
+      "link": { "supabase": "Supabase", "vercel": "Vercel", "github": "GitHub", "notion": "Notion integrations" }
+    },
+    "audit": {
+      "none": "No actions yet",
+      "system": "SQL editor",
+      "actions": { "set_role": "changes the role of", "grant_role (sql)": "changes the role (SQL) of" }
+    }
+  },
   "legal": {
     "updated": "Updated {{date}}",
     "contact": "Questions and data requests:",
@@ -326,7 +428,9 @@
       "title": "Privacy policy",
       "sections": [
         { "title": "What we store", "body": "Your account email and name, settings, the words and rules you add or sync, and your learning progress. If you connect Notion, a copy of the rows from the tables you choose and an encrypted Notion access token." },
-        { "title": "Why", "body": "Only to run the app: show your words, sync them with Notion and keep your progress on every device. We don't sell data or show ads." },
+        { "title": "Usage statistics", "body": "The app records a few events: opening it, viewing a section (just its name, no ids) and actions such as \"word saved\" or \"Notion synced\". Each event carries the platform (browser, installed app or desktop program), interface language, theme and the Apple-style switch.\nWhen you are signed in, the event is linked to your account. For guests no identifier is stored at all. No IP addresses, no tracking cookies and no third-party analytics are used. Events are deleted automatically after 90 days.\nYou can turn statistics off at any time in Settings → Privacy." },
+        { "title": "Why", "body": "Only to run and improve the app: show your words, sync them with Notion, keep your progress on every device and understand which features help. We don't sell data or show ads." },
+        { "title": "Who sees the data", "body": "Only you see your words and rules. The owner and administrators of Lexicove see, in the admin panel, your email, name, sign-in method, sign-up date, last activity time, number of words, the names of linked Notion tables and sync errors, plus aggregated statistics. This is needed to run the service and help with problems. The content of your words is not shown in the admin panel." },
         { "title": "Where", "body": "Data is stored with Supabase (servers in the EU, Frankfurt). The website is served by Vercel. The Notion token is stored encrypted and is only available to a server function, never to the browser." },
         { "title": "Notion", "body": "Lexicove only sees the pages you allowed when connecting. You can disconnect Notion at any time on the Words page, which deletes the token." },
         { "title": "Your rights", "body": "You can export your words as CSV, disconnect Notion and ask for your account to be deleted with all its data." },

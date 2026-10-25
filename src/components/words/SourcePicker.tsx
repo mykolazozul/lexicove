@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Check, Loader2 } from 'lucide-react'
 import { FIELDS, READABLE_TYPES, type Kind } from '../../../supabase/functions/notion/mapping'
+import { track } from '../../lib/analytics'
 import { cx } from '../../lib/cx'
 import { notionCall, NotionError, type NotionSourceOption, type SyncSummary } from '../../lib/notion'
 import { useLibrary } from '../../stores/library'
@@ -62,6 +63,7 @@ export function SourcePicker({
     setError(null)
     try {
       const summary = await notionCall<SyncSummary>('add_source', { data_source_id: selected.id, kind, mapping })
+      track('source_linked')
       await load()
       onLinked(summary)
       onClose()
