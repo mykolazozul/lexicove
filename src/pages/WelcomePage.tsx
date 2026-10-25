@@ -143,7 +143,7 @@ function AuthCard() {
   }
 
   return (
-    <Card glow className="mx-auto w-full max-w-md p-6 sm:p-8">
+    <Card glow padding="p-6 sm:p-8" className="mx-auto w-full max-w-md">
       <h2 className="font-display text-2xl font-semibold">{t('welcome.cardTitle')}</h2>
       <p className="mt-1 text-muted">{t('welcome.cardText')}</p>
 

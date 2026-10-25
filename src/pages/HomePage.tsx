@@ -195,7 +195,7 @@ function StatTile({
   value: string
 }) {
   return (
-    <Card className="p-4 sm:p-5">
+    <Card padding="p-4 sm:p-5">
       <IconChip tone={tone}>
         <Icon className="size-5" strokeWidth={2.2} />
       </IconChip>

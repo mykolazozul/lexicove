@@ -5,11 +5,19 @@ import { cx } from '../lib/cx'
 /**
  * Glass card with a soft light that follows the cursor.
  * `glow` adds the accent-coloured hairline border for the most important cards on a page.
+ * Padding is its own prop: a padding class passed in `className` would compete with the default
+ * one, and Tailwind decides the winner by stylesheet order, not by the order of the classes.
  */
-export function Card({ className, glow = false, onPointerMove, ...rest }: ComponentProps<'div'> & { glow?: boolean }) {
+export function Card({
+  className,
+  glow = false,
+  padding = 'p-5 sm:p-6',
+  onPointerMove,
+  ...rest
+}: ComponentProps<'div'> & { glow?: boolean; padding?: string }) {
   return (
     <div
-      className={cx('glass spotlight rounded-card p-5 sm:p-6', glow && 'ring-gradient', className)}
+      className={cx('glass spotlight rounded-card', padding, glow && 'ring-gradient', className)}
       onPointerMove={(event) => {
         const box = event.currentTarget.getBoundingClientRect()
         event.currentTarget.style.setProperty('--mx', `${event.clientX - box.left}px`)

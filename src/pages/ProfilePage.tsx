@@ -18,13 +18,14 @@ export function ProfilePage() {
   return (
     <div className="flex flex-col gap-6">
       <Reveal>
-        <Card className="overflow-hidden p-0 sm:p-0">
+        <Card padding="p-0" className="overflow-hidden">
           <div className="bg-gradient-accent relative h-28 sm:h-36">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_120%,rgb(255_255_255/0.35),transparent_55%)]" />
           </div>
           <div className="px-5 pb-6 sm:px-8">
-            <div className="-mt-12 flex flex-col gap-4 sm:-mt-14 sm:flex-row sm:items-end">
-              <div className="w-fit rounded-full bg-bg p-1.5">
+            {/* relative z-10: the banner above is positioned and would otherwise paint over the avatar */}
+            <div className="relative z-10 -mt-12 flex flex-col gap-4 sm:-mt-14 sm:flex-row sm:items-end">
+              <div className="w-fit rounded-full bg-elevated p-1.5 shadow-[var(--shadow-card)]">
                 <Avatar name={viewer.name} url={viewer.avatarUrl} size={96} />
               </div>
               <div className="flex-1 sm:pb-2">
@@ -81,7 +82,7 @@ export function ProfilePage() {
       <Reveal delay={0.1}>
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {stats.map(({ icon: Icon, tone, label, value }) => (
-            <Card key={label} className="p-4 sm:p-5">
+            <Card key={label} padding="p-4 sm:p-5">
               <Icon className={`size-5 ${tone}`} />
               <div className="mt-3 font-display text-xl font-semibold">{value}</div>
               <div className="mt-0.5 text-sm text-muted">{label}</div>
