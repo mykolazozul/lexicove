@@ -69,7 +69,14 @@ function Splash() {
 
 function useThemeAndLanguage() {
   const theme = useSettings((s) => s.theme)
+  const appleStyle = useSettings((s) => s.appleStyle)
   const locale = useSettings((s) => s.locale)
+
+  useEffect(() => {
+    const root = document.documentElement
+    if (appleStyle) root.dataset.style = 'apple'
+    else delete root.dataset.style
+  }, [appleStyle])
 
   useEffect(() => {
     const root = document.documentElement

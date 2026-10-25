@@ -152,6 +152,8 @@
   },
   "settings": {
     "appearance": "Appearance",
+    "appleStyle": "Apple style",
+    "appleStyleHint": "The SF system font, continuous corners, capsule buttons and frosted glass. Turn it off to bring back the Lexicove look.",
     "themeGroups": {
       "dark": "Dark",
       "light": "Light and automatic"

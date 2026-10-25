@@ -182,7 +182,7 @@ export function Segmented<T extends string>({
 }) {
   const id = useId()
   return (
-    <div role="radiogroup" aria-label={label} className="inline-flex rounded-control border border-line bg-surface p-1">
+    <div role="radiogroup" aria-label={label} className="segmented inline-flex rounded-control border border-line bg-surface p-1">
       {options.map((option) => {
         const active = option.value === value
         return (
@@ -200,7 +200,7 @@ export function Segmented<T extends string>({
             {active && (
               <motion.span
                 layoutId={id}
-                className="bg-gradient-accent absolute inset-0 rounded-[inherit]"
+                className="segmented-pill bg-gradient-accent absolute inset-0 rounded-[inherit]"
                 transition={{ type: 'spring', stiffness: 500, damping: 38 }}
               />
             )}
@@ -209,6 +209,37 @@ export function Segmented<T extends string>({
         )
       })}
     </div>
+  )
+}
+
+/** An iOS-style on/off switch. */
+export function Switch({
+  checked,
+  onChange,
+  label,
+}: {
+  checked: boolean
+  onChange: (checked: boolean) => void
+  label: string
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-label={label}
+      onClick={() => onChange(!checked)}
+      className={cx(
+        'relative inline-flex h-[31px] w-[51px] shrink-0 items-center rounded-full p-[2px] transition-colors duration-200',
+        checked ? 'bg-success' : 'bg-line',
+      )}
+    >
+      <motion.span
+        className="block size-[27px] rounded-full bg-white shadow-[0_3px_8px_rgb(0_0_0/0.15),0_1px_1px_rgb(0_0_0/0.16)]"
+        animate={{ x: checked ? 20 : 0 }}
+        transition={{ type: 'spring', stiffness: 600, damping: 35 }}
+      />
+    </button>
   )
 }
 

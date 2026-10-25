@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { Check, ExternalLink, LogIn, LogOut } from 'lucide-react'
-import { siGithub } from 'simple-icons'
-import { Card, Reveal, SectionTitle, Segmented } from '../components/ui'
+import { siApple, siGithub } from 'simple-icons'
+import { Card, Reveal, SectionTitle, Segmented, Switch } from '../components/ui'
 import { cx } from '../lib/cx'
 import { LOCALES, LOCALE_NAMES } from '../lib/locale'
 import { APP_VERSION, REPO_URL } from '../lib/platform'
@@ -20,13 +20,25 @@ export function SettingsPage() {
   const navigate = useNavigate()
   const viewer = useViewer()
   const signOut = useAuth((s) => s.signOut)
-  const { theme, setTheme, locale, setLocale } = useSettings()
+  const { theme, setTheme, appleStyle, setAppleStyle, locale, setLocale } = useSettings()
 
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-8">
       <Reveal>
         <section>
           <SectionTitle>{t('settings.appearance')}</SectionTitle>
+          <Card className="mb-6 flex items-center gap-4">
+            <span className="grid size-10 shrink-0 place-items-center rounded-control bg-fg text-bg">
+              <svg viewBox="0 0 24 24" className="size-5" fill="currentColor" aria-hidden="true">
+                <path d={siApple.path} />
+              </svg>
+            </span>
+            <div className="min-w-0 flex-1">
+              <div className="font-semibold">{t('settings.appleStyle')}</div>
+              <p className="mt-0.5 text-sm text-muted">{t('settings.appleStyleHint')}</p>
+            </div>
+            <Switch checked={appleStyle} onChange={setAppleStyle} label={t('settings.appleStyle')} />
+          </Card>
           {THEME_GROUPS.map((group) => (
             <div key={group.key} className="mb-5">
               <h3 className="mb-2.5 text-sm font-semibold text-muted">{t(`settings.themeGroups.${group.key}`)}</h3>

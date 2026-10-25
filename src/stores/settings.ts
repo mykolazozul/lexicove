@@ -10,9 +10,12 @@ export type Theme = Exclude<ThemeChoice, 'auto'>
 
 type SettingsState = {
   theme: ThemeChoice
+  /** Apple-style interface layer (system font, continuous corners, capsule buttons). On by default. */
+  appleStyle: boolean
   locale: Locale
   dailyGoal: number
   setTheme: (theme: ThemeChoice) => void
+  setAppleStyle: (appleStyle: boolean) => void
   setLocale: (locale: Locale) => void
 }
 
@@ -21,14 +24,16 @@ export const useSettings = create<SettingsState>()(
   persist(
     (set) => ({
       theme: 'midnight',
+      appleStyle: true,
       locale: detectLocale(),
       dailyGoal: 20,
       setTheme: (theme) => set({ theme }),
+      setAppleStyle: (appleStyle) => set({ appleStyle }),
       setLocale: (locale) => set({ locale }),
     }),
     {
       name: 'lexicove-settings',
-      partialize: ({ theme, locale, dailyGoal }) => ({ theme, locale, dailyGoal }),
+      partialize: ({ theme, appleStyle, locale, dailyGoal }) => ({ theme, appleStyle, locale, dailyGoal }),
     },
   ),
 )

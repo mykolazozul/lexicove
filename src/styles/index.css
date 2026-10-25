@@ -3,8 +3,8 @@
 /* Every colour comes from the active theme, so utilities like bg-surface or text-muted
    follow whichever data-theme is set on <html> (or on a nested preview element). */
 @theme inline {
-  --font-sans: "Onest Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Unbounded Variable", "Onest Variable", ui-sans-serif, sans-serif;
+  --font-sans: var(--app-font-sans);
+  --font-display: var(--app-font-display);
 
   --color-bg: var(--bg);
   --color-elevated: var(--elevated);
@@ -25,6 +25,13 @@
 
   --radius-card: var(--radius-lg);
   --radius-control: var(--radius-md);
+}
+
+/* ---------- Fonts ---------- */
+
+:root {
+  --app-font-sans: "Onest Variable", ui-sans-serif, system-ui, sans-serif;
+  --app-font-display: "Unbounded Variable", "Onest Variable", ui-sans-serif, sans-serif;
 }
 
 /* ---------- Themes ---------- */
@@ -347,6 +354,90 @@
   --sheen: 0;
 }
 
+/* ---------- Apple style ----------
+   An optional layer on top of any theme (Settings → Appearance), set as data-style="apple" on <html>.
+   It follows Apple's interface conventions: the system SF font, continuous corners, capsule
+   buttons, solid tint colour, frosted materials and hairline separators. No grain or glow.
+   It stays unlayered so it wins over component and utility styles. */
+
+[data-style="apple"],
+[data-style="apple"] [data-theme] {
+  --app-font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable Text", "Segoe UI",
+    "Onest Variable", system-ui, sans-serif;
+  --app-font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI Variable Display",
+    "Segoe UI", "Onest Variable", system-ui, sans-serif;
+  --radius-lg: 22px;
+  --radius-md: 12px;
+  --glass-blur: 30px;
+  --ring: 0%;
+  --spot: 0%;
+  --grain: 0;
+  --sheen: 0;
+}
+
+/* Continuous ("squircle") corners where the browser supports them. They read smaller than
+   circular ones at the same radius, so the radii grow a little to match Apple's look. */
+@supports (corner-shape: squircle) {
+  [data-style="apple"],
+  [data-style="apple"] [data-theme] {
+    --radius-lg: 30px;
+    --radius-md: 16px;
+  }
+
+  [data-style="apple"] :is(.glass, .input, .rounded-card, .rounded-control) {
+    corner-shape: squircle;
+  }
+}
+
+[data-style="apple"] .font-display {
+  letter-spacing: -0.022em;
+}
+
+[data-style="apple"] .glass {
+  border-width: 0.5px;
+  box-shadow:
+    0 1px 1px rgb(0 0 0 / 0.04),
+    0 12px 32px -14px rgb(0 0 0 / 0.28);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+}
+
+[data-style="apple"] .btn {
+  border-radius: 9999px;
+  letter-spacing: -0.01em;
+}
+
+[data-style="apple"] .btn-primary {
+  background: var(--accent);
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.12),
+    0 8px 20px -8px color-mix(in oklab, var(--accent) 55%, transparent);
+}
+
+[data-style="apple"] .btn-primary::after {
+  display: none;
+}
+
+[data-style="apple"] :is(.btn-primary, .btn-secondary):not(:disabled):active {
+  transform: scale(0.97);
+}
+
+[data-style="apple"] .input {
+  border-width: 0.5px;
+}
+
+/* iOS-style segmented control: a raised neutral pill on a grey track */
+[data-style="apple"] .segmented-pill {
+  background: var(--elevated);
+  box-shadow:
+    0 1px 3px rgb(0 0 0 / 0.14),
+    0 0 0 0.5px rgb(0 0 0 / 0.05);
+}
+
+[data-style="apple"] .segmented [aria-checked="true"] {
+  color: var(--fg);
+}
+
 /* ---------- Base ---------- */
 
 @layer base {
@@ -360,7 +451,7 @@
   /* No background on body: it would paint over the fixed aurora and grain layers (z-index -1). */
   body {
     min-height: 100dvh;
-    font-family: var(--font-sans);
+    font-family: var(--app-font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
