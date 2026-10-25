@@ -11,8 +11,8 @@ export function ComingSoonPage({ section }: { section: UpcomingKey }) {
   return (
     <div className="mx-auto max-w-3xl">
       <Reveal>
-        <Card className="relative overflow-hidden p-6 sm:p-10">
-          <div className="bg-gradient-accent pointer-events-none absolute -top-32 -right-20 size-80 rounded-full opacity-20 blur-3xl" />
+        <Card glow className="overflow-hidden p-6 sm:p-10">
+          <div className="bg-gradient-accent pointer-events-none absolute -top-32 -right-20 -z-10 size-80 rounded-full opacity-20 blur-3xl" />
           <div className="relative">
             <div className="flex flex-wrap items-center gap-2">
               <Badge tone="accent">

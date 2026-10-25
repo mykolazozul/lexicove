@@ -2,7 +2,9 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { detectLocale, type Locale } from '../lib/locale'
 
-export const THEMES = ['auto', 'midnight', 'daylight', 'arcade', 'mono'] as const
+export const DARK_THEMES = ['midnight', 'ocean', 'forest', 'ember', 'dusk', 'graphite'] as const
+export const LIGHT_THEMES = ['daylight', 'arcade', 'mono'] as const
+export const THEMES = [...DARK_THEMES, ...LIGHT_THEMES, 'auto'] as const
 export type ThemeChoice = (typeof THEMES)[number]
 export type Theme = Exclude<ThemeChoice, 'auto'>
 

@@ -60,6 +60,158 @@
   --aurora-3: rgb(236 72 153 / 0.1);
 }
 
+/* Bright accents in the next three themes carry dark button text, which reads better than white. */
+
+[data-theme="ocean"] {
+  color-scheme: dark;
+  --bg: #04121a;
+  --elevated: #0a1e29;
+  --surface: rgb(186 230 253 / 0.045);
+  --surface-hover: rgb(186 230 253 / 0.08);
+  --line: rgb(186 230 253 / 0.1);
+  --fg: #e6f6ff;
+  --muted: #8fb3c4;
+  --subtle: #557a8c;
+  --accent: #38bdf8;
+  --accent-2: #2dd4bf;
+  --on-accent: #04212b;
+  --coin: #fbbf24;
+  --fire: #fb923c;
+  --xp: #7dd3fc;
+  --success: #34d399;
+  --danger: #fb7185;
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --glass-blur: 18px;
+  --shadow-card: inset 0 1px 0 0 rgb(186 230 253 / 0.05), 0 24px 48px -28px rgb(0 0 0 / 0.7);
+  --shadow-accent: 0 10px 30px -10px rgb(56 189 248 / 0.55);
+  --press-y: 1px;
+  --press-shadow: var(--shadow-accent);
+  --aurora-1: rgb(56 189 248 / 0.18);
+  --aurora-2: rgb(45 212 191 / 0.14);
+  --aurora-3: rgb(99 102 241 / 0.1);
+}
+
+[data-theme="forest"] {
+  color-scheme: dark;
+  --bg: #07110b;
+  --elevated: #0d1a12;
+  --surface: rgb(220 252 231 / 0.04);
+  --surface-hover: rgb(220 252 231 / 0.075);
+  --line: rgb(220 252 231 / 0.09);
+  --fg: #eafbef;
+  --muted: #93b39f;
+  --subtle: #5a7a66;
+  --accent: #34d399;
+  --accent-2: #a3e635;
+  --on-accent: #052e16;
+  --coin: #facc15;
+  --fire: #fb923c;
+  --xp: #6ee7b7;
+  --success: #4ade80;
+  --danger: #f87171;
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --glass-blur: 18px;
+  --shadow-card: inset 0 1px 0 0 rgb(220 252 231 / 0.04), 0 24px 48px -28px rgb(0 0 0 / 0.7);
+  --shadow-accent: 0 10px 30px -10px rgb(52 211 153 / 0.5);
+  --press-y: 1px;
+  --press-shadow: var(--shadow-accent);
+  --aurora-1: rgb(52 211 153 / 0.16);
+  --aurora-2: rgb(163 230 53 / 0.1);
+  --aurora-3: rgb(20 184 166 / 0.1);
+}
+
+[data-theme="dusk"] {
+  color-scheme: dark;
+  --bg: #0f0a1a;
+  --elevated: #181026;
+  --surface: rgb(244 232 255 / 0.04);
+  --surface-hover: rgb(244 232 255 / 0.075);
+  --line: rgb(244 232 255 / 0.09);
+  --fg: #f6eeff;
+  --muted: #a99bbf;
+  --subtle: #6c5f82;
+  --accent: #f472b6;
+  --accent-2: #fbbf24;
+  --on-accent: #2a0a1f;
+  --coin: #fcd34d;
+  --fire: #fb923c;
+  --xp: #c4b5fd;
+  --success: #34d399;
+  --danger: #fb7185;
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --glass-blur: 18px;
+  --shadow-card: inset 0 1px 0 0 rgb(244 232 255 / 0.04), 0 24px 48px -28px rgb(0 0 0 / 0.7);
+  --shadow-accent: 0 10px 30px -10px rgb(244 114 182 / 0.5);
+  --press-y: 1px;
+  --press-shadow: var(--shadow-accent);
+  --aurora-1: rgb(244 114 182 / 0.16);
+  --aurora-2: rgb(251 191 36 / 0.1);
+  --aurora-3: rgb(139 92 246 / 0.16);
+}
+
+[data-theme="ember"] {
+  color-scheme: dark;
+  --bg: #120a07;
+  --elevated: #1c110c;
+  --surface: rgb(255 237 213 / 0.04);
+  --surface-hover: rgb(255 237 213 / 0.075);
+  --line: rgb(255 237 213 / 0.09);
+  --fg: #fff3ea;
+  --muted: #c0a090;
+  --subtle: #7d6355;
+  --accent: #ea580c;
+  --accent-2: #e11d48;
+  --on-accent: #ffffff;
+  --coin: #fbbf24;
+  --fire: #fb923c;
+  --xp: #fda4af;
+  --success: #4ade80;
+  --danger: #f87171;
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --glass-blur: 18px;
+  --shadow-card: inset 0 1px 0 0 rgb(255 237 213 / 0.04), 0 24px 48px -28px rgb(0 0 0 / 0.75);
+  --shadow-accent: 0 10px 30px -10px rgb(234 88 12 / 0.55);
+  --press-y: 1px;
+  --press-shadow: var(--shadow-accent);
+  --aurora-1: rgb(234 88 12 / 0.18);
+  --aurora-2: rgb(225 29 72 / 0.12);
+  --aurora-3: rgb(251 191 36 / 0.08);
+}
+
+[data-theme="graphite"] {
+  color-scheme: dark;
+  --bg: #0c0c0e;
+  --elevated: #141417;
+  --surface: #141417;
+  --surface-hover: #1b1b1f;
+  --line: #26262b;
+  --fg: #ededef;
+  --muted: #9a9aa3;
+  --subtle: #5f5f68;
+  --accent: #e4e4e7;
+  --accent-2: #a1a1aa;
+  --on-accent: #0c0c0e;
+  --coin: #f59e0b;
+  --fire: #f97316;
+  --xp: #e4e4e7;
+  --success: #22c55e;
+  --danger: #ef4444;
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --glass-blur: 0px;
+  --shadow-card: inset 0 1px 0 0 rgb(255 255 255 / 0.03);
+  --shadow-accent: none;
+  --press-y: 1px;
+  --press-shadow: none;
+  --aurora-1: transparent;
+  --aurora-2: transparent;
+  --aurora-3: transparent;
+}
+
 [data-theme="daylight"] {
   color-scheme: light;
   --bg: #f5f4ef;
@@ -150,6 +302,51 @@
   --aurora-3: transparent;
 }
 
+/* ---------- Premium finish ----------
+   How strongly each theme shows the gradient hairline on cards (--ring), the light that follows
+   the cursor (--spot), the film grain over the background (--grain) and the top sheen on glass
+   (--sheen). Dark themes are listed explicitly so nested previews don't inherit a light value. */
+
+:root,
+[data-theme="midnight"],
+[data-theme="ocean"],
+[data-theme="forest"],
+[data-theme="ember"],
+[data-theme="dusk"] {
+  --ring: 48%;
+  --spot: 12%;
+  --grain: 0.06;
+  --sheen: 0.03;
+}
+
+[data-theme="graphite"] {
+  --ring: 28%;
+  --spot: 7%;
+  --grain: 0;
+  --sheen: 0.02;
+}
+
+[data-theme="daylight"] {
+  --ring: 30%;
+  --spot: 7%;
+  --grain: 0.03;
+  --sheen: 0;
+}
+
+[data-theme="arcade"] {
+  --ring: 0%;
+  --spot: 7%;
+  --grain: 0.025;
+  --sheen: 0;
+}
+
+[data-theme="mono"] {
+  --ring: 0%;
+  --spot: 4%;
+  --grain: 0;
+  --sheen: 0;
+}
+
 /* ---------- Base ---------- */
 
 @layer base {
@@ -160,10 +357,10 @@
     text-size-adjust: 100%;
   }
 
+  /* No background on body: it would paint over the fixed aurora and grain layers (z-index -1). */
   body {
     min-height: 100dvh;
     font-family: var(--font-sans);
-    background: var(--bg);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -187,7 +384,8 @@
 
 @layer components {
   .glass {
-    background: var(--surface);
+    background-color: var(--surface);
+    background-image: linear-gradient(180deg, rgb(255 255 255 / var(--sheen)), transparent 45%);
     border: 1px solid var(--line);
     box-shadow: var(--shadow-card);
     backdrop-filter: blur(var(--glass-blur)) saturate(140%);
@@ -221,9 +419,29 @@
   }
 
   .btn-primary {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
     color: var(--on-accent);
     background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    box-shadow: var(--shadow-accent);
+    box-shadow:
+      var(--shadow-accent),
+      inset 0 1px 0 rgb(255 255 255 / 0.22);
+  }
+
+  /* A band of light that sweeps across on hover */
+  .btn-primary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(110deg, transparent 30%, rgb(255 255 255 / 0.32) 50%, transparent 70%);
+    transform: translateX(-130%);
+    transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .btn-primary:not(:disabled):hover::after {
+    transform: translateX(130%);
   }
 
   .btn-primary:not(:disabled):hover {
@@ -289,6 +507,73 @@
 
   .bg-gradient-accent {
     background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  }
+
+  .spotlight,
+  .ring-gradient {
+    position: relative;
+    isolation: isolate;
+  }
+
+  /* Hairline border in the accent colours, brightest at the top-left and bottom-right corners */
+  .ring-gradient::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    z-index: -1;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(
+      140deg,
+      color-mix(in oklab, var(--accent) var(--ring), transparent),
+      transparent 38%,
+      transparent 62%,
+      color-mix(in oklab, var(--accent-2) var(--ring), transparent)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Soft light under the cursor; --mx / --my are set by the Card component */
+  .spotlight::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: radial-gradient(
+      420px circle at var(--mx, 50%) var(--my, 0%),
+      color-mix(in oklab, var(--accent) var(--spot), transparent),
+      transparent 65%
+    );
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
+
+  .spotlight:hover::after {
+    opacity: 1;
+  }
+
+  @media (hover: none) {
+    .spotlight::after {
+      display: none;
+    }
+  }
+
+  /* Fine film grain over the backdrop, drawn with an SVG noise filter */
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: var(--grain);
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    background-size: 180px;
   }
 
   /* Slow-moving colour glow behind the whole app */

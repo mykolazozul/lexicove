@@ -2,7 +2,7 @@ import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { ArrowRight, Coins, Flame, Lock, Sparkles, Target, Trophy } from 'lucide-react'
 import { BrandIcon } from '../components/BrandIcon'
-import { Badge, Card, ProgressRing, Reveal } from '../components/ui'
+import { Badge, Card, IconChip, ProgressRing, Reveal, type ChipTone } from '../components/ui'
 import { cx } from '../lib/cx'
 import { useViewer } from '../lib/viewer'
 import { useSettings } from '../stores/settings'
@@ -34,16 +34,20 @@ export function HomePage() {
   return (
     <div className="flex flex-col gap-6">
       <Reveal>
-        <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
+        <p className="text-xs font-semibold tracking-[0.18em] text-subtle uppercase">
+          {new Date().toLocaleDateString(i18n.language, { weekday: 'long', day: 'numeric', month: 'long' })}
+        </p>
+        <h2 className="mt-2 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
           {t(`home.greeting.${greetingKey(new Date().getHours())}`, { name })}
         </h2>
-        <p className="mt-1 text-muted">{t('home.subtitle')}</p>
+        <p className="mt-2 text-muted">{t('home.subtitle')}</p>
       </Reveal>
 
       <div className="grid gap-4 lg:grid-cols-3">
         <Reveal delay={0.05} className="lg:col-span-2">
-          <Card className="relative h-full overflow-hidden">
-            <div className="bg-gradient-accent pointer-events-none absolute -top-24 -right-24 size-64 rounded-full opacity-20 blur-3xl" />
+          <Card glow className="h-full overflow-hidden">
+            <div className="bg-gradient-accent pointer-events-none absolute -top-24 -right-24 -z-10 size-72 rounded-full opacity-25 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-32 -left-16 -z-10 size-64 rounded-full bg-accent-2/15 blur-3xl" />
             <div className="relative flex flex-col items-center gap-6 sm:flex-row sm:items-center">
               <ProgressRing value={learnedToday} max={dailyGoal}>
                 <div>
@@ -52,8 +56,10 @@ export function HomePage() {
                 </div>
               </ProgressRing>
               <div className="flex-1 text-center sm:text-left">
-                <div className="flex items-center justify-center gap-2 sm:justify-start">
-                  <Target className="size-5 text-accent" />
+                <div className="flex items-center justify-center gap-3 sm:justify-start">
+                  <IconChip tone="accent" className="size-9">
+                    <Target className="size-[1.1rem]" />
+                  </IconChip>
                   <h3 className="font-display text-lg font-semibold">{t('home.goal.title')}</h3>
                 </div>
                 <p className="mt-2 text-muted">{t('home.goal.text', { goal: dailyGoal })}</p>
@@ -78,10 +84,10 @@ export function HomePage() {
 
       <Reveal delay={0.15}>
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          <StatTile icon={Coins} tone="text-coin" label={t('home.stats.coins')} value={viewer.coins.toLocaleString()} />
-          <StatTile icon={Sparkles} tone="text-xp" label={t('home.stats.level')} value={String(viewer.level)} />
-          <StatTile icon={Trophy} tone="text-success" label={t('home.stats.learned')} value="0" />
-          <StatTile icon={Target} tone="text-accent-2" label={t('home.stats.accuracy')} value="—" />
+          <StatTile icon={Coins} tone="coin" label={t('home.stats.coins')} value={viewer.coins.toLocaleString()} />
+          <StatTile icon={Sparkles} tone="xp" label={t('home.stats.level')} value={String(viewer.level)} />
+          <StatTile icon={Trophy} tone="success" label={t('home.stats.learned')} value="0" />
+          <StatTile icon={Target} tone="accent-2" label={t('home.stats.accuracy')} value="—" />
         </div>
       </Reveal>
 
@@ -145,8 +151,10 @@ function StreakCard({ streak, locale }: { streak: number; locale: string }) {
 
   return (
     <Card className="flex h-full flex-col">
-      <div className="flex items-center gap-2">
-        <Flame className="size-5 text-fire" />
+      <div className="flex items-center gap-3">
+        <IconChip tone="fire" className="size-9">
+          <Flame className="size-[1.1rem]" />
+        </IconChip>
         <h3 className="font-display text-lg font-semibold">{t('home.streak.title')}</h3>
       </div>
       <div className="mt-4 flex items-end gap-2">
@@ -182,14 +190,16 @@ function StatTile({
   value,
 }: {
   icon: typeof Coins
-  tone: string
+  tone: ChipTone
   label: string
   value: string
 }) {
   return (
     <Card className="p-4 sm:p-5">
-      <Icon className={cx('size-5', tone)} strokeWidth={2.2} />
-      <div className="mt-3 font-display text-2xl font-semibold tabular-nums">{value}</div>
+      <IconChip tone={tone}>
+        <Icon className="size-5" strokeWidth={2.2} />
+      </IconChip>
+      <div className="mt-4 font-display text-2xl font-semibold tabular-nums">{value}</div>
       <div className="mt-0.5 text-sm text-muted">{label}</div>
     </Card>
   )

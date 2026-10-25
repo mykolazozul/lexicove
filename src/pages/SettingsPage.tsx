@@ -8,7 +8,12 @@ import { LOCALES, LOCALE_NAMES } from '../lib/locale'
 import { APP_VERSION, REPO_URL } from '../lib/platform'
 import { useViewer } from '../lib/viewer'
 import { useAuth } from '../stores/auth'
-import { THEMES, useSettings, type Theme, type ThemeChoice } from '../stores/settings'
+import { DARK_THEMES, LIGHT_THEMES, useSettings, type Theme, type ThemeChoice } from '../stores/settings'
+
+const THEME_GROUPS: Array<{ key: 'dark' | 'light'; themes: readonly ThemeChoice[] }> = [
+  { key: 'dark', themes: DARK_THEMES },
+  { key: 'light', themes: [...LIGHT_THEMES, 'auto'] },
+]
 
 export function SettingsPage() {
   const { t } = useTranslation()
@@ -22,12 +27,22 @@ export function SettingsPage() {
       <Reveal>
         <section>
           <SectionTitle>{t('settings.appearance')}</SectionTitle>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {THEMES.map((choice) => (
-              <ThemeCard key={choice} choice={choice} active={theme === choice} onSelect={() => setTheme(choice)} />
-            ))}
-          </div>
-          <p className="mt-3 text-sm text-muted">{t('settings.themeHint')}</p>
+          {THEME_GROUPS.map((group) => (
+            <div key={group.key} className="mb-5">
+              <h3 className="mb-2.5 text-sm font-semibold text-muted">{t(`settings.themeGroups.${group.key}`)}</h3>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {group.themes.map((choice) => (
+                  <ThemeCard
+                    key={choice}
+                    choice={choice}
+                    active={theme === choice}
+                    onSelect={() => setTheme(choice)}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+          <p className="text-sm text-muted">{t('settings.themeHint')}</p>
         </section>
       </Reveal>
 

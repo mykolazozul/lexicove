@@ -45,6 +45,19 @@ Supabase's built-in email sender is only for testing and allows a handful of ema
 For real users connect a free SMTP provider in **Authentication → Emails → SMTP Settings**,
 for example [Resend](https://resend.com) (100 emails a day on the free plan).
 
+### Owner and test accounts
+
+Register the accounts in the app as usual, then give them roles in the SQL editor:
+
+```sql
+select private.grant_role('you@example.com', 'owner');
+select private.grant_role('you+test@example.com', 'tester');
+```
+
+A tester is hidden from leagues, leaderboards and public stats, and starts with 1,000,000 coins
+and enough XP to reach about level 98. Only the database owner can run `grant_role`; it isn't
+exposed through the API.
+
 ## 3. Website on Vercel
 
 1. Import the GitHub repository in Vercel. The settings come from [`vercel.json`](../vercel.json).

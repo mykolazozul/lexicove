@@ -2,8 +2,43 @@ import { useId, type ComponentProps, type ReactNode } from 'react'
 import { motion } from 'motion/react'
 import { cx } from '../lib/cx'
 
-export function Card({ className, ...rest }: ComponentProps<'div'>) {
-  return <div className={cx('glass rounded-card p-5 sm:p-6', className)} {...rest} />
+/**
+ * Glass card with a soft light that follows the cursor.
+ * `glow` adds the accent-coloured hairline border for the most important cards on a page.
+ */
+export function Card({ className, glow = false, onPointerMove, ...rest }: ComponentProps<'div'> & { glow?: boolean }) {
+  return (
+    <div
+      className={cx('glass spotlight rounded-card p-5 sm:p-6', glow && 'ring-gradient', className)}
+      onPointerMove={(event) => {
+        const box = event.currentTarget.getBoundingClientRect()
+        event.currentTarget.style.setProperty('--mx', `${event.clientX - box.left}px`)
+        event.currentTarget.style.setProperty('--my', `${event.clientY - box.top}px`)
+        onPointerMove?.(event)
+      }}
+      {...rest}
+    />
+  )
+}
+
+const CHIP_TONES = {
+  accent: 'bg-accent/12 text-accent ring-accent/20',
+  'accent-2': 'bg-accent-2/12 text-accent-2 ring-accent-2/20',
+  coin: 'bg-coin/12 text-coin ring-coin/20',
+  fire: 'bg-fire/12 text-fire ring-fire/20',
+  xp: 'bg-xp/12 text-xp ring-xp/20',
+  success: 'bg-success/12 text-success ring-success/20',
+} as const
+
+export type ChipTone = keyof typeof CHIP_TONES
+
+/** A tinted square that holds an icon. */
+export function IconChip({ tone, children, className }: { tone: ChipTone; children: ReactNode; className?: string }) {
+  return (
+    <span className={cx('grid size-10 shrink-0 place-items-center rounded-control ring-1', CHIP_TONES[tone], className)}>
+      {children}
+    </span>
+  )
 }
 
 export function Badge({
@@ -54,7 +89,13 @@ export function ProgressRing({
 
   return (
     <div className="relative inline-grid shrink-0 place-items-center" style={{ width: size, height: size }}>
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="-rotate-90">
+      <svg
+        width={size}
+        height={size}
+        viewBox={`0 0 ${size} ${size}`}
+        className="-rotate-90"
+        style={{ filter: 'drop-shadow(0 0 14px color-mix(in oklab, var(--accent) 35%, transparent))' }}
+      >
         <defs>
           <linearGradient id={id} x1="0" y1="0" x2="1" y2="1">
             <stop offset="0" style={{ stopColor: 'var(--accent)' }} />

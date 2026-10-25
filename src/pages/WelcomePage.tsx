@@ -27,6 +27,7 @@ export function WelcomePage() {
   return (
     <div className="relative min-h-dvh overflow-hidden">
       <div className="aurora" aria-hidden="true" />
+      <div className="grain" aria-hidden="true" />
 
       <header className="pt-safe mx-auto flex max-w-6xl items-center justify-between px-4 py-5 sm:px-6 lg:px-10">
         <Logo />
@@ -39,7 +40,11 @@ export function WelcomePage() {
       </header>
 
       <main className="mx-auto grid max-w-6xl items-center gap-10 px-4 pt-4 pb-16 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:px-10 lg:pt-12">
-        <section>
+        <section className="relative isolate">
+          <div
+            className="bg-gradient-accent pointer-events-none absolute -top-16 -left-20 -z-10 size-[26rem] rounded-full opacity-20 blur-[100px]"
+            aria-hidden="true"
+          />
           <motion.h1
             className="font-display text-4xl leading-[1.08] font-semibold tracking-tight sm:text-5xl lg:text-6xl"
             initial={{ opacity: 0, y: 16 }}
@@ -65,7 +70,7 @@ export function WelcomePage() {
             {samples.map((sample, index) => (
               <motion.div
                 key={sample.word}
-                className="glass rounded-card px-5 py-4"
+                className="glass ring-gradient rounded-card px-5 py-4"
                 style={{ marginTop: index === 1 ? 24 : 0 }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: [0, -8, 0] }}
@@ -138,7 +143,7 @@ function AuthCard() {
   }
 
   return (
-    <Card className="mx-auto w-full max-w-md p-6 sm:p-8">
+    <Card glow className="mx-auto w-full max-w-md p-6 sm:p-8">
       <h2 className="font-display text-2xl font-semibold">{t('welcome.cardTitle')}</h2>
       <p className="mt-1 text-muted">{t('welcome.cardText')}</p>
 

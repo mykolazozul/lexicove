@@ -9,7 +9,7 @@ import { useViewer } from '../lib/viewer'
 import { useAuth } from '../stores/auth'
 import { useProfile } from '../stores/profile'
 import { Logo } from './Logo'
-import { Avatar } from './ui'
+import { Avatar, ProgressBar } from './ui'
 
 export function AppShell() {
   const session = useAuth((s) => s.session)
@@ -30,6 +30,7 @@ export function AppShell() {
   return (
     <div className="min-h-dvh lg:pl-68">
       <div className="aurora" aria-hidden="true" />
+      <div className="grain" aria-hidden="true" />
       <Sidebar />
       <TopBar />
       <main className="mx-auto w-full max-w-6xl px-4 pt-4 pb-32 sm:px-6 lg:px-10 lg:pt-2 lg:pb-12">
@@ -58,7 +59,7 @@ function Sidebar() {
   const viewer = useViewer()
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 hidden w-68 flex-col border-r border-line bg-bg/60 px-4 py-6 backdrop-blur-xl lg:flex">
+    <aside className="fixed inset-y-0 left-0 z-30 hidden w-68 flex-col border-r border-line bg-bg/55 px-4 py-6 backdrop-blur-2xl lg:flex">
       <Link to="/" className="mb-8 px-3">
         <Logo />
       </Link>
@@ -69,17 +70,24 @@ function Sidebar() {
         ))}
       </nav>
 
-      <div className="flex flex-col gap-1 border-t border-line pt-4">
+      <div className="flex flex-col gap-1">
         <SidebarLink to="/settings" icon={Settings} label={t('nav.settings')} />
         <Link
           to="/profile"
-          className="mt-2 flex items-center gap-3 rounded-control p-2 transition-colors hover:bg-surface"
+          className="glass ring-gradient mt-3 flex flex-col gap-3 rounded-card p-3.5 transition-transform hover:-translate-y-0.5"
         >
-          <Avatar name={viewer.name} url={viewer.avatarUrl} size={38} />
-          <span className="min-w-0">
-            <span className="block truncate text-sm font-semibold">{viewer.name}</span>
-            <span className="block text-xs text-muted">{t('common.level', { level: viewer.level })}</span>
+          <span className="flex items-center gap-3">
+            <Avatar name={viewer.name} url={viewer.avatarUrl} size={38} />
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-sm font-semibold">{viewer.name}</span>
+              <span className="block text-xs text-muted">{t('common.level', { level: viewer.level })}</span>
+            </span>
+            <span className="inline-flex items-center gap-1 text-xs font-bold text-coin tabular-nums">
+              <Coins className="size-3.5" strokeWidth={2.4} />
+              {viewer.coins.toLocaleString()}
+            </span>
           </span>
+          <ProgressBar value={viewer.intoLevel} max={viewer.needed} className="h-1.5" />
         </Link>
       </div>
     </aside>
@@ -105,7 +113,9 @@ function SidebarLink({ to, icon: Icon, label }: { to: string; icon: LucideIcon; 
               layoutId="sidebar-active"
               className="absolute inset-0 rounded-control border border-line bg-surface-hover"
               transition={{ type: 'spring', stiffness: 500, damping: 40 }}
-            />
+            >
+              <span className="bg-gradient-accent absolute top-2.5 bottom-2.5 -left-px w-[3px] rounded-full shadow-[0_0_12px_var(--accent)]" />
+            </motion.span>
           )}
           <Icon className={cx('relative size-5', isActive && 'text-accent')} strokeWidth={2} />
           <span className="relative">{label}</span>

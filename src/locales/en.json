@@ -152,9 +152,18 @@
   },
   "settings": {
     "appearance": "Appearance",
+    "themeGroups": {
+      "dark": "Dark",
+      "light": "Light and automatic"
+    },
     "themes": {
       "auto": "Auto",
       "midnight": "Midnight",
+      "ocean": "Ocean",
+      "forest": "Forest",
+      "ember": "Ember",
+      "dusk": "Dusk",
+      "graphite": "Graphite",
       "daylight": "Daylight",
       "arcade": "Arcade",
       "mono": "Mono"
@@ -162,6 +171,11 @@
     "themeDescriptions": {
       "auto": "Follows your system",
       "midnight": "Dark premium",
+      "ocean": "Deep teal",
+      "forest": "Emerald calm",
+      "ember": "Warm coals",
+      "dusk": "Sunset glow",
+      "graphite": "Dark minimal",
       "daylight": "Light and calm",
       "arcade": "Bright and playful",
       "mono": "Minimal"
