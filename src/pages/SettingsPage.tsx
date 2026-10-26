@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next'
 import { BellRing, Check, ChevronRight, Coins, ExternalLink, Lock, LogIn, LogOut, Shield, Volume2 } from 'lucide-react'
 import { isAdmin } from '../lib/admin'
 import { siApple, siGithub } from 'simple-icons'
-import { UsernameCard } from '../components/community/FriendsView'
+import { DisplayNameCard, UsernameCard } from '../components/community/FriendsView'
+import { confirmDialog } from '../components/Confirm'
 import { ThemePreview } from '../components/cosmetics'
 import { Card, Reveal, SectionTitle, Segmented, Switch } from '../components/ui'
 import { useOwnedThemes } from '../lib/cosmetics'
@@ -12,6 +13,7 @@ import { cx } from '../lib/cx'
 import { LOCALES, LOCALE_NAMES } from '../lib/locale'
 import { APP_VERSION, REPO_URL } from '../lib/platform'
 import { isSubscribed, pushSupport, PushError, subscribe, unsubscribe } from '../lib/push'
+import { clockTime } from '../lib/time'
 import { useViewer } from '../lib/viewer'
 import { useAuth } from '../stores/auth'
 import { useEconomy } from '../stores/economy'
@@ -25,11 +27,11 @@ const THEME_GROUPS: Array<{ key: 'dark' | 'light'; themes: readonly ThemeChoice[
 ]
 
 export function SettingsPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const viewer = useViewer()
   const signOut = useAuth((s) => s.signOut)
-  const { theme, setTheme, appleStyle, setAppleStyle, analytics, setAnalytics, sounds, setSounds, locale, setLocale, setDailyGoal } =
+  const { theme, setTheme, appleStyle, setAppleStyle, analytics, setAnalytics, sounds, setSounds, locale, setLocale, setDailyGoal, timeFormat, setTimeFormat } =
     useSettings()
   const saveDailyGoal = useProfile((s) => s.setDailyGoal)
   const owned = useOwnedThemes()
@@ -129,6 +131,18 @@ export function SettingsPage() {
             onChange={setLocale}
             options={LOCALES.map((code) => ({ value: code, label: LOCALE_NAMES[code] }))}
           />
+          <h3 className="mt-5 mb-2.5 text-sm font-semibold text-muted">{t('settings.timeFormat.title')}</h3>
+          <Segmented
+            label={t('settings.timeFormat.title')}
+            value={timeFormat}
+            onChange={setTimeFormat}
+            options={[
+              { value: 'auto', label: t('settings.timeFormat.auto') },
+              { value: '24', label: t('settings.timeFormat.h24') },
+              { value: '12', label: t('settings.timeFormat.h12') },
+            ]}
+          />
+          <p className="mt-2 text-sm text-muted">{t('settings.timeFormat.example', { time: clockTime(19, 30, i18n.language) })}</p>
         </section>
       </Reveal>
 
@@ -136,7 +150,8 @@ export function SettingsPage() {
         <section>
           <SectionTitle>{t('settings.account')}</SectionTitle>
           {!viewer.isGuest && (
-            <div className="mb-3">
+            <div className="mb-3 flex flex-col gap-3">
+              <DisplayNameCard />
               <UsernameCard />
             </div>
           )}
@@ -229,6 +244,11 @@ function ReminderSetting() {
   }, [])
 
   async function toggle(next: boolean) {
+    // The browser's own permission prompt can't be styled, so ours explains first.
+    if (next && Notification.permission !== 'granted') {
+      const ok = await confirmDialog({ title: t('settings.reminders.askTitle'), text: t('settings.reminders.askText', { time: clockTime(19, 0, i18n.language) }), confirm: t('settings.reminders.allow') })
+      if (!ok) return
+    }
     setBusy(true)
     try {
       if (next) await subscribe(i18n.language)
@@ -248,7 +268,7 @@ function ReminderSetting() {
       <div className="min-w-0 flex-1">
         <div className="font-semibold">{t('settings.reminders.title')}</div>
         <p className="mt-0.5 text-sm text-muted">
-          {support === 'ok' ? t('settings.reminders.hint') : t(`settings.reminders.${support}`)}
+          {support === 'ok' ? t('settings.reminders.hint', { time: clockTime(19, 0, i18n.language) }) : t(`settings.reminders.${support}`)}
         </p>
       </div>
       {support === 'ok' && <Switch checked={on} onChange={(next) => !busy && void toggle(next)} label={t('settings.reminders.title')} />}

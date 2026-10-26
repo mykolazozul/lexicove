@@ -137,7 +137,7 @@ export function HomePage() {
                   )}
                 >
                   <span className={cx('text-lg', index !== 0 && 'opacity-50 grayscale')}>{island.emoji}</span>
-                  <span className="min-w-0 flex-1 truncate font-medium">{t(`home.islands.${island.key}`)}</span>
+                  <span className="min-w-0 flex-1 line-clamp-2 leading-tight font-medium">{t(`home.islands.${island.key}`)}</span>
                   {index !== 0 && <Lock className="size-3.5 shrink-0 text-subtle" aria-label={t('home.islands.locked')} />}
                 </li>
               ))}

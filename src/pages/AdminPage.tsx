@@ -23,7 +23,8 @@ import { BarList, ColumnChart, formatNumber, Heatmap, Meter, type Point } from '
 import { BrandIcon } from '../components/BrandIcon'
 import { ModerationView } from '../components/community/ModerationView'
 import { relativeTime } from '../components/words/NotionPanel'
-import { Badge, Card, IconChip, Reveal, Segmented, type ChipTone } from '../components/ui'
+import { confirmDialog } from '../components/Confirm'
+import { Badge, Card, IconChip, Reveal, Segmented, Select, type ChipTone } from '../components/ui'
 import {
   admin,
   FREE_LIMITS,
@@ -476,7 +477,7 @@ function UsersTab({ viewerRole }: { viewerRole: Role }) {
   }, [loadPage])
 
   async function changeRole(user: AdminUser, role: Role) {
-    if (!window.confirm(t('admin.users.confirmRole', { name: user.display_name, role: t(`admin.roles.${role}`) }))) return
+    if (!(await confirmDialog({ title: t('common.areYouSure'), text: t('admin.users.confirmRole', { name: user.display_name, role: t(`admin.roles.${role}`) }) }))) return
     try {
       await admin.setRole(user.id, role)
       setUsers((current) =>
@@ -536,19 +537,14 @@ function UsersTab({ viewerRole }: { viewerRole: Role }) {
                   </div>
                 </td>
                 <td className="px-4 py-3">
-                  <select
-                    className="input h-9 w-36 py-0"
+                  <Select
+                    label={t('admin.users.role')}
+                    className="h-9 w-40 text-sm"
                     value={user.role}
                     disabled={!canEdit(user)}
-                    onChange={(e) => void changeRole(user, e.target.value as Role)}
-                    aria-label={t('admin.users.role')}
-                  >
-                    {(canEdit(user) ? allowedRoles : ROLES).map((role) => (
-                      <option key={role} value={role}>
-                        {t(`admin.roles.${role}`)}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={(role) => void changeRole(user, role)}
+                    options={(canEdit(user) ? allowedRoles : ROLES).map((role) => ({ value: role, label: t(`admin.roles.${role}`) }))}
+                  />
                 </td>
                 <td className="px-4 py-3 text-right tabular-nums">{formatNumber(user.words)}</td>
                 <td className="px-4 py-3">{user.notion_connected ? '✓' : '—'}</td>

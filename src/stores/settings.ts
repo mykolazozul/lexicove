@@ -17,6 +17,8 @@ export function isShopTheme(theme: ThemeChoice): theme is ShopTheme {
 
 export const DAILY_GOALS = [10, 20, 30, 50] as const
 
+export type TimeFormat = 'auto' | '24' | '12'
+
 type SettingsState = {
   theme: ThemeChoice
   /** Apple-style interface layer (system font, continuous corners, capsule buttons). On by default. */
@@ -25,6 +27,8 @@ type SettingsState = {
   analytics: boolean
   /** Short sounds for answers, coins and level-ups (src/lib/sounds.ts). */
   sounds: boolean
+  /** 19:00 or 7:00 PM; "auto" follows the device (src/lib/time.ts). */
+  timeFormat: TimeFormat
   locale: Locale
   /** Answers per day for guests; signed-in users keep theirs in the profile. */
   dailyGoal: number
@@ -32,6 +36,7 @@ type SettingsState = {
   setAppleStyle: (appleStyle: boolean) => void
   setAnalytics: (analytics: boolean) => void
   setSounds: (sounds: boolean) => void
+  setTimeFormat: (timeFormat: TimeFormat) => void
   setLocale: (locale: Locale) => void
   setDailyGoal: (dailyGoal: number) => void
 }
@@ -44,22 +49,25 @@ export const useSettings = create<SettingsState>()(
       appleStyle: true,
       analytics: true,
       sounds: true,
+      timeFormat: 'auto',
       locale: detectLocale(),
       dailyGoal: 20,
       setTheme: (theme) => set({ theme }),
       setAppleStyle: (appleStyle) => set({ appleStyle }),
       setAnalytics: (analytics) => set({ analytics }),
       setSounds: (sounds) => set({ sounds }),
+      setTimeFormat: (timeFormat) => set({ timeFormat }),
       setLocale: (locale) => set({ locale }),
       setDailyGoal: (dailyGoal) => set({ dailyGoal }),
     }),
     {
       name: 'lexicove-settings',
-      partialize: ({ theme, appleStyle, analytics, sounds, locale, dailyGoal }) => ({
+      partialize: ({ theme, appleStyle, analytics, sounds, timeFormat, locale, dailyGoal }) => ({
         theme,
         appleStyle,
         analytics,
         sounds,
+        timeFormat,
         locale,
         dailyGoal,
       }),

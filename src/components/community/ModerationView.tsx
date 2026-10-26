@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Ban, Check, RefreshCw, Trash2, VolumeX } from 'lucide-react'
-import { Badge, Card, SectionTitle, Switch } from '../ui'
+import { Badge, Card, SectionTitle, Select, Switch } from '../ui'
 import { errorText, reasonText, UserCardModal, UserLine } from './People'
 import { community, type ChatRoom, type Report, type Sanction } from '../../lib/community'
+import { formatDateTime } from '../../lib/time'
 import { toast } from '../../stores/toast'
 
 const SLOW_MODES = [0, 10, 30, 60, 300] as const
@@ -45,7 +46,7 @@ export function ModerationView() {
     }
   }
 
-  const when = (iso: string) => new Date(iso).toLocaleString(i18n.language, { dateStyle: 'short', timeStyle: 'short' })
+  const when = (iso: string) => formatDateTime(iso, i18n.language)
 
   return (
     <div className="flex flex-col gap-6">
@@ -145,21 +146,20 @@ export function ModerationView() {
             <div key={room.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
               <span className="text-xl">{room.icon}</span>
               <span className="min-w-0 flex-1 font-medium">{t(`community.rooms.${room.id}.title`, { defaultValue: room.id })}</span>
-              <label className="flex items-center gap-2 text-xs text-muted">
+              <span className="flex items-center gap-2 text-xs text-muted">
                 {t('community.chat.slowMode')}
-                <select
-                  className="input h-9 w-auto py-0 text-sm"
+                <Select
+                  label={t('community.chat.slowMode')}
+                  className="h-9 w-32 text-sm"
                   value={room.slow_mode_seconds}
                   disabled={busy}
-                  onChange={(event) => act(() => community.modRoom(room.id, Number(event.target.value), room.closed), t('community.mod.done.room'))}
-                >
-                  {SLOW_MODES.map((seconds) => (
-                    <option key={seconds} value={seconds}>
-                      {seconds === 0 ? t('community.mod.off') : `${seconds} ${t('community.chat.secondsShort')}`}
-                    </option>
-                  ))}
-                </select>
-              </label>
+                  onChange={(seconds) => act(() => community.modRoom(room.id, seconds, room.closed), t('community.mod.done.room'))}
+                  options={SLOW_MODES.map((seconds) => ({
+                    value: seconds,
+                    label: seconds === 0 ? t('community.mod.off') : `${seconds} ${t('community.chat.secondsShort')}`,
+                  }))}
+                />
+              </span>
               <label className="flex items-center gap-2 text-xs text-muted">
                 {t('community.mod.close')}
                 <Switch checked={room.closed} label={t('community.mod.close')} onChange={(closed) => act(() => community.modRoom(room.id, room.slow_mode_seconds, closed), t('community.mod.done.room'))} />

@@ -19,6 +19,9 @@ export type Profile = {
   time_zone: string
   equipped: Partial<Record<Slot, string>>
   boost_until: string | null
+  verified: boolean
+  display_name_changed_at: string | null
+  username_changed_at: string | null
 }
 
 type ProfileState = {
@@ -27,9 +30,28 @@ type ProfileState = {
   /** Re-reads the signed-in profile, e.g. after the server changed coins or XP. */
   refresh: () => Promise<void>
   setDailyGoal: (goal: number) => Promise<void>
-  /** Saves the @name friends search for. Throws 'taken' or 'invalid'. */
-  setUsername: (username: string | null) => Promise<void>
+  /** Saves the @name friends search for. Throws a NameError. */
+  setUsername: (username: string) => Promise<void>
+  /** Saves the name everyone sees. Throws a NameError. */
+  setDisplayName: (name: string) => Promise<void>
   clear: () => void
+}
+
+/** Why the server refused a name; `until` is when the next change is allowed. */
+export class NameError extends Error {
+  constructor(public code: string, public until?: string) {
+    super(code)
+  }
+}
+
+const NAME_CODES = ['name_length', 'name_invalid', 'name_bad_word', 'name_reserved', 'name_too_soon', 'username_too_soon']
+
+function nameError(error: { code?: string; message: string; details?: string | null }): NameError {
+  if (error.code === '23505') return new NameError('taken')
+  // The username format is a check constraint on the table.
+  if (error.code === '23514') return new NameError('name_invalid')
+  const code = NAME_CODES.find((known) => error.message === known) ?? 'unknown'
+  return new NameError(code, error.details ?? undefined)
 }
 
 export function browserTimeZone(): string {
@@ -82,8 +104,16 @@ export const useProfile = create<ProfileState>()((set, get) => ({
     const profile = get().profile
     if (!supabase || !profile) return
     const { error } = await supabase.from('profiles').update({ username }).eq('id', profile.id)
-    if (error) throw new Error(error.code === '23505' ? 'taken' : 'invalid')
-    set({ profile: { ...profile, username } })
+    if (error) throw nameError(error)
+    await get().refresh()
+  },
+
+  setDisplayName: async (displayName) => {
+    const profile = get().profile
+    if (!supabase || !profile) return
+    const { error } = await supabase.from('profiles').update({ display_name: displayName }).eq('id', profile.id)
+    if (error) throw nameError(error)
+    await get().refresh()
   },
 
   clear: () => set({ profile: null }),

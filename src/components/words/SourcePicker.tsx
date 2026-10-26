@@ -7,7 +7,7 @@ import { cx } from '../../lib/cx'
 import { notionCall, NotionError, type NotionSourceOption, type SyncSummary } from '../../lib/notion'
 import { useLibrary } from '../../stores/library'
 import { Field, Modal } from '../Modal'
-import { Segmented } from '../ui'
+import { Segmented, Select } from '../ui'
 import { notionErrorText } from './notionErrors'
 
 /** Lists the Notion tables the integration can see, then links one with a column mapping. */
@@ -151,18 +151,15 @@ export function SourcePicker({
           <div className="grid gap-3 sm:grid-cols-2">
             {FIELDS[kind].map((field) => (
               <Field key={field} label={t(`words.fields.${field}`)}>
-                <select
-                  className="input"
+                <Select
+                  label={t(`words.fields.${field}`)}
                   value={mapping[field] ?? ''}
-                  onChange={(e) => setMapping({ ...mapping, [field]: e.target.value })}
-                >
-                  <option value="">{t('notion.picker.none')}</option>
-                  {readable.map((property) => (
-                    <option key={property.name} value={property.name}>
-                      {property.name}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(value) => setMapping({ ...mapping, [field]: value })}
+                  options={[
+                    { value: '', label: t('notion.picker.none') },
+                    ...readable.map((property) => ({ value: property.name, label: property.name })),
+                  ]}
+                />
               </Field>
             ))}
           </div>

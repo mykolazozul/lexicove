@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { Brush, CalendarDays, Coins, Flame, ListChecks, Target, Trophy, UserPlus } from 'lucide-react'
 import { ActivityCalendar, BarList, ColumnChart, formatNumber } from '../components/charts'
-import { Banner, DisplayName, TitleBadge, UserAvatar } from '../components/cosmetics'
+import { Banner, DisplayName, TitleBadge, UserAvatar, VerifiedBadge } from '../components/cosmetics'
 import { Badge, Card, ProgressBar, Reveal, SectionTitle } from '../components/ui'
 import { cx } from '../lib/cx'
 import { useViewer } from '../lib/viewer'
@@ -47,8 +47,9 @@ export function ProfilePage() {
               </div>
               <div className="flex-1 sm:pb-2">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="font-display text-2xl font-semibold">
+                  <h2 className="flex items-center gap-1.5 font-display text-2xl font-semibold">
                     <DisplayName name={viewer.name} color={equipped.nameColor} />
+                    {viewer.verified && <VerifiedBadge />}
                   </h2>
                   <TitleBadge title={equipped.title} />
                   {viewer.isGuest && <Badge>{t('common.guest')}</Badge>}
@@ -57,7 +58,7 @@ export function ProfilePage() {
                 {viewer.memberSince && (
                   <p className="mt-1 text-sm text-muted">
                     {t('profile.memberSince', {
-                      date: new Date(viewer.memberSince).toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' }),
+                      date: new Date(viewer.memberSince).toLocaleDateString(i18n.language, { day: 'numeric', month: 'long', year: 'numeric' }),
                     })}
                   </p>
                 )}

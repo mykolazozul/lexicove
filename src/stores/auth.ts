@@ -17,6 +17,9 @@ type AuthState = {
   signInWithProvider: (provider: OAuthProvider) => Promise<void>
   signInWithEmail: (email: string, password: string) => Promise<void>
   signUpWithEmail: (email: string, password: string) => Promise<{ needsConfirmation: boolean }>
+  /** Confirms a new account with the code from the email, right on the sign-up page. */
+  verifySignupCode: (email: string, code: string) => Promise<void>
+  resendSignupCode: (email: string) => Promise<void>
   continueAsGuest: () => void
   signOut: () => Promise<void>
 }
@@ -68,6 +71,20 @@ export const useAuth = create<AuthState>()((set) => ({
     })
     if (error) throw error
     return { needsConfirmation: !data.session }
+  },
+
+  verifySignupCode: async (email, code) => {
+    const token = code.replace(/\D/g, '')
+    const { error } = await client().auth.verifyOtp({ email, token, type: 'signup' })
+    if (!error) return
+    // Newer projects issue the same code as a general email code.
+    const retry = await client().auth.verifyOtp({ email, token, type: 'email' })
+    if (retry.error) throw error
+  },
+
+  resendSignupCode: async (email) => {
+    const { error } = await client().auth.resend({ type: 'signup', email, options: { emailRedirectTo: `${window.location.origin}/` } })
+    if (error) throw error
   },
 
   continueAsGuest: () => {

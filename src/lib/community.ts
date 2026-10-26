@@ -13,6 +13,7 @@ export type PublicCard = {
   role: Role
   xp: number
   equipped: Partial<Record<Slot, string>>
+  verified?: boolean
 }
 
 export type ChatRoom = { id: string; icon: string; sort: number; slow_mode_seconds: number; closed: boolean }
@@ -23,6 +24,8 @@ export type ChatMessage = {
   user_id: string
   body: string
   reply_to: number | null
+  /** A photo; only the owner can post them. */
+  image_url: string | null
   reactions: Record<string, number>
   filtered: number
   created_at: string
@@ -121,7 +124,7 @@ export class CommunityError extends Error {
 const CODES = [
   'sign_in_first', 'rules_not_accepted', 'banned', 'muted', 'no_such_room', 'room_closed', 'not_friends', 'empty',
   'too_long', 'bad_reply', 'too_fast', 'slow_mode', 'duplicate', 'no_links_yet', 'no_such_user', 'self', 'too_many',
-  'no_such_message', 'own_message', 'forbidden', 'no_such_sanction', 'bad_duration',
+  'no_such_message', 'own_message', 'forbidden', 'no_such_sanction', 'bad_duration', 'images_owner_only', 'bad_image',
 ]
 
 function client() {
@@ -161,7 +164,7 @@ export const community = {
   messages: async (room: string, before?: number, limit = 50) => {
     let query = client()
       .from('chat_messages')
-      .select('id, room, user_id, body, reply_to, reactions, filtered, created_at, deleted_at, hidden')
+      .select('id, room, user_id, body, reply_to, image_url, reactions, filtered, created_at, deleted_at, hidden')
       .eq('room', room)
       .order('id', { ascending: false })
       .limit(limit)
@@ -188,8 +191,15 @@ export const community = {
       : await table.delete().eq('message_id', messageId).eq('emoji', emoji)
     if (error && error.code !== '23505') throw new CommunityError(error.message.includes('too_fast') ? 'too_fast' : 'unknown')
   },
-  send: (room: string, body: string, replyTo?: number | null) =>
-    rpc<ChatMessage>('send_message', { p_room: room, p_body: body, p_reply_to: replyTo ?? null }),
+  send: (room: string, body: string, replyTo?: number | null, image?: string | null) =>
+    rpc<ChatMessage>('send_message', { p_room: room, p_body: body, p_reply_to: replyTo ?? null, p_image: image ?? null }),
+  uploadImage: async (file: File, userId: string) => {
+    const blob = await shrinkImage(file)
+    const path = `${userId}/${crypto.randomUUID().replace(/-/g, '')}.webp`
+    const { error } = await client().storage.from('chat-images').upload(path, blob, { contentType: 'image/webp', cacheControl: '31536000' })
+    if (error) throw new CommunityError('upload_failed')
+    return client().storage.from('chat-images').getPublicUrl(path).data.publicUrl
+  },
   deleteOwn: (id: number) => rpc<void>('delete_my_message', { p_id: id }),
   report: (id: number, reason: string, note: string) => rpc<void>('report_message', { p_id: id, p_reason: reason, p_note: note }),
 
@@ -212,6 +222,21 @@ export const community = {
   modRevoke: (id: string) => rpc<void>('mod_revoke_sanction', { p_id: id }),
   modRoom: (room: string, slowMode: number, closed: boolean) =>
     rpc<void>('mod_set_room', { p_room: room, p_slow_mode: slowMode, p_closed: closed }),
+}
+
+/** Scales a photo down to 1600 px on its longer side and re-encodes it as WebP. */
+async function shrinkImage(file: File): Promise<Blob> {
+  if (!file.type.startsWith('image/')) throw new CommunityError('bad_image')
+  const bitmap = await createImageBitmap(file)
+  const scale = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height))
+  const canvas = document.createElement('canvas')
+  canvas.width = Math.round(bitmap.width * scale)
+  canvas.height = Math.round(bitmap.height * scale)
+  canvas.getContext('2d')?.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
+  bitmap.close()
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/webp', 0.85))
+  if (!blob || blob.size > 5 * 1024 * 1024) throw new CommunityError('bad_image')
+  return blob
 }
 
 /** Splits a message into plain text, @mentions and safe http(s) links. */

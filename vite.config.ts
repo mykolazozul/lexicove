@@ -40,7 +40,16 @@ export default defineConfig({
         categories: ['education', 'games'],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2,webmanifest}'],
+        // Fonts stay out of the install download: with the Apple style (the default) they aren't
+        // even used, and on a slow connection 350 KB of them would compete with the page itself.
+        globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest}'],
+        runtimeCaching: [
+          {
+            urlPattern: ({ request }) => request.destination === 'font',
+            handler: 'CacheFirst',
+            options: { cacheName: 'fonts', expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 365 } },
+          },
+        ],
         navigateFallback: '/index.html',
         // Streak reminders (public/push-sw.js).
         importScripts: ['push-sw.js'],

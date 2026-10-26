@@ -45,6 +45,19 @@ Supabase's built-in email sender is only for testing and allows a handful of ema
 For real users connect a free SMTP provider in **Authentication → Emails → SMTP Settings**,
 for example [Resend](https://resend.com) (100 emails a day on the free plan).
 
+New accounts confirm their email with a one-time code typed on the sign-up page, so no second
+tab opens. Paste [supabase/templates/confirm-signup.html](../supabase/templates/confirm-signup.html)
+into **Authentication → Emails → Templates → Confirm signup** (Source tab), set the subject to
+"Код підтвердження Lexicove", and keep the email OTP expiry at 3600 seconds
+(**Authentication → Sign In / Providers → Email**). The template shows `{{ .Token }}`, so the
+code works even if the email app opens links in another browser.
+
+### Chat photos
+
+Migration `20261026160000_chat_images.sql` creates the public `chat-images` Storage bucket.
+Only the owner account can upload, so there is nothing to configure; photos are shrunk to WebP
+in the browser before upload.
+
 ### Owner and test accounts
 
 Register the accounts in the app as usual, then give them roles in the SQL editor:
@@ -55,7 +68,7 @@ select private.grant_role('you+test@example.com', 'tester');
 ```
 
 A tester is hidden from leagues, leaderboards and public stats, and starts with 1,000,000 coins
-and enough XP to reach about level 98. Only the database owner can run `grant_role`; it isn't
+and enough XP to reach about level 41. Only the database owner can run `grant_role`; it isn't
 exposed through the API.
 
 ## 3. Notion sync

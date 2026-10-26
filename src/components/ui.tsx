@@ -1,6 +1,11 @@
-import { useId, type ComponentProps, type ReactNode } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState, type ComponentProps, type KeyboardEvent, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { motion } from 'motion/react'
+import { Check, ChevronDown } from 'lucide-react'
 import { cx } from '../lib/cx'
+
+// Every control here replaces a native one (checkbox, radio, select, details), so the whole app
+// keeps one look in every browser.
 
 /**
  * Glass card with a soft light that follows the cursor.
@@ -251,6 +256,251 @@ export function Switch({
   )
 }
 
+/** A checkbox with its label; the whole row is the control. */
+export function Checkbox({
+  checked,
+  onChange,
+  children,
+  className,
+}: {
+  checked: boolean
+  onChange: (checked: boolean) => void
+  children: ReactNode
+  className?: string
+}) {
+  return (
+    <button
+      type="button"
+      role="checkbox"
+      aria-checked={checked}
+      onClick={() => onChange(!checked)}
+      className={cx('group flex w-full cursor-pointer items-start gap-3 rounded-control text-left text-sm', className)}
+    >
+      <span
+        className={cx(
+          'mt-px grid size-5 shrink-0 place-items-center rounded-[7px] border-2 transition-colors',
+          checked ? 'border-accent bg-accent text-on-accent' : 'border-line bg-surface group-hover:border-muted',
+        )}
+      >
+        <motion.span initial={false} animate={{ scale: checked ? 1 : 0 }} transition={{ type: 'spring', stiffness: 600, damping: 30 }}>
+          <Check className="size-3.5" strokeWidth={3.5} />
+        </motion.span>
+      </span>
+      <span className="min-w-0 flex-1">{children}</span>
+    </button>
+  )
+}
+
+/** One-of-many choice shown as cards. */
+export function RadioCards<T extends string>({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string
+  value: T
+  options: Array<{ value: T; label: ReactNode }>
+  onChange: (value: T) => void
+}) {
+  function onKey(event: KeyboardEvent<HTMLDivElement>) {
+    const index = options.findIndex((option) => option.value === value)
+    const step = event.key === 'ArrowDown' || event.key === 'ArrowRight' ? 1 : event.key === 'ArrowUp' || event.key === 'ArrowLeft' ? -1 : 0
+    if (!step) return
+    event.preventDefault()
+    const next = options[(index + step + options.length) % options.length]
+    if (next) onChange(next.value)
+  }
+  return (
+    <div role="radiogroup" aria-label={label} className="flex flex-col gap-2" onKeyDown={onKey}>
+      {options.map((option) => {
+        const active = option.value === value
+        return (
+          <button
+            key={option.value}
+            type="button"
+            role="radio"
+            aria-checked={active}
+            tabIndex={active ? 0 : -1}
+            onClick={() => onChange(option.value)}
+            className={cx(
+              'flex items-center gap-3 rounded-control border px-3 py-2.5 text-left text-sm transition-colors',
+              active ? 'border-accent bg-accent/10 text-fg' : 'border-line text-muted hover:bg-surface hover:text-fg',
+            )}
+          >
+            <span className={cx('grid size-4.5 shrink-0 place-items-center rounded-full border-2', active ? 'border-accent' : 'border-line')}>
+              {active && <span className="size-2 rounded-full bg-accent" />}
+            </span>
+            {option.label}
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+/**
+ * A dropdown in the app's own style. The list opens in a portal, so it is never clipped by a
+ * scrolling dialog, and it works with the keyboard like a native select.
+ */
+export function Select<T extends string | number>({
+  label,
+  value,
+  options,
+  onChange,
+  disabled = false,
+  className,
+  placeholder,
+}: {
+  label: string
+  value: T
+  options: Array<{ value: T; label: string }>
+  onChange: (value: T) => void
+  disabled?: boolean
+  className?: string
+  placeholder?: string
+}) {
+  const id = useId()
+  const button = useRef<HTMLButtonElement>(null)
+  const list = useRef<HTMLUListElement>(null)
+  const [open, setOpen] = useState(false)
+  const [active, setActive] = useState(0)
+  const [place, setPlace] = useState<{ left: number; top: number; width: number; up: boolean } | null>(null)
+  const current = options.find((option) => option.value === value)
+
+  useLayoutEffect(() => {
+    if (!open || !button.current) return
+    const box = button.current.getBoundingClientRect()
+    const height = Math.min(280, options.length * 40 + 8)
+    const up = box.bottom + height + 8 > window.innerHeight && box.top > height + 8
+    setPlace({ left: box.left, top: up ? box.top - height - 6 : box.bottom + 6, width: Math.max(box.width, 160), up })
+  }, [open, options.length])
+
+  // The list renders once its position is known; focus it then, so the arrow keys work at once.
+  useEffect(() => {
+    if (open && place) list.current?.focus()
+  }, [open, place])
+
+  useEffect(() => {
+    if (!open) return
+    const close = (event: Event) => {
+      if (event.target instanceof Node && (list.current?.contains(event.target) || button.current?.contains(event.target))) return
+      setOpen(false)
+    }
+    const dismiss = () => setOpen(false)
+    window.addEventListener('pointerdown', close, true)
+    window.addEventListener('resize', dismiss)
+    window.addEventListener('scroll', close, true)
+    return () => {
+      window.removeEventListener('pointerdown', close, true)
+      window.removeEventListener('resize', dismiss)
+      window.removeEventListener('scroll', close, true)
+    }
+  }, [open])
+
+  function show() {
+    if (disabled) return
+    setActive(Math.max(0, options.findIndex((option) => option.value === value)))
+    setOpen(true)
+  }
+
+  function choose(index: number) {
+    const option = options[index]
+    setOpen(false)
+    button.current?.focus()
+    if (option && option.value !== value) onChange(option.value)
+  }
+
+  function onListKey(event: KeyboardEvent<HTMLUListElement>) {
+    if (event.key === 'ArrowDown') setActive((i) => Math.min(options.length - 1, i + 1))
+    else if (event.key === 'ArrowUp') setActive((i) => Math.max(0, i - 1))
+    else if (event.key === 'Home') setActive(0)
+    else if (event.key === 'End') setActive(options.length - 1)
+    else if (event.key === 'Enter' || event.key === ' ') choose(active)
+    else if (event.key === 'Escape' || event.key === 'Tab') {
+      setOpen(false)
+      button.current?.focus()
+    } else return
+    event.preventDefault()
+  }
+
+  return (
+    <>
+      <button
+        ref={button}
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-controls={open ? id : undefined}
+        aria-label={label}
+        disabled={disabled}
+        onClick={() => (open ? setOpen(false) : show())}
+        onKeyDown={(event) => {
+          if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(event.key)) {
+            event.preventDefault()
+            show()
+          }
+        }}
+        className={cx('input flex items-center justify-between gap-2 text-left disabled:cursor-not-allowed disabled:opacity-60', className)}
+      >
+        <span className={cx('truncate', !current && 'text-subtle')}>{current?.label ?? placeholder ?? '—'}</span>
+        <ChevronDown className={cx('size-4 shrink-0 text-subtle transition-transform', open && 'rotate-180')} />
+      </button>
+      {open &&
+        place &&
+        createPortal(
+          <ul
+            ref={list}
+            id={id}
+            role="listbox"
+            aria-label={label}
+            tabIndex={-1}
+            aria-activedescendant={`${id}-${active}`}
+            onKeyDown={onListKey}
+            className="glass fixed z-[70] max-h-[280px] overflow-y-auto rounded-control bg-elevated p-1 outline-none"
+            style={{ left: place.left, top: place.top, width: place.width }}
+          >
+            {options.map((option, index) => {
+              const selected = option.value === value
+              return (
+                <li
+                  key={String(option.value)}
+                  id={`${id}-${index}`}
+                  role="option"
+                  aria-selected={selected}
+                  onPointerEnter={() => setActive(index)}
+                  onClick={() => choose(index)}
+                  className={cx(
+                    'flex cursor-pointer items-center justify-between gap-3 rounded-[calc(var(--radius-md)-4px)] px-3 py-2 text-sm',
+                    index === active ? 'bg-surface-hover text-fg' : 'text-muted',
+                  )}
+                >
+                  <span className="truncate">{option.label}</span>
+                  {selected && <Check className="size-4 shrink-0 text-accent" strokeWidth={3} />}
+                </li>
+              )
+            })}
+          </ul>,
+          document.body,
+        )}
+    </>
+  )
+}
+
+/** A section that opens and closes, in place of a native details element. */
+export function Disclosure({ summary, children, className }: { summary: ReactNode; children: ReactNode; className?: string }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className={className}>
+      <button type="button" aria-expanded={open} onClick={() => setOpen((o) => !o)} className="flex items-center gap-1.5 text-muted transition-colors hover:text-fg">
+        <ChevronDown className={cx('size-4 transition-transform', !open && '-rotate-90')} />
+        {summary}
+      </button>
+      {open && <div className="mt-2">{children}</div>}
+    </div>
+  )
+}
+
 export function SectionTitle({ children, action }: { children: ReactNode; action?: ReactNode }) {
   return (
     <div className="mb-3 flex items-center justify-between gap-3">
@@ -265,9 +515,10 @@ export function Reveal({ children, delay = 0, className }: { children: ReactNode
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] }}
+      // Quick on purpose: a page should feel ready, not still arriving.
+      transition={{ duration: 0.28, delay: delay * 0.5, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>

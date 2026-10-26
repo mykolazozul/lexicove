@@ -5,6 +5,7 @@ import { suggestMapping, type WordField } from '../../../supabase/functions/noti
 import { parseCsv } from '../../lib/csv'
 import { useLibrary, type WordInput } from '../../stores/library'
 import { Modal } from '../Modal'
+import { Checkbox } from '../ui'
 
 const IMPORT_FIELDS: WordField[] = ['word', 'translation', 'pronunciation', 'examples', 'explanation', 'category', 'added']
 
@@ -118,13 +119,10 @@ export function ImportDialog({ open, onClose, onDone }: { open: boolean; onClose
       )}
 
       {parsed && hasNotion && (
-        <label className="mt-4 flex items-start gap-3 text-sm">
-          <input type="checkbox" className="mt-0.5 size-4 accent-[var(--accent)]" checked={toNotion} onChange={(e) => setToNotion(e.target.checked)} />
-          <span>
-            <span className="font-medium">{t('words.csv.toNotion')}</span>
-            <span className="block text-subtle">{t('words.csv.toNotionHint')}</span>
-          </span>
-        </label>
+        <Checkbox className="mt-4" checked={toNotion} onChange={setToNotion}>
+          <span className="font-medium">{t('words.csv.toNotion')}</span>
+          <span className="block text-subtle">{t('words.csv.toNotionHint')}</span>
+        </Checkbox>
       )}
 
       {fileError && (

@@ -1,8 +1,8 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { Navigate, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'motion/react'
-import { ArrowRight, Info, Loader2, Mail } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Info, Loader2, Mail } from 'lucide-react'
 import { BrandIcon, providerName } from '../components/BrandIcon'
 import { Logo } from '../components/Logo'
 import { Card, Segmented } from '../components/ui'
@@ -13,6 +13,14 @@ import { OAUTH_PROVIDERS, useAuth, type OAuthProvider } from '../stores/auth'
 import { useSettings } from '../stores/settings'
 
 type Mode = 'signIn' | 'signUp'
+
+/** Supabase's English auth errors, in the app's language. */
+function authErrorText(t: (key: string) => string, error: unknown): string {
+  const code = (error as { code?: string } | null)?.code
+  const known = ['invalid_credentials', 'email_not_confirmed', 'user_already_exists', 'weak_password', 'over_email_send_rate_limit', 'otp_expired', 'email_address_invalid']
+  if (code && known.includes(code)) return t(`welcome.errors.${code}`)
+  return t('errors.generic')
+}
 
 export function WelcomePage() {
   const { t } = useTranslation()
@@ -120,7 +128,7 @@ function AuthCard() {
     try {
       await action()
     } catch (err) {
-      setError(err instanceof Error && err.message ? err.message : t('errors.generic'))
+      setError(authErrorText(t, err))
     } finally {
       setBusy(null)
     }
@@ -134,7 +142,17 @@ function AuthCard() {
     event.preventDefault()
     void run('email', async () => {
       if (mode === 'signIn') {
-        await signInWithEmail(email, password)
+        try {
+          await signInWithEmail(email, password)
+        } catch (err) {
+          // Signed up but never entered the code: send a fresh one and ask for it here.
+          if ((err as { code?: string }).code === 'email_not_confirmed') {
+            await useAuth.getState().resendSignupCode(email).catch(() => {})
+            setSentTo(email)
+            return
+          }
+          throw err
+        }
       } else {
         const { needsConfirmation } = await signUpWithEmail(email, password)
         if (needsConfirmation) setSentTo(email)
@@ -183,10 +201,7 @@ function AuthCard() {
           )}
 
           {sentTo ? (
-            <div className="mt-6 flex gap-3 rounded-control border border-success/30 bg-success/10 p-4 text-sm">
-              <Mail className="size-5 shrink-0 text-success" />
-              <p>{t('welcome.checkEmail', { email: sentTo })}</p>
-            </div>
+            <CodeStep email={sentTo} onBack={() => setSentTo(null)} />
           ) : (
             <form onSubmit={onSubmit} className={oauthAvailable ? '' : 'mt-6'}>
               <Segmented
@@ -254,6 +269,89 @@ function AuthCard() {
         <p className="mt-2 text-center text-xs text-subtle">{t('welcome.guestHint')}</p>
       </div>
     </Card>
+  )
+}
+
+/** The code from the confirmation email, typed in right here, so no new tab opens. */
+function CodeStep({ email, onBack }: { email: string; onBack: () => void }) {
+  const { t } = useTranslation()
+  const verifySignupCode = useAuth((s) => s.verifySignupCode)
+  const resendSignupCode = useAuth((s) => s.resendSignupCode)
+  const [code, setCode] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [cooldown, setCooldown] = useState(60)
+
+  useEffect(() => {
+    if (cooldown <= 0) return
+    const timer = setTimeout(() => setCooldown((s) => s - 1), 1000)
+    return () => clearTimeout(timer)
+  }, [cooldown])
+
+  async function submit(event: FormEvent) {
+    event.preventDefault()
+    if (code.length < 6 || busy) return
+    setBusy(true)
+    setError(null)
+    try {
+      // On success the session arrives and this page sends you into the app.
+      await verifySignupCode(email, code)
+    } catch (err) {
+      setError(authErrorText(t, err))
+      setBusy(false)
+    }
+  }
+
+  async function resend() {
+    setError(null)
+    try {
+      await resendSignupCode(email)
+      setCooldown(60)
+    } catch (err) {
+      setError(authErrorText(t, err))
+    }
+  }
+
+  return (
+    <form onSubmit={submit} className="mt-6 flex flex-col gap-4">
+      <div className="flex gap-3 rounded-control border border-accent/30 bg-accent/10 p-4 text-sm">
+        <Mail className="size-5 shrink-0 text-accent" />
+        <p>{t('welcome.code.sent', { email })}</p>
+      </div>
+      <label className="block">
+        <span className="mb-1.5 block text-sm font-medium">{t('welcome.code.label')}</span>
+        <input
+          className="input h-14 text-center font-display text-2xl font-semibold tracking-[0.4em] tabular-nums"
+          inputMode="numeric"
+          autoComplete="one-time-code"
+          autoFocus
+          maxLength={10}
+          value={code}
+          onChange={(event) => setCode(event.target.value.replace(/\D/g, ''))}
+          placeholder="••••••"
+          aria-describedby="code-hint"
+        />
+        <span id="code-hint" className="mt-1.5 block text-xs text-subtle">{t('welcome.code.hint')}</span>
+      </label>
+      <button type="submit" className="btn btn-primary w-full" disabled={busy || code.length < 6}>
+        {busy && <Loader2 className="size-4 animate-spin" />}
+        {t('welcome.code.confirm')}
+      </button>
+      {error && (
+        <p role="alert" className="rounded-control border border-danger/30 bg-danger/10 p-3 text-sm text-danger">
+          {error}
+        </p>
+      )}
+      <div className="flex items-center justify-between gap-3 text-sm">
+        <button type="button" className="inline-flex items-center gap-1.5 text-muted transition-colors hover:text-fg" onClick={onBack}>
+          <ArrowLeft className="size-4" />
+          {t('welcome.code.otherEmail')}
+        </button>
+        <button type="button" className="font-semibold text-accent disabled:text-subtle" disabled={cooldown > 0} onClick={() => void resend()}>
+          {cooldown > 0 ? t('welcome.code.resendIn', { seconds: cooldown }) : t('welcome.code.resend')}
+        </button>
+      </div>
+    </form>
   )
 }
 

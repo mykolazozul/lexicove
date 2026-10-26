@@ -29,6 +29,17 @@ The code is public, so the app assumes anyone can read it and call the API direc
   moderator's rank against the target's and are written to `admin_audit_log`. Other people's
   coins, time zone and goal are hidden by column grants; the owner reads them via `my_profile()`.
   Chat text is rendered as plain text, and only `http(s)` links become clickable.
+- **Only the owner posts photos.** The `chat-images` bucket accepts uploads only from the owner
+  role and only into their own folder (Storage policies), files are capped at 5 MB and four
+  image types, and the bucket can't be listed. `send_message` accepts an image only from the
+  owner and only as a URL inside that folder of this project's bucket.
+- **Names are checked on the server.** A trigger on `profiles` rejects display names and
+  usernames with swear words (including look-alike letters) or reserved words such as "admin"
+  and "Lexicove", and limits changes to once in 7 days for a display name and once in 30 days for
+  a username. The verified badge is a server-managed column that only the owner can set through
+  `admin_set_verified`, which is audited.
+- **Sign-up is confirmed with a one-time code** from the email, entered on the same page; the
+  code expires after an hour.
 - **Push reminders keep their keys on the server.** The VAPID key pair and the cron token live in
   Vault and are read only by the `push` function with the service role. Subscriptions are accepted
   only for the browsers' own push services, so the function never posts anywhere else.

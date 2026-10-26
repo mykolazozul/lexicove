@@ -28,6 +28,10 @@
     "signOut": "Sign out",
     "backHome": "Back home",
     "close": "Close",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "areYouSure": "Are you sure?",
+    "choose": "Choose",
     "loading": "Loading…"
   },
   "home": {
@@ -94,6 +98,7 @@
     "createAccount": "Create account",
     "levelProgress": "{{current}} / {{needed}} XP to level {{next}}",
     "memberSince": "Member since {{date}}",
+    "verified": "Verified account",
     "customize": "Customise",
     "stats": {
       "bestStreak": "Best streak",
@@ -173,14 +178,24 @@
     "dailyGoalHint": "Answers per day. Reaching it pays +20 Coins and +50 XP.",
     "sounds": "Sounds",
     "soundsHint": "Short cues for answers, Coins and new levels. The sound set can be changed in the shop.",
+    "timeFormat": {
+      "title": "Time format",
+      "auto": "Like this device",
+      "h24": "24-hour",
+      "h12": "12-hour (AM/PM)",
+      "example": "Example: {{time}}"
+    },
     "reminders": {
       "title": "Streak reminders",
-      "hint": "At 19:00 if you haven’t studied yet and your streak is at risk. At most once a day.",
+      "hint": "At {{time}} if you haven’t studied yet and your streak is at risk. At most once a day.",
       "install": "On iPhone and iPad, add Lexicove to your home screen (Share → Add to Home Screen) to get reminders.",
       "unsupported": "This browser or the desktop app doesn’t support reminders.",
       "on": "Reminders are on",
       "denied": "Notifications are blocked in your browser settings",
-      "failed": "Couldn’t turn reminders on. Please try again."
+      "failed": "Couldn’t turn reminders on. Please try again.",
+      "askTitle": "Turn on reminders?",
+      "askText": "Lexicove sends one notification at {{time}}, only on days your streak is at risk. Your browser will ask for permission next: choose Allow.",
+      "allow": "Continue"
     },
     "language": "Language",
     "privacy": "Privacy",
@@ -213,7 +228,24 @@
     "signUp": "Create account",
     "guest": "Try it without an account",
     "guestHint": "Progress stays on this device. Chat and duels need an account.",
-    "checkEmail": "We sent a link to {{email}}. Confirm your email to sign in.",
+    "code": {
+      "sent": "We sent a confirmation code to {{email}}. Type it here, no need to open a new tab.",
+      "label": "Code from the email",
+      "hint": "It arrives within a minute. Can’t see it? Check Spam and Promotions.",
+      "confirm": "Confirm email",
+      "otherEmail": "Different email",
+      "resend": "Send the code again",
+      "resendIn": "Again in {{seconds}} s"
+    },
+    "errors": {
+      "invalid_credentials": "Wrong email or password",
+      "email_not_confirmed": "Your email isn’t confirmed yet. We sent a new code.",
+      "user_already_exists": "There’s already an account with this email. Sign in instead.",
+      "weak_password": "That password is too simple. Use at least 8 characters.",
+      "over_email_send_rate_limit": "Too many emails in a short time. Wait a few minutes.",
+      "otp_expired": "The code is wrong or has expired. Check it or send a new one.",
+      "email_address_invalid": "Check the email address"
+    },
     "notConfigured": "The server isn't connected yet, so only guest mode works for now.",
     "desktopOauth": "In the desktop app, email sign-in works for now. Google, GitHub, Discord and Notion are coming in an update.",
     "samples": [
@@ -610,7 +642,7 @@
         { "title": "Usage statistics", "body": "The app records a few events: opening it, viewing a section (just its name, no ids) and actions such as \"word saved\" or \"Notion synced\". Each event carries the platform (browser, installed app or desktop program), interface language, theme and the Apple-style switch.\nWhen you are signed in, the event is linked to your account. For guests no identifier is stored at all. No IP addresses, no tracking cookies and no third-party analytics are used. Events are deleted automatically after 90 days.\nYou can turn statistics off at any time in Settings → Privacy." },
         { "title": "Why", "body": "Only to run and improve the app: show your words, sync them with Notion, keep your progress on every device and understand which features help. We don't sell data or show ads." },
         { "title": "Who sees the data", "body": "Only you see your words and rules. The owner and administrators of Lexicove see, in the admin panel, your email, name, sign-in method, sign-up date, last activity time, number of words, the names of linked Notion tables and sync errors, plus aggregated statistics. This is needed to run the service and help with problems. The content of your words is not shown in the admin panel." },
-        { "title": "Community and notifications", "body": "Other users can see your name, username, avatar, level, the shop items you wear, your league and streak. Messages in chat rooms are visible to everyone signed in and kept for 180 days. Direct messages are seen only by the two of you; a moderator sees only what was reported. Friends can see when you were last online.\nIf you turn on reminders, your browser’s push subscription address is stored; it is deleted when you turn reminders off." },
+        { "title": "Community and notifications", "body": "Other users can see your name, username, avatar, level, the shop items you wear, your league and streak. Messages in chat rooms are visible to everyone signed in and kept for 180 days. Direct messages are seen only by the two of you; a moderator sees only what was reported. Friends can see when you were last online. You can change your name once every 7 days and your username once every 30; the server checks both for offensive and reserved words.\nIf you turn on reminders, your browser’s push subscription address is stored; it is deleted when you turn reminders off." },
         { "title": "Where", "body": "Data is stored with Supabase (servers in the EU, Frankfurt). The website is served by Vercel. The Notion token is stored encrypted and is only available to a server function, never to the browser." },
         { "title": "Notion", "body": "Lexicove only sees the pages you allowed when connecting. You can disconnect Notion at any time on the Words page, which deletes the token." },
         { "title": "Your rights", "body": "You can export your words as CSV, disconnect Notion and ask for your account to be deleted with all its data." },
@@ -999,7 +1031,11 @@
       "placeholder": "Message…",
       "send": "Send",
       "noLinksYet": "You can post links one day after signing up.",
-      "hint": "Enter to send, Shift+Enter for a new line"
+      "hint": "Enter to send, Shift+Enter for a new line",
+        "addPhoto": "Add a photo",
+        "removePhoto": "Remove the photo",
+        "openPhoto": "Open the photo",
+        "photo": "Photo"
     },
     "rulesGate": {
       "title": "Before you join the chat",
@@ -1102,6 +1138,9 @@
       "no_such_sanction": "That restriction was already lifted",
       "bad_duration": "Invalid duration",
       "offline": "Can’t reach the server",
+      "images_owner_only": "Only the owner can post photos in chat",
+      "bad_image": "That file won’t work: use a photo up to 5 MB",
+      "upload_failed": "Couldn’t upload the photo",
       "unknown": "Something went wrong. Please try again."
     }
   },
@@ -1167,6 +1206,28 @@
       "saved": "Username saved",
       "taken": "That username is taken",
       "rules": "3–24 characters: Latin letters, digits and _"
+    }
+  },
+  "names": {
+    "title": "Name",
+    "edit": "Change name",
+    "saved": "Name saved",
+    "rules": "2–32 characters, no swearing. You can change it once every 7 days.",
+    "usernameRules": "3–24 characters: Latin letters, digits and _. You can change it once every 30 days.",
+    "nextChange": "You can change it again on {{date}}",
+    "verify": "Add the check mark",
+    "unverify": "Remove the check mark",
+    "verifiedDone": "Account verified ✓",
+    "unverified": "Check mark removed",
+    "errors": {
+      "taken": "That username is taken",
+      "name_length": "A name needs 2 to 32 characters",
+      "name_invalid": "The name has characters that aren’t allowed",
+      "name_bad_word": "That name won’t do: leave out swearing and insults",
+      "name_reserved": "Words like admin, moderator or Lexicove are reserved for the team",
+      "name_too_soon": "You can change your name again on {{date}}",
+      "username_too_soon": "You can change your username again on {{date}}",
+      "unknown": "Couldn’t save. Please try again."
     }
   }
 }

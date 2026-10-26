@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { Check, Coins, Lock, Sparkles } from 'lucide-react'
-import { Banner, DisplayName, ItemPreview, TitleBadge, UserAvatar } from '../components/cosmetics'
+import { Banner, DisplayName, ItemPreview, TitleBadge, UserAvatar, VerifiedBadge } from '../components/cosmetics'
 import { Modal } from '../components/Modal'
 import { Card, Reveal } from '../components/ui'
 import { useSound } from '../lib/cosmetics'
@@ -173,10 +173,11 @@ export function ShopPage() {
       ) : visible.length === 0 ? (
         <Card className="py-12 text-center text-muted">{t('shop.empty')}</Card>
       ) : (
-        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-          {visible.map((item, index) => (
-            <li key={item.id}>
-              <Reveal delay={Math.min(index, 12) * 0.02} className="h-full">
+        <Reveal delay={0.08}>
+          {/* One fade for the whole grid: animating every card separately made the shop slow to open. */}
+          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+            {visible.map((item) => (
+              <li key={item.id}>
                 <ItemCard
                   item={item}
                   action={actionFor(item)}
@@ -187,10 +188,10 @@ export function ShopPage() {
                   onAction={(action) => void run(item, action)}
                   onBoost={item.id === 'double_xp' && (inventory.get(item.id) ?? 0) > 0 ? () => void boost() : undefined}
                 />
-              </Reveal>
-            </li>
-          ))}
-        </ul>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
       )}
 
       <TryOn
@@ -258,7 +259,7 @@ function ItemCard({
       </div>
       <div className="flex flex-1 flex-col gap-3 p-3.5 sm:p-4">
         <div className="min-w-0">
-          <div className="truncate font-semibold">{t(`shop.items.${item.id}`)}</div>
+          <div className="line-clamp-2 leading-snug font-semibold">{t(`shop.items.${item.id}`)}</div>
           <div className="truncate text-xs text-muted">
             {quantity !== undefined ? t('shop.inStock', { count: quantity }) : t(`shop.kinds.${item.kind}`)}
           </div>
@@ -287,9 +288,9 @@ function ActionButton({ action, price, busy, onClick }: { action: Action; price:
       return <button type="button" className={cx(base, 'btn-secondary')} onClick={onClick}>{t('shop.signIn')}</button>
     case 'locked':
       return (
-        <span className={cx(base, 'cursor-default border border-dashed border-line text-subtle')} title={t('shop.lockedHint', { achievement })}>
+        <span className="btn min-h-9 w-full cursor-default border border-dashed border-line px-3 py-1.5 text-sm text-subtle" title={t('shop.lockedHint', { achievement })}>
           <Lock className="size-3.5 shrink-0" />
-          <span className="truncate">{achievement}</span>
+          <span className="line-clamp-2 leading-tight whitespace-normal">{achievement}</span>
         </span>
       )
     case 'claim':
@@ -358,7 +359,10 @@ function TryOn({
                   <UserAvatar name={viewer.name} url={viewer.avatarUrl} size={76} avatar={look.avatar} frame={look.frame} />
                 </span>
                 <div className="min-w-0 pb-1">
-                  <DisplayName name={viewer.name} color={look.nameColor} className="block truncate font-display text-lg font-semibold" />
+                  <span className="flex min-w-0 items-center gap-1">
+                    <DisplayName name={viewer.name} color={look.nameColor} className="truncate font-display text-lg font-semibold" />
+                    {viewer.verified && <VerifiedBadge />}
+                  </span>
                   <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-muted">
                     <TitleBadge title={look.title} />
                     <span>{t('common.level', { level: viewer.level })}</span>

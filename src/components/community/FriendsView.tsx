@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AtSign, Check, Copy, MessageCircle, Pencil, UserPlus, X } from 'lucide-react'
+import { AtSign, Check, Copy, MessageCircle, Pencil, UserPlus, UserRound, X } from 'lucide-react'
 import { Card, SectionTitle } from '../ui'
 import { errorText, StreakFlame, UserCardModal, UserLine, WeekXp } from './People'
 import { community, type FriendEntry } from '../../lib/community'
-import { useProfile } from '../../stores/profile'
+import { NameError, useProfile } from '../../stores/profile'
 import { toast } from '../../stores/toast'
 
 const USERNAME = /^[A-Za-z0-9_]{3,24}$/
@@ -153,15 +153,120 @@ export function FriendsView({ onMessage }: { onMessage: (userId: string) => void
   )
 }
 
-/** The @name friends search for. */
-export function UsernameCard() {
+
+const DAY = 86_400_000
+
+/** When a name may change again, or null if it may change now. Staff don't wait. */
+function nextChange(changedAt: string | null | undefined, days: number, staff: boolean): Date | null {
+  if (!changedAt || staff) return null
+  const next = new Date(new Date(changedAt).getTime() + days * DAY)
+  return next > new Date() ? next : null
+}
+
+function useNameRules() {
+  const { t, i18n } = useTranslation()
+  const role = useProfile((s) => s.profile?.role ?? 'user')
+  const staff = role === 'admin' || role === 'owner'
+  const date = (value: Date | string) =>
+    new Date(value).toLocaleDateString(i18n.language, { day: 'numeric', month: 'long', year: 'numeric' })
+  const errorText = (err: unknown) => {
+    if (!(err instanceof NameError)) return t('names.errors.unknown')
+    return t(`names.errors.${err.code}`, { date: err.until ? date(err.until) : '', defaultValue: t('names.errors.unknown') })
+  }
+  return { staff, date, errorText }
+}
+
+/** The name everyone sees, with its rules and when it may change next. */
+export function DisplayNameCard() {
   const { t } = useTranslation()
-  const username = useProfile((s) => s.profile?.username ?? null)
-  const setUsername = useProfile((s) => s.setUsername)
+  const name = useProfile((s) => s.profile?.display_name ?? '')
+  const changedAt = useProfile((s) => s.profile?.display_name_changed_at)
+  const setDisplayName = useProfile((s) => s.setDisplayName)
+  const { staff, date, errorText } = useNameRules()
   const [editing, setEditing] = useState(false)
   const [value, setValue] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const locked = nextChange(changedAt, 7, staff)
+
+  async function save() {
+    const next = value.trim().replace(/\s+/g, ' ')
+    if (next === name) return setEditing(false)
+    if (next.length < 2 || next.length > 32) return setError(t('names.errors.name_length'))
+    setBusy(true)
+    setError(null)
+    try {
+      await setDisplayName(next)
+      setEditing(false)
+      toast(t('names.saved'), 'ok')
+    } catch (err) {
+      setError(errorText(err))
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <Card padding="p-4 sm:p-5">
+      {editing ? (
+        <form
+          onSubmit={(event) => {
+            event.preventDefault()
+            void save()
+          }}
+        >
+          <h3 className="font-display font-semibold">{t('names.title')}</h3>
+          <div className="mt-3 flex gap-2">
+            <input className="input flex-1" value={value} maxLength={32} autoFocus onChange={(event) => setValue(event.target.value)} autoComplete="nickname" />
+            <button type="submit" className="btn btn-primary" disabled={busy}>
+              {t('friends.username.save')}
+            </button>
+            <button type="button" className="btn btn-ghost" onClick={() => setEditing(false)}>
+              {t('common.cancel')}
+            </button>
+          </div>
+          <p className={error ? 'mt-2 text-xs text-danger' : 'mt-2 text-xs text-subtle'}>{error ?? t('names.rules')}</p>
+        </form>
+      ) : (
+        <div className="flex items-center gap-3">
+          <UserRound className="size-5 shrink-0 text-accent" />
+          <div className="min-w-0 flex-1">
+            <div className="text-xs text-muted">{t('names.title')}</div>
+            <div className="truncate font-display font-semibold">{name}</div>
+            {locked && <div className="mt-0.5 text-xs text-subtle">{t('names.nextChange', { date: date(locked) })}</div>}
+          </div>
+          <button
+            type="button"
+            className="btn btn-ghost h-9 px-3"
+            aria-label={t('names.edit')}
+            title={locked ? t('names.nextChange', { date: date(locked) }) : t('names.edit')}
+            disabled={Boolean(locked)}
+            onClick={() => {
+              setValue(name)
+              setError(null)
+              setEditing(true)
+            }}
+          >
+            <Pencil className="size-4" />
+          </button>
+        </div>
+      )}
+    </Card>
+  )
+}
+
+/** The @name friends search for. */
+export function UsernameCard() {
+  const { t } = useTranslation()
+  const username = useProfile((s) => s.profile?.username ?? null)
+  const changedAt = useProfile((s) => s.profile?.username_changed_at)
+  const setUsername = useProfile((s) => s.setUsername)
+  const { staff, date, errorText } = useNameRules()
+  const [editing, setEditing] = useState(false)
+  const [value, setValue] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [busy, setBusy] = useState(false)
+  const locked = username ? nextChange(changedAt, 30, staff) : null
 
   if (username && !editing) {
     return (
@@ -170,6 +275,7 @@ export function UsernameCard() {
         <div className="min-w-0 flex-1">
           <div className="text-xs text-muted">{t('friends.username.yours')}</div>
           <div className="truncate font-display font-semibold">@{username}</div>
+          {locked && <div className="mt-0.5 text-xs text-subtle">{t('names.nextChange', { date: date(locked) })}</div>}
         </div>
         <button
           type="button"
@@ -186,8 +292,11 @@ export function UsernameCard() {
           type="button"
           className="btn btn-ghost h-9 px-3"
           aria-label={t('friends.username.edit')}
+          title={locked ? t('names.nextChange', { date: date(locked) }) : t('friends.username.edit')}
+          disabled={Boolean(locked)}
           onClick={() => {
             setValue(username)
+            setError(null)
             setEditing(true)
           }}
         >
@@ -203,6 +312,7 @@ export function UsernameCard() {
       setError(t('friends.username.rules'))
       return
     }
+    if (next === username) return setEditing(false)
     setBusy(true)
     setError(null)
     try {
@@ -210,7 +320,7 @@ export function UsernameCard() {
       setEditing(false)
       toast(t('friends.username.saved'), 'ok')
     } catch (err) {
-      setError(t(err instanceof Error && err.message === 'taken' ? 'friends.username.taken' : 'friends.username.rules'))
+      setError(errorText(err))
     } finally {
       setBusy(false)
     }
@@ -236,11 +346,11 @@ export function UsernameCard() {
         </button>
         {username && (
           <button type="button" className="btn btn-ghost" onClick={() => setEditing(false)}>
-            {t('common.close')}
+            {t('common.cancel')}
           </button>
         )}
       </form>
-      <p className={error ? 'mt-2 text-xs text-danger' : 'mt-2 text-xs text-subtle'}>{error ?? t('friends.username.rules')}</p>
+      <p className={error ? 'mt-2 text-xs text-danger' : 'mt-2 text-xs text-subtle'}>{error ?? t('names.usernameRules')}</p>
     </Card>
   )
 }

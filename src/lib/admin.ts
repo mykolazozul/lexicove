@@ -106,6 +106,7 @@ export const admin = {
   sources: () => rpc<AdminSource[]>('admin_notion_sources'),
   audit: () => rpc<AuditEntry[]>('admin_audit', { p_limit: 100 }),
   economy: () => rpc<Economy>('admin_economy'),
+  setVerified: (userId: string, verified: boolean) => rpc<void>('admin_set_verified', { p_user: userId, p_verified: verified }),
 }
 
 /** Free-plan limits that matter for this app (Supabase, autumn 2026). */

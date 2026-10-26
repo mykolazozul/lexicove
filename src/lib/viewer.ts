@@ -34,6 +34,7 @@ export function useViewer() {
     coins: profile?.coins ?? 0,
     streak,
     memberSince: profile?.created_at ?? null,
+    verified: profile?.verified ?? false,
     dailyGoal: profile?.daily_goal ?? localGoal,
     /** When the double-XP boost ends, if one is running. */
     boostUntil: boostUntil && boostUntil.getTime() > Date.now() ? boostUntil : null,

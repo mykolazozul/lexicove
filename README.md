@@ -34,7 +34,10 @@
 - **Phase 4, community:** chat rooms and direct messages between friends with replies, reactions
   and mentions, friends with online status, weekly leagues from Bronze to Legend, reports,
   warnings, mutes and bans, a profanity filter and anti-spam limits on the server, community
-  rules, streak reminders over Web Push and an economy view in the admin panel.
+  rules, streak reminders over Web Push and an economy view in the admin panel. Names are
+  checked for bad words and can change once a week (username once a month), the owner has a
+  verified badge and can post photos in chats, levels take longer as they rise, and times follow
+  the device's 12- or 24-hour clock.
 
 Games and duels arrive phase by phase. See the roadmap in [SPEC.md](SPEC.md#16-етапи).
 

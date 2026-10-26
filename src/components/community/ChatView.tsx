@@ -3,9 +3,9 @@ import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { AnimatePresence, motion } from 'motion/react'
 import { create } from 'zustand'
-import { ArrowDown, CornerUpLeft, Flag, Lock, MessageCircle, Send, ShieldAlert, SmilePlus, Timer, Trash2, X } from 'lucide-react'
+import { ArrowDown, CornerUpLeft, Flag, ImagePlus, Lock, MessageCircle, Send, ShieldAlert, SmilePlus, Timer, Trash2, X } from 'lucide-react'
 import { Modal } from '../Modal'
-import { Card } from '../ui'
+import { Card, Checkbox, RadioCards } from '../ui'
 import { errorText, PersonAvatar, PersonName, reasonText, UserCardModal, UserLine } from './People'
 import {
   community,
@@ -23,6 +23,7 @@ import {
 } from '../../lib/community'
 import { cx } from '../../lib/cx'
 import { supabase } from '../../lib/supabase'
+import { formatDateTime, formatTime } from '../../lib/time'
 import { useViewer } from '../../lib/viewer'
 import { ROLE_RANK } from '../../lib/admin'
 import { useProfile } from '../../stores/profile'
@@ -188,7 +189,16 @@ export function ChatView({ initialRoom }: { initialRoom?: string | null }) {
           onToggleMine={setMine}
         />
 
-        <Composer room={room} status={status} closed={Boolean(currentRoom?.closed) && !isModerator} onStatus={refreshStatus} messages={messages} cards={cards} />
+        <Composer
+          room={room}
+          status={status}
+          closed={Boolean(currentRoom?.closed) && !isModerator}
+          onStatus={refreshStatus}
+          messages={messages}
+          cards={cards}
+          me={me}
+          canPostImages={viewer.role === 'owner'}
+        />
       </Card>
 
       <UserCardModal userId={userCard} onClose={() => setUserCard(null)} onMessage={openDm} />
@@ -479,9 +489,10 @@ function MessageRow({
 }) {
   const { t, i18n } = useTranslation()
   const [picking, setPicking] = useState(false)
+  const [viewing, setViewing] = useState(false)
   const setReply = useChatDraft((s) => s.setReply)
   const deleted = message.deleted_at !== null
-  const time = new Date(message.created_at).toLocaleTimeString(i18n.language, { hour: '2-digit', minute: '2-digit' })
+  const time = formatTime(message.created_at, i18n.language)
   const reactions = Object.entries(message.reactions ?? {}).filter(([, count]) => count > 0)
 
   return (
@@ -494,7 +505,7 @@ function MessageRow({
         <div className="mb-1 ml-12 flex min-w-0 items-center gap-1.5 text-xs text-subtle">
           <CornerUpLeft className="size-3 shrink-0" />
           <span className="font-semibold">{replyAuthor?.display_name ?? '…'}</span>
-          <span className="truncate">{reply.deleted_at ? t('community.chat.deleted') : reply.body}</span>
+          <span className="truncate">{reply.deleted_at ? t('community.chat.deleted') : reply.body || `📷 ${t('community.chat.photo')}`}</span>
         </div>
       )}
       <div className="flex gap-3">
@@ -520,9 +531,21 @@ function MessageRow({
               </time>
             </div>
           )}
-          <p className={cx('text-[0.95rem] leading-relaxed break-words whitespace-pre-wrap', deleted && 'text-subtle italic')}>
-            {deleted ? t('community.chat.deleted') : <Body text={message.body} />}
-          </p>
+          {(deleted || message.body) && (
+            <p className={cx('text-[0.95rem] leading-relaxed break-words whitespace-pre-wrap', deleted && 'text-subtle italic')}>
+              {deleted ? t('community.chat.deleted') : <Body text={message.body} />}
+            </p>
+          )}
+          {message.image_url && !deleted && (
+            <button type="button" className="mt-1.5 block overflow-hidden rounded-control border border-line" onClick={() => setViewing(true)} aria-label={t('community.chat.openPhoto')}>
+              <img src={message.image_url} alt="" loading="lazy" className="max-h-72 w-auto max-w-full object-contain" />
+            </button>
+          )}
+          {viewing && message.image_url && (
+            <Modal open onClose={() => setViewing(false)} title={t('community.chat.photo')} wide>
+              <img src={message.image_url} alt="" className="mx-auto max-h-[70dvh] w-auto rounded-control" />
+            </Modal>
+          )}
           {message.hidden && !deleted && (
             <p className="mt-0.5 inline-flex items-center gap-1 text-xs text-coin">
               <ShieldAlert className="size-3.5" />
@@ -617,6 +640,8 @@ function Composer({
   onStatus,
   messages,
   cards,
+  me,
+  canPostImages,
 }: {
   room: string
   status: ChatStatus | null
@@ -624,9 +649,18 @@ function Composer({
   onStatus: () => void
   messages: ChatMessage[]
   cards: Map<string, PublicCard>
+  me: string
+  canPostImages: boolean
 }) {
   const { t, i18n } = useTranslation()
   const reply = useChatDraft((s) => s.reply)
+  const [photo, setPhoto] = useState<{ file: File; preview: string } | null>(null)
+  const picker = useRef<HTMLInputElement>(null)
+
+  // The preview is a local object URL; let it go when the photo changes or the composer closes.
+  useEffect(() => () => {
+    if (photo) URL.revokeObjectURL(photo.preview)
+  }, [photo])
   const setReply = useChatDraft((s) => s.setReply)
   const [text, setText] = useState('')
   const [sending, setSending] = useState(false)
@@ -652,7 +686,7 @@ function Composer({
 
   const restriction = status?.restriction
   if (restriction) {
-    const until = restriction.until ? new Date(restriction.until).toLocaleString(i18n.language, { dateStyle: 'medium', timeStyle: 'short' }) : null
+    const until = restriction.until ? formatDateTime(restriction.until, i18n.language) : null
     return (
       <div className="border-t border-line bg-danger/8 px-4 py-3 text-sm text-danger">
         {t(restriction.kind === 'ban' ? 'community.chat.banned' : 'community.chat.muted', { until: until ?? t('community.chat.forever') })}
@@ -665,13 +699,15 @@ function Composer({
 
   async function send() {
     const body = text.trim()
-    if (!body || sending) return
+    if ((!body && !photo) || sending) return
     setSending(true)
     setError(null)
     try {
-      await community.send(room, body, reply?.id)
+      const image = photo ? await community.uploadImage(photo.file, me) : null
+      await community.send(room, body, reply?.id, image)
       setText('')
       setReply(null)
+      setPhoto(null)
     } catch (err) {
       const code = err instanceof CommunityError ? err.code : 'unknown'
       setError(
@@ -714,7 +750,41 @@ function Composer({
           </button>
         </div>
       )}
+      {photo && (
+        <div className="mb-2 flex items-center gap-3 rounded-control border border-line bg-surface p-2">
+          <img src={photo.preview} alt="" className="size-14 rounded-[10px] object-cover" />
+          <span className="min-w-0 flex-1 truncate text-xs text-muted">{photo.file.name}</span>
+          <button type="button" className="grid size-8 place-items-center rounded-full text-muted hover:bg-surface-hover hover:text-fg" onClick={() => setPhoto(null)} aria-label={t('community.chat.removePhoto')}>
+            <X className="size-4" />
+          </button>
+        </div>
+      )}
       <div className="flex items-end gap-2">
+        {canPostImages && (
+          <>
+            <button
+              type="button"
+              className="btn btn-secondary size-11 shrink-0 px-0"
+              onClick={() => picker.current?.click()}
+              aria-label={t('community.chat.addPhoto')}
+              title={t('community.chat.addPhoto')}
+            >
+              <ImagePlus className="size-4" />
+            </button>
+            <input
+              ref={picker}
+              type="file"
+              accept="image/png,image/jpeg,image/webp,image/gif"
+              className="sr-only"
+              tabIndex={-1}
+              onChange={(event) => {
+                const chosen = event.target.files?.[0]
+                event.target.value = ''
+                if (chosen) setPhoto({ file: chosen, preview: URL.createObjectURL(chosen) })
+              }}
+            />
+          </>
+        )}
         <textarea
           ref={area}
           rows={1}
@@ -726,7 +796,7 @@ function Composer({
           aria-label={t('community.chat.placeholder')}
           className="input min-h-11 flex-1 resize-none py-2.5 leading-snug"
         />
-        <button type="button" className="btn btn-primary size-11 shrink-0 px-0" onClick={() => void send()} disabled={sending || !text.trim()} aria-label={t('community.chat.send')}>
+        <button type="button" className="btn btn-primary size-11 shrink-0 px-0" onClick={() => void send()} disabled={sending || (!text.trim() && !photo)} aria-label={t('community.chat.send')}>
           <Send className="size-4" />
         </button>
       </div>
@@ -762,10 +832,9 @@ function RulesGate({ onAccepted }: { onAccepted: () => void }) {
           {t('community.rulesGate.full')}
         </Link>
       </p>
-      <label className="mt-5 flex cursor-pointer items-start gap-3 text-sm">
-        <input type="checkbox" className="mt-0.5 size-4 accent-[var(--accent)]" checked={agreed} onChange={(event) => setAgreed(event.target.checked)} />
-        <span>{t('community.rulesGate.agree')}</span>
-      </label>
+      <Checkbox className="mt-5" checked={agreed} onChange={setAgreed}>
+        {t('community.rulesGate.agree')}
+      </Checkbox>
       <button
         type="button"
         className="btn btn-primary mt-5"
@@ -834,15 +903,15 @@ function ReportModal({ message, onClose }: { message: ChatMessage | null; onClos
       {message && (
         <div className="flex flex-col gap-4">
           <blockquote className="rounded-control border border-line bg-surface px-4 py-3 text-sm break-words whitespace-pre-wrap text-muted">{message.body}</blockquote>
-          <fieldset className="flex flex-col gap-2">
-            <legend className="mb-2 text-sm font-medium">{t('community.report.why')}</legend>
-            {REPORT_REASONS.map((value) => (
-              <label key={value} className="flex cursor-pointer items-center gap-3 rounded-control border border-line px-3 py-2 text-sm has-[:checked]:border-accent has-[:checked]:bg-accent/10">
-                <input type="radio" name="reason" value={value} checked={reason === value} onChange={() => setReason(value)} className="accent-[var(--accent)]" />
-                {t(`community.report.reasons.${value}`)}
-              </label>
-            ))}
-          </fieldset>
+          <div>
+            <p className="mb-2 text-sm font-medium">{t('community.report.why')}</p>
+            <RadioCards
+              label={t('community.report.why')}
+              value={reason}
+              onChange={setReason}
+              options={REPORT_REASONS.map((value) => ({ value, label: t(`community.report.reasons.${value}`) }))}
+            />
+          </div>
           <textarea className="input min-h-20 py-2" maxLength={300} placeholder={t('community.report.note')} value={note} onChange={(event) => setNote(event.target.value)} />
         </div>
       )}

@@ -4,6 +4,7 @@ import { AlertTriangle, Info, Loader2, Plus, RefreshCw, Unplug, X } from 'lucide
 import { canConnectHere, notionCall, notionRedirectUri } from '../../lib/notion'
 import { useLibrary, type Source } from '../../stores/library'
 import { BrandIcon } from '../BrandIcon'
+import { confirmDialog } from '../Confirm'
 import { Badge, Card } from '../ui'
 import { notionErrorText } from './notionErrors'
 
@@ -79,7 +80,7 @@ export function NotionPanel({
   }
 
   async function disconnect() {
-    if (!window.confirm(t('notion.confirmDisconnect'))) return
+    if (!(await confirmDialog({ title: t('common.areYouSure'), text: t('notion.confirmDisconnect'), confirm: t('notion.disconnect'), tone: 'danger' }))) return
     try {
       await notionCall('disconnect')
       await load()
@@ -90,7 +91,7 @@ export function NotionPanel({
   }
 
   async function unlink(source: Source) {
-    if (!window.confirm(t('notion.confirmRemoveSource', { name: source.title || t('notion.untitled') }))) return
+    if (!(await confirmDialog({ title: t('common.areYouSure'), text: t('notion.confirmRemoveSource', { name: source.title || t('notion.untitled') }), tone: 'danger' }))) return
     try {
       await removeSource(source)
     } catch (error) {

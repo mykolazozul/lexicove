@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Crown, Volume2 } from 'lucide-react'
+import { BadgeCheck, Crown, Volume2 } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { cx } from '../lib/cx'
 import { play, type Pack } from '../lib/sounds'
@@ -59,6 +59,16 @@ export function DisplayName({ name, color, className }: { name: string; color?: 
   return (
     <span className={className} style={value ? { color: value } : undefined}>
       {name}
+    </span>
+  )
+}
+
+/** The blue check on accounts the owner verified. */
+export function VerifiedBadge({ className }: { className?: string }) {
+  const { t } = useTranslation()
+  return (
+    <span className={cx('inline-flex shrink-0', className)} title={t('profile.verified')} role="img" aria-label={t('profile.verified')}>
+      <BadgeCheck className="size-[1.15em] fill-[#1d9bf0] text-white" strokeWidth={2.4} />
     </span>
   )
 }

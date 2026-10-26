@@ -16,7 +16,7 @@ import { useLibrary } from '../stores/library'
 import { useStudy } from '../stores/study'
 import { useProfile } from '../stores/profile'
 import { toast } from '../stores/toast'
-import { DisplayName, UserAvatar } from './cosmetics'
+import { DisplayName, UserAvatar, VerifiedBadge } from './cosmetics'
 import { Logo } from './Logo'
 import { Toaster } from './Toaster'
 import { ProgressBar } from './ui'
@@ -87,9 +87,9 @@ export function AppShell() {
       <main className="mx-auto w-full max-w-6xl px-4 pt-4 pb-32 sm:px-6 lg:px-10 lg:pt-2 lg:pb-12">
         <motion.div
           key={pathname}
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
         >
           <Outlet />
         </motion.div>
@@ -134,7 +134,10 @@ function Sidebar() {
           <span className="flex items-center gap-3">
             <UserAvatar name={viewer.name} url={viewer.avatarUrl} size={40} avatar={equipped.avatar} frame={equipped.frame} />
             <span className="min-w-0 flex-1">
-              <DisplayName name={viewer.name} color={equipped.nameColor} className="block truncate text-sm font-semibold" />
+              <span className="flex min-w-0 items-center gap-1">
+                <DisplayName name={viewer.name} color={equipped.nameColor} className="truncate text-sm font-semibold" />
+                {viewer.verified && <VerifiedBadge />}
+              </span>
               <span className="block text-xs text-muted">{t('common.level', { level: viewer.level })}</span>
             </span>
             <span className="inline-flex items-center gap-1 text-xs font-bold text-coin tabular-nums">

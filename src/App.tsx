@@ -2,14 +2,13 @@ import { lazy, Suspense, useEffect, type ComponentType, type ReactNode } from 'r
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router'
 import { motion } from 'motion/react'
 import { AppShell } from './components/AppShell'
+import { ConfirmHost } from './components/Confirm'
 import { LogoMark } from './components/Logo'
 import { pageOf, track } from './lib/analytics'
 import i18n from './lib/i18n'
 import { ComingSoonPage } from './pages/ComingSoonPage'
 import { HomePage } from './pages/HomePage'
 import { NotFoundPage } from './pages/NotFoundPage'
-import { ProfilePage } from './pages/ProfilePage'
-import { SettingsPage } from './pages/SettingsPage'
 import { WelcomePage } from './pages/WelcomePage'
 import { useAuth } from './stores/auth'
 import { resolveTheme, useSettings } from './stores/settings'
@@ -22,6 +21,8 @@ const AdminPage = page(() => import('./pages/AdminPage'), 'AdminPage')
 const LearnPage = page(() => import('./pages/LearnPage'), 'LearnPage')
 const SessionPage = page(() => import('./pages/SessionPage'), 'SessionPage')
 const ShopPage = page(() => import('./pages/ShopPage'), 'ShopPage')
+const ProfilePage = page(() => import('./pages/ProfilePage'), 'ProfilePage')
+const SettingsPage = page(() => import('./pages/SettingsPage'), 'SettingsPage')
 const CommunityPage = page(() => import('./pages/CommunityPage'), 'CommunityPage')
 const WordsPage = page(() => import('./pages/WordsPage'), 'WordsPage')
 const NotionCallbackPage = page(() => import('./pages/NotionCallbackPage'), 'NotionCallbackPage')
@@ -48,8 +49,8 @@ const router = createBrowserRouter([
       { path: 'games', element: <ComingSoonPage section="games" /> },
       { path: 'shop', element: <Lazy><ShopPage /></Lazy> },
       { path: 'community', element: <Lazy><CommunityPage /></Lazy> },
-      { path: 'profile', element: <ProfilePage /> },
-      { path: 'settings', element: <SettingsPage /> },
+      { path: 'profile', element: <Lazy><ProfilePage /></Lazy> },
+      { path: 'settings', element: <Lazy><SettingsPage /></Lazy> },
       { path: 'admin', element: <Lazy><AdminPage /></Lazy> },
       { path: '*', element: <NotFoundPage /> },
     ],
@@ -70,7 +71,12 @@ export function App() {
     return router.subscribe((state) => track('page_view', pageOf(state.location.pathname)))
   }, [ready])
 
-  return <RouterProvider router={router} />
+  return (
+    <>
+      <RouterProvider router={router} />
+      <ConfirmHost />
+    </>
+  )
 }
 
 /** Lets in anyone who signed in or chose guest mode; everyone else starts at /welcome. */

@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { Ban, Flame, MessageCircle, Shield, ShieldAlert, Trophy, UserCheck, UserMinus, UserPlus, VolumeX } from 'lucide-react'
-import { Banner, DisplayName, TitleBadge, UserAvatar } from '../cosmetics'
+import { Ban, BadgeCheck, Flame, MessageCircle, Shield, ShieldAlert, Trophy, UserCheck, UserMinus, UserPlus, VolumeX } from 'lucide-react'
+import { Banner, DisplayName, TitleBadge, UserAvatar, VerifiedBadge } from '../cosmetics'
 import { Modal } from '../Modal'
-import { Badge } from '../ui'
+import { Badge, Disclosure } from '../ui'
 import { community, CommunityError, TIER_ICONS, TIERS, type ModUser, type PublicCard, type PublicProfile } from '../../lib/community'
 import { cx } from '../../lib/cx'
 import { levelFromXp } from '../../lib/progression'
+import { formatDateTime } from '../../lib/time'
 import { useViewer } from '../../lib/viewer'
-import { ROLE_RANK } from '../../lib/admin'
+import { admin, ROLE_RANK } from '../../lib/admin'
 import { useLook } from '../../stores/economy'
 import { toast } from '../../stores/toast'
 
@@ -46,6 +47,7 @@ export function PersonName({ user }: { user: PublicCard }) {
   return (
     <span className="flex min-w-0 items-center gap-1.5">
       <DisplayName name={user.display_name} color={look.nameColor} className="truncate font-semibold" />
+      {user.verified && <VerifiedBadge />}
       <RoleBadge role={user.role} />
       <span className="shrink-0 rounded-full bg-surface px-1.5 text-[0.65rem] font-bold text-muted tabular-nums">{levelFromXp(user.xp).level}</span>
     </span>
@@ -165,6 +167,7 @@ export function UserCardModal({
               <div className="min-w-0 pb-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <DisplayName name={user.display_name} color={look.nameColor} className="font-display text-lg font-semibold" />
+                  {user.verified && <VerifiedBadge />}
                   <RoleBadge role={user.role} />
                 </div>
                 <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-muted">
@@ -189,7 +192,7 @@ export function UserCardModal({
             ))}
           </ul>
           <p className="text-xs text-subtle">
-            {t('profile.memberSince', { date: new Date(profile.created_at).toLocaleDateString(i18n.language, { month: 'long', year: 'numeric' }) })}
+            {t('profile.memberSince', { date: new Date(profile.created_at).toLocaleDateString(i18n.language, { day: 'numeric', month: 'long', year: 'numeric' }) })}
           </p>
 
           {profile.me ? (
@@ -230,6 +233,18 @@ export function UserCardModal({
                 </>
               )}
             </div>
+          )}
+
+          {viewer.role === 'owner' && !profile.me && (
+            <button
+              type="button"
+              className="btn btn-secondary self-start"
+              disabled={busy}
+              onClick={() => act(() => admin.setVerified(user.id, !user.verified), t(user.verified ? 'names.unverified' : 'names.verifiedDone'))}
+            >
+              <BadgeCheck className="size-4 text-[#1d9bf0]" />
+              {t(user.verified ? 'names.unverify' : 'names.verify')}
+            </button>
           )}
 
           {isModerator && record && !profile.me && (
@@ -284,7 +299,7 @@ export function UserCardModal({
                         <Badge tone={item.kind === 'ban' ? 'fire' : item.kind === 'mute' ? 'coin' : 'neutral'}>{t(`community.mod.kinds.${item.kind}`)}</Badge>
                         <span className="min-w-0 flex-1 truncate text-muted">
                           {reasonText(t, item.reason)} · {new Date(item.created_at).toLocaleDateString(i18n.language)}
-                          {item.until && ` → ${new Date(item.until).toLocaleString(i18n.language, { dateStyle: 'short', timeStyle: 'short' })}`}
+                          {item.until && ` → ${formatDateTime(item.until, i18n.language)}`}
                         </span>
                         {active && item.kind !== 'warning' && record.can_moderate && (
                           <button type="button" className="text-xs font-semibold text-accent" disabled={busy} onClick={() => act(() => community.modRevoke(item.id), t('community.mod.done.revoked'))}>
@@ -297,9 +312,8 @@ export function UserCardModal({
                 </ul>
               )}
               {record.messages.length > 0 && (
-                <details className="text-sm">
-                  <summary className="cursor-pointer text-muted">{t('community.mod.recent', { count: record.messages.length })}</summary>
-                  <ul className="mt-2 flex flex-col gap-1">
+                <Disclosure className="text-sm" summary={t('community.mod.recent', { count: record.messages.length })}>
+                  <ul className="flex flex-col gap-1">
                     {record.messages.map((message) => (
                       <li key={message.id} className={cx('rounded-control bg-surface px-3 py-1.5', message.deleted && 'text-subtle line-through')}>
                         <span className="text-xs text-subtle">#{message.room} · </span>
@@ -307,7 +321,7 @@ export function UserCardModal({
                       </li>
                     ))}
                   </ul>
-                </details>
+                </Disclosure>
               )}
             </section>
           )}

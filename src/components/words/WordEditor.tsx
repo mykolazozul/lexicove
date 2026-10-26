@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Loader2, Trash2 } from 'lucide-react'
 import { useLibrary, type Rule, type Word } from '../../stores/library'
+import { confirmDialog } from '../Confirm'
 import { Field, Modal } from '../Modal'
 
 type Kind = 'words' | 'rules'
@@ -67,7 +68,7 @@ export function ItemEditor({
     if (!item) return
     const name = kind === 'words' ? (item as Word).word : (item as Rule).rule
     const question = item.source_id ? t('words.confirmDelete', { name }) : t('words.confirmDeleteLocal', { name })
-    if (!window.confirm(question)) return
+    if (!(await confirmDialog({ title: t('common.areYouSure'), text: question, confirm: t('words.delete'), tone: 'danger' }))) return
     setBusy('delete')
     try {
       if (kind === 'words') await deleteWord(item as Word)
