@@ -4,16 +4,24 @@ import {
   Activity,
   AlertTriangle,
   BookOpen,
+  Coins,
   ExternalLink,
+  Flag,
+  Gift,
+  MessageCircle,
   Loader2,
   RefreshCw,
   Search,
   ShieldAlert,
+  ShoppingBag,
+  Trophy,
   UserPlus,
   Users,
+  VolumeX,
 } from 'lucide-react'
 import { BarList, ColumnChart, formatNumber, Heatmap, Meter, type Point } from '../components/charts'
 import { BrandIcon } from '../components/BrandIcon'
+import { ModerationView } from '../components/community/ModerationView'
 import { relativeTime } from '../components/words/NotionPanel'
 import { Badge, Card, IconChip, Reveal, Segmented, type ChipTone } from '../components/ui'
 import {
@@ -27,12 +35,13 @@ import {
   type AuditEntry,
   type Overview,
 } from '../lib/admin'
+import { TIER_ICONS, TIERS } from '../lib/community'
 import { LOCALE_NAMES, type Locale } from '../lib/locale'
 import { REPO_URL } from '../lib/platform'
 import { useViewer } from '../lib/viewer'
 import type { Role } from '../stores/profile'
 
-type Tab = 'overview' | 'users' | 'notion' | 'system' | 'audit'
+type Tab = 'overview' | 'economy' | 'moderation' | 'users' | 'notion' | 'system' | 'audit'
 
 const ROLES: Role[] = ['user', 'tester', 'moderator', 'admin', 'owner']
 
@@ -65,13 +74,15 @@ export function AdminPage() {
           label={t('admin.title')}
           value={tab}
           onChange={setTab}
-          options={(['overview', 'users', 'notion', 'system', 'audit'] as const).map((value) => ({
+          options={(['overview', 'economy', 'moderation', 'users', 'notion', 'system', 'audit'] as const).map((value) => ({
             value,
             label: t(`admin.tabs.${value}`),
           }))}
         />
       </Reveal>
       {tab === 'overview' && <OverviewTab />}
+      {tab === 'economy' && <EconomyTab />}
+      {tab === 'moderation' && <ModerationView />}
       {tab === 'users' && <UsersTab viewerRole={viewer.role} />}
       {tab === 'notion' && <NotionTab />}
       {tab === 'system' && <SystemTab />}
@@ -155,6 +166,97 @@ const toPoints = (record: Record<string, number>, rename?: (key: string) => stri
   Object.entries(record)
     .map(([key, value]) => ({ label: rename ? rename(key) : key, value }))
     .sort((a, b) => b.value - a.value)
+
+// ---------- economy ----------
+
+function EconomyTab() {
+  const { t, i18n } = useTranslation()
+  const { data, error, loading, reload, loadedAt } = useLoad(admin.economy)
+
+  if (!data) {
+    return (
+      <>
+        <TabHeader loading={loading} loadedAt={loadedAt} onReload={reload} />
+        {error ? <ErrorBox message={error} /> : <LoadingCard />}
+      </>
+    )
+  }
+
+  const reason = (key: string) => t(`admin.economy.reasons.${key}`, { defaultValue: key })
+  const earned: Point[] = [
+    { label: reason('answers'), value: data.answer_coins_30d },
+    ...data.earned_by_reason.map((row) => ({ label: reason(row.reason), value: row.amount })),
+  ].sort((a, b) => b.value - a.value)
+  const spent: Point[] = data.spent_daily.map((row) => {
+    const date = new Date(`${row.day}T12:00:00`)
+    return {
+      label: date.toLocaleDateString(i18n.language, { day: 'numeric', month: 'short' }),
+      hint: date.toLocaleDateString(i18n.language, { weekday: 'long', day: 'numeric', month: 'long' }),
+      value: row.value,
+    }
+  })
+
+  return (
+    <div className="flex flex-col gap-4">
+      <TabHeader loading={loading} loadedAt={loadedAt} onReload={reload} />
+      {error && <ErrorBox message={error} />}
+
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <Kpi
+          icon={<Coins className="size-5" />}
+          tone="coin"
+          label={t('admin.economy.kpi.circulation')}
+          value={data.circulation}
+          delta={t('admin.economy.kpi.holders', { n: data.holders })}
+        />
+        <Kpi icon={<ShoppingBag className="size-5" />} tone="accent" label={t('admin.economy.kpi.spent')} value={data.spent_30d} />
+        <Kpi icon={<Gift className="size-5" />} tone="fire" label={t('admin.economy.kpi.chests')} value={data.chests_30d} />
+        <Kpi icon={<Trophy className="size-5" />} tone="success" label={t('admin.economy.kpi.league')} value={data.league_players} />
+        <Kpi icon={<MessageCircle className="size-5" />} tone="accent-2" label={t('admin.economy.kpi.messages')} value={data.chat.messages_7d} />
+        <Kpi icon={<Flag className="size-5" />} tone="fire" label={t('admin.economy.kpi.reports')} value={data.chat.open_reports} />
+        <Kpi icon={<VolumeX className="size-5" />} tone="xp" label={t('admin.economy.kpi.sanctions')} value={data.chat.active_sanctions} />
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Panel title={t('admin.economy.earned')} hint={t('admin.economy.earnedHint')}>
+          <BarList items={earned} caption={t('admin.economy.earned')} />
+        </Panel>
+        <Panel title={t('admin.economy.spentDaily')} hint={t('admin.economy.spentDailyHint')}>
+          <ColumnChart points={spent} caption={t('admin.economy.spentDaily')} />
+        </Panel>
+        <Panel title={t('admin.economy.topItems')} hint={t('admin.economy.topItemsHint')}>
+          <BarList
+            items={data.top_items.map((row) => ({ label: t(`shop.items.${row.item}`, { defaultValue: row.item }), value: row.owners }))}
+            caption={t('admin.economy.topItems')}
+          />
+        </Panel>
+        <Panel title={t('admin.economy.quests')} hint={t('admin.economy.questsHint')}>
+          <BarList
+            max={100}
+            format={(value) => `${value}%`}
+            items={data.quests.map((row) => ({
+              label: `${t(`admin.economy.questKinds.${row.kind.replace(':', '_')}`, { defaultValue: row.kind })} · ${formatNumber(row.given)}`,
+              value: row.given > 0 ? Math.round((row.claimed / row.given) * 100) : 0,
+            }))}
+            caption={t('admin.economy.quests')}
+          />
+        </Panel>
+        <Panel title={t('admin.economy.leagues')} hint={t('admin.economy.leaguesHint')}>
+          <BarList
+            items={data.leagues.map((row) => ({ label: `${TIER_ICONS[row.tier] ?? ''} ${t(`league.tiers.${TIERS[row.tier] ?? 'bronze'}`)}`, value: row.users }))}
+            caption={t('admin.economy.leagues')}
+          />
+        </Panel>
+        <Panel title={t('admin.economy.achievements')} hint={t('admin.economy.achievementsHint')}>
+          <BarList
+            items={data.achievements.slice(0, 10).map((row) => ({ label: `${row.icon} ${t(`achievements.items.${row.id}.title`)}`, value: row.unlocked }))}
+            caption={t('admin.economy.achievements')}
+          />
+        </Panel>
+      </div>
+    </div>
+  )
+}
 
 // ---------- overview ----------
 

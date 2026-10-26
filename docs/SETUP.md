@@ -87,6 +87,16 @@ How sync works: each sync first sends rows edited in Lexicove to Notion, then re
 table back. Notion wins for rows without local edits; pages deleted in Notion are removed in
 Lexicove; words deleted in Lexicove go to the Notion trash.
 
+### Streak reminders
+
+The `push` Edge Function ([`supabase/functions/push`](../supabase/functions/push)) sends Web Push
+reminders. It needs no keys from you: on its first call it creates the VAPID key pair and stores
+it in Vault, and the migration creates the token that pg_cron uses to call it every hour.
+
+1. Deploy it with JWT checks off (it checks the cron token itself): `supabase functions deploy push --no-verify-jwt`.
+2. On your own fork, change the project URL in the `streak-reminders` cron job
+   ([`*_push_reminders.sql`](../supabase/migrations)) and `ALLOWED_ORIGINS` in the function.
+
 ## 4. Website on Vercel
 
 1. Import the GitHub repository in Vercel. The settings come from [`vercel.json`](../vercel.json).

@@ -21,6 +21,17 @@ The code is public, so the app assumes anyone can read it and call the API direc
   (`buy_item`, `equip_item`, `claim_quest`, `open_daily_chest`, `use_boost`,
   `apply_streak_freeze`, `ensure_quests`) that act only on `auth.uid()` and lock the balance row
   before spending, so the advisor lists them on purpose.
+- **The community is checked on the server too.** Messages are posted only through
+  `send_message`, which checks bans and mutes, flood limits, duplicates, links from new accounts,
+  that direct messages go between friends, and masks swear words before saving. Users read only
+  public rooms and their own direct messages; moderators see a direct message only once it is
+  reported. Mutes, bans, deletions and room changes go through `mod_*` functions that check the
+  moderator's rank against the target's and are written to `admin_audit_log`. Other people's
+  coins, time zone and goal are hidden by column grants; the owner reads them via `my_profile()`.
+  Chat text is rendered as plain text, and only `http(s)` links become clickable.
+- **Push reminders keep their keys on the server.** The VAPID key pair and the cron token live in
+  Vault and are read only by the `push` function with the service role. Subscriptions are accepted
+  only for the browsers' own push services, so the function never posts anywhere else.
 - **Policy helpers aren't exposed.** Functions used by policies live in a `private` schema
   that the REST API doesn't serve.
 - **Admin functions check the role first.** `admin_*` functions run as SECURITY DEFINER (they

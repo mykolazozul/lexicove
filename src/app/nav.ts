@@ -24,14 +24,14 @@ export const NAV: NavItem[] = [
   { key: 'learn', to: '/learn', icon: GraduationCap, inBottomBar: true },
   { key: 'words', to: '/words', icon: BookOpen, inBottomBar: true },
   { key: 'games', to: '/games', icon: Gamepad2, inBottomBar: false },
-  { key: 'shop', to: '/shop', icon: ShoppingBag, inBottomBar: true },
-  { key: 'community', to: '/community', icon: Users, inBottomBar: false },
+  // On phones the shop opens from the Coins pill in the top bar.
+  { key: 'shop', to: '/shop', icon: ShoppingBag, inBottomBar: false },
+  { key: 'community', to: '/community', icon: Users, inBottomBar: true },
   { key: 'profile', to: '/profile', icon: UserRound, inBottomBar: true },
 ]
 
 /** Sections that are planned but not built yet, with the phase from SPEC.md that delivers them. */
 export const UPCOMING = {
-  community: { phase: 4, icon: Users },
   games: { phase: 6, icon: Gamepad2 },
 } as const
 

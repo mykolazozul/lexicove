@@ -189,9 +189,8 @@ export const useEconomy = create<EconomyState>()((set, get) => ({
   reset: () => set({ inventory: new Map(), unlocked: new Map(), stats: null, quests: [], mineLoaded: false }),
 }))
 
-/** The shop item behind each equipped slot, once the catalog is in. */
-export function useEquipped() {
-  const equipped = useProfile((s) => s.profile?.equipped)
+/** The shop items behind a set of equipped slots: someone else's (from a public card) or your own. */
+export function useLook(equipped: Partial<Record<Slot, string>> | undefined) {
   const items = useEconomy((s) => s.items)
   const find = (slot: Slot) => {
     const id = equipped?.[slot]
@@ -206,6 +205,11 @@ export function useEquipped() {
     sound: find('sound'),
     nameColor: find('name_color'),
   }
+}
+
+/** What the signed-in person has on. */
+export function useEquipped() {
+  return useLook(useProfile((s) => s.profile?.equipped))
 }
 
 export type Equipped = ReturnType<typeof useEquipped>

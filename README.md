@@ -31,7 +31,12 @@
   The profile shows a six-month activity calendar, accuracy by category, the hardest words and
   the week's review forecast.
 
-Games and the community arrive phase by phase. See the roadmap in [SPEC.md](SPEC.md#16-етапи).
+- **Phase 4, community:** chat rooms and direct messages between friends with replies, reactions
+  and mentions, friends with online status, weekly leagues from Bronze to Legend, reports,
+  warnings, mutes and bans, a profanity filter and anti-spam limits on the server, community
+  rules, streak reminders over Web Push and an economy view in the admin panel.
+
+Games and duels arrive phase by phase. See the roadmap in [SPEC.md](SPEC.md#16-етапи).
 
 ## Features (planned)
 

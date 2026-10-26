@@ -6,6 +6,7 @@ import { ArrowRight, Check, CircleCheck, CircleX, Coins, RotateCcw, Sparkles, Ti
 import { MODES, NEW_PER_LESSON, SESSION_SIZE } from '../app/modes'
 import { BuilderQuestion, ChoiceQuestion, Flashcard, SpeakQuestion, TypeQuestion, type QuestionResult } from '../components/learn/questions'
 import { SpeakButtons } from '../components/learn/parts'
+import { Confetti } from '../components/Confetti'
 import { Card, ProgressBar } from '../components/ui'
 import { cx } from '../lib/cx'
 import { canRecognize, canSpeak } from '../lib/speech'
@@ -529,6 +530,7 @@ function Summary({
 
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-5">
+      {rewards && (rewards.level || rewards.achievements.length > 0) && <Confetti />}
       <Card glow padding="p-6 sm:p-10" className="flex flex-col items-center gap-4 text-center">
         <Trophy className="size-12 text-coin" strokeWidth={1.6} />
         <h2 className="font-display text-2xl font-semibold">{t('learn.summary.title')}</h2>

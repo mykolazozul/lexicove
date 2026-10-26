@@ -1,18 +1,22 @@
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { Check, ChevronRight, Coins, ExternalLink, Lock, LogIn, LogOut, Shield, Volume2 } from 'lucide-react'
+import { BellRing, Check, ChevronRight, Coins, ExternalLink, Lock, LogIn, LogOut, Shield, Volume2 } from 'lucide-react'
 import { isAdmin } from '../lib/admin'
 import { siApple, siGithub } from 'simple-icons'
+import { UsernameCard } from '../components/community/FriendsView'
 import { ThemePreview } from '../components/cosmetics'
 import { Card, Reveal, SectionTitle, Segmented, Switch } from '../components/ui'
 import { useOwnedThemes } from '../lib/cosmetics'
 import { cx } from '../lib/cx'
 import { LOCALES, LOCALE_NAMES } from '../lib/locale'
 import { APP_VERSION, REPO_URL } from '../lib/platform'
+import { isSubscribed, pushSupport, PushError, subscribe, unsubscribe } from '../lib/push'
 import { useViewer } from '../lib/viewer'
 import { useAuth } from '../stores/auth'
 import { useEconomy } from '../stores/economy'
 import { useProfile } from '../stores/profile'
+import { toast } from '../stores/toast'
 import { DAILY_GOALS, DARK_THEMES, LIGHT_THEMES, SHOP_THEMES, useSettings, type ThemeChoice } from '../stores/settings'
 
 const THEME_GROUPS: Array<{ key: 'dark' | 'light'; themes: readonly ThemeChoice[] }> = [
@@ -111,6 +115,7 @@ export function SettingsPage() {
               </div>
               <Switch checked={sounds} onChange={setSounds} label={t('settings.sounds')} />
             </div>
+            {!viewer.isGuest && <ReminderSetting />}
           </Card>
         </section>
       </Reveal>
@@ -130,6 +135,11 @@ export function SettingsPage() {
       <Reveal delay={0.1}>
         <section>
           <SectionTitle>{t('settings.account')}</SectionTitle>
+          {!viewer.isGuest && (
+            <div className="mb-3">
+              <UsernameCard />
+            </div>
+          )}
           <Card className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-muted">
               {viewer.isGuest ? t('settings.guestMode') : t('settings.signedInAs', { name: viewer.email ?? viewer.name })}
@@ -203,6 +213,45 @@ export function SettingsPage() {
           </Card>
         </section>
       </Reveal>
+    </div>
+  )
+}
+
+/** Streak reminders over Web Push, at 19:00 local time on days with a streak at risk. */
+function ReminderSetting() {
+  const { t, i18n } = useTranslation()
+  const support = pushSupport()
+  const [on, setOn] = useState(false)
+  const [busy, setBusy] = useState(false)
+
+  useEffect(() => {
+    void isSubscribed().then(setOn)
+  }, [])
+
+  async function toggle(next: boolean) {
+    setBusy(true)
+    try {
+      if (next) await subscribe(i18n.language)
+      else await unsubscribe()
+      setOn(next)
+      if (next) toast(t('settings.reminders.on'), 'ok', '🔔')
+    } catch (error) {
+      toast(t(error instanceof PushError && error.message === 'denied' ? 'settings.reminders.denied' : 'settings.reminders.failed'), 'error')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="flex items-center gap-4 border-t border-line pt-5">
+      <BellRing className="size-5 shrink-0 text-muted" />
+      <div className="min-w-0 flex-1">
+        <div className="font-semibold">{t('settings.reminders.title')}</div>
+        <p className="mt-0.5 text-sm text-muted">
+          {support === 'ok' ? t('settings.reminders.hint') : t(`settings.reminders.${support}`)}
+        </p>
+      </div>
+      {support === 'ok' && <Switch checked={on} onChange={(next) => !busy && void toggle(next)} label={t('settings.reminders.title')} />}
     </div>
   )
 }

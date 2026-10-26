@@ -5,6 +5,7 @@ import { motion } from 'motion/react'
 import { Coins, Flame, Settings, Shield, Sparkles, Zap, type LucideIcon } from 'lucide-react'
 import { isAdmin } from '../lib/admin'
 import { NAV, type NavKey } from '../app/nav'
+import { community } from '../lib/community'
 import { useShopThemeGuard } from '../lib/cosmetics'
 import { cx } from '../lib/cx'
 import i18n from '../lib/i18n'
@@ -57,6 +58,21 @@ export function AppShell() {
       void refreshSummary()
     })
   }, [userId, loadProfile, clearProfile, resetLibrary, resetStudy, resetEconomy, loadMine, applyStreakFreeze, refreshSummary])
+
+  // Friends see you as online while the app is open in front of you.
+  useEffect(() => {
+    if (!userId) return
+    const ping = () => {
+      if (document.visibilityState === 'visible') void community.touch().catch(() => {})
+    }
+    ping()
+    const timer = setInterval(ping, 120_000)
+    document.addEventListener('visibilitychange', ping)
+    return () => {
+      clearInterval(timer)
+      document.removeEventListener('visibilitychange', ping)
+    }
+  }, [userId])
 
   useEffect(() => {
     window.scrollTo({ top: 0 })

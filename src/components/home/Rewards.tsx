@@ -4,6 +4,7 @@ import type { TFunction } from 'i18next'
 import { useTranslation } from 'react-i18next'
 import { AnimatePresence, motion } from 'motion/react'
 import { BookOpenCheck, Check, CheckCheck, Coins, Gift, Layers, ListChecks, Sparkles, Target, type LucideIcon } from 'lucide-react'
+import { Confetti } from '../Confetti'
 import { Card, IconChip, ProgressBar } from '../ui'
 import { useSound } from '../../lib/cosmetics'
 import { cx } from '../../lib/cx'
@@ -170,6 +171,7 @@ export function ChestCard() {
         <h3 className="font-display text-lg font-semibold">{t('chest.title')}</h3>
       </div>
 
+      {reward && (reward.coins >= 40 || reward.streak_freeze) && <Confetti pieces={50} />}
       <div className="relative my-4 grid flex-1 place-items-center">
         <AnimatePresence mode="wait">
           {reward ? (

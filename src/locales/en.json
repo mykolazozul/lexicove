@@ -86,17 +86,6 @@
         "Word search and anagrams",
         "True or false blitz"
       ]
-    },
-    "community": {
-      "title": "Community",
-      "text": "Learn with others: chat, friends, duels and leagues.",
-      "features": [
-        "Global chat and rooms by level and topic",
-        "Friends and direct messages",
-        "Real-time 1-on-1 duels",
-        "Weekly leagues from Bronze to Legend",
-        "Clans, tournaments and a weekly boss"
-      ]
     }
   },
   "profile": {
@@ -184,6 +173,15 @@
     "dailyGoalHint": "Answers per day. Reaching it pays +20 Coins and +50 XP.",
     "sounds": "Sounds",
     "soundsHint": "Short cues for answers, Coins and new levels. The sound set can be changed in the shop.",
+    "reminders": {
+      "title": "Streak reminders",
+      "hint": "At 19:00 if you haven’t studied yet and your streak is at risk. At most once a day.",
+      "install": "On iPhone and iPad, add Lexicove to your home screen (Share → Add to Home Screen) to get reminders.",
+      "unsupported": "This browser or the desktop app doesn’t support reminders.",
+      "on": "Reminders are on",
+      "denied": "Notifications are blocked in your browser settings",
+      "failed": "Couldn’t turn reminders on. Please try again."
+    },
     "language": "Language",
     "privacy": "Privacy",
     "analytics": "Usage statistics",
@@ -433,7 +431,50 @@
     "title": "Admin",
     "noAccess": "No access",
     "noAccessText": "Only the owner and administrators can open the admin panel.",
-    "tabs": { "overview": "Overview", "users": "Users", "notion": "Notion", "system": "System", "audit": "Audit log" },
+    "tabs": { "overview": "Overview", "users": "Users", "notion": "Notion", "system": "System", "audit": "Audit log", "economy": "Economy", "moderation": "Moderation" },
+    "economy": {
+      "kpi": {
+        "circulation": "Coins in circulation",
+        "holders": "held by {{n}} people",
+        "spent": "Spent in 30 days",
+        "chests": "Chests in 30 days",
+        "league": "League players this week",
+        "messages": "Messages in 7 days",
+        "reports": "Open reports",
+        "sanctions": "Active mutes and bans"
+      },
+      "earned": "Where Coins come from",
+      "earnedHint": "Earned in the last 30 days",
+      "spentDaily": "Shop spending",
+      "spentDailyHint": "Coins per day, 30 days",
+      "topItems": "Most popular items",
+      "topItemsHint": "How many people own them",
+      "quests": "Quest completion",
+      "questsHint": "Share of rewards claimed · how many were given",
+      "leagues": "Leagues",
+      "leaguesHint": "People in each",
+      "achievements": "Achievements",
+      "achievementsHint": "How many people unlocked them",
+      "reasons": {
+        "answers": "Correct answers",
+        "daily_goal": "Daily goal",
+        "level_up": "New levels",
+        "achievements": "Achievements",
+        "daily_chest": "Daily chest",
+        "quests": "Quests",
+        "league": "Leagues"
+      },
+      "questKinds": {
+        "answers": "Answers",
+        "correct": "Correct answers",
+        "goal": "Daily goal",
+        "goal_days": "Goal days",
+        "new_words": "New words",
+        "mode_cards": "Flashcards",
+        "mode_choice": "Quiz",
+        "mode_typing": "Spell it"
+      }
+    },
     "refresh": "Refresh",
     "updated": "updated {{time}}",
     "kpi": {
@@ -523,12 +564,45 @@
     "audit": {
       "none": "No actions yet",
       "system": "SQL editor",
-      "actions": { "set_role": "changes the role of", "grant_role (sql)": "changes the role (SQL) of" }
+      "actions": { "set_role": "changes the role of", "grant_role (sql)": "changes the role (SQL) of", "delete_message": "deletes a message by", "dismiss_reports": "dismisses reports about", "sanction": "restricts", "revoke_sanction": "lifts a restriction on", "room_settings": "changes a room" }
     }
   },
   "legal": {
     "updated": "Updated {{date}}",
     "contact": "Questions and data requests:",
+    "rules": {
+      "title": "Community rules",
+      "sections": [
+        {
+          "title": "Why rules",
+          "body": "Lexicove is a place to learn together. These rules apply to the chat, direct messages, usernames and names."
+        },
+        {
+          "title": "Respect others",
+          "body": "No insults, harassment, threats or hate speech of any kind. Mistakes in English are fine: correct others kindly."
+        },
+        {
+          "title": "No spam or scams",
+          "body": "No ads, flooding, repeated messages or suspicious links. New accounts can’t post links for their first day."
+        },
+        {
+          "title": "Safe content",
+          "body": "No adult, violent or illegal content. The community is for people aged 13 and over."
+        },
+        {
+          "title": "Privacy",
+          "body": "Don’t post personal data such as phone numbers, addresses, passwords or documents, yours or anyone else’s."
+        },
+        {
+          "title": "What happens if you break them",
+          "body": "The auto filter hides swear words with asterisks and gives a 15-minute mute for frequent swearing. Moderators can delete messages, warn, stop you from posting for a while (mute) or ban you from the community. Learning keeps working either way."
+        },
+        {
+          "title": "Reports",
+          "body": "See something wrong? Press “Report” next to the message. After three reports a message is hidden until a moderator decides."
+        }
+      ]
+    },
     "privacy": {
       "title": "Privacy policy",
       "sections": [
@@ -536,6 +610,7 @@
         { "title": "Usage statistics", "body": "The app records a few events: opening it, viewing a section (just its name, no ids) and actions such as \"word saved\" or \"Notion synced\". Each event carries the platform (browser, installed app or desktop program), interface language, theme and the Apple-style switch.\nWhen you are signed in, the event is linked to your account. For guests no identifier is stored at all. No IP addresses, no tracking cookies and no third-party analytics are used. Events are deleted automatically after 90 days.\nYou can turn statistics off at any time in Settings → Privacy." },
         { "title": "Why", "body": "Only to run and improve the app: show your words, sync them with Notion, keep your progress on every device and understand which features help. We don't sell data or show ads." },
         { "title": "Who sees the data", "body": "Only you see your words and rules. The owner and administrators of Lexicove see, in the admin panel, your email, name, sign-in method, sign-up date, last activity time, number of words, the names of linked Notion tables and sync errors, plus aggregated statistics. This is needed to run the service and help with problems. The content of your words is not shown in the admin panel." },
+        { "title": "Community and notifications", "body": "Other users can see your name, username, avatar, level, the shop items you wear, your league and streak. Messages in chat rooms are visible to everyone signed in and kept for 180 days. Direct messages are seen only by the two of you; a moderator sees only what was reported. Friends can see when you were last online.\nIf you turn on reminders, your browser’s push subscription address is stored; it is deleted when you turn reminders off." },
         { "title": "Where", "body": "Data is stored with Supabase (servers in the EU, Frankfurt). The website is served by Vercel. The Notion token is stored encrypted and is only available to a server function, never to the browser." },
         { "title": "Notion", "body": "Lexicove only sees the pages you allowed when connecting. You can disconnect Notion at any time on the Words page, which deletes the token." },
         { "title": "Your rights", "body": "You can export your words as CSV, disconnect Notion and ask for your account to be deleted with all its data." },
@@ -839,6 +914,259 @@
         "title": "Early bird",
         "text": "Study between 5 and 7 am."
       }
+    }
+  },
+  "community": {
+    "guestTitle": "The community needs an account",
+    "guestText": "Chat, friends and weekly leagues open once you sign up. It’s free.",
+    "tabs": {
+      "chat": "Chat",
+      "league": "League",
+      "friends": "Friends",
+      "moderation": "Moderation"
+    },
+    "online": "online",
+    "offline": "offline",
+    "roleShort": {
+      "moderator": "MOD",
+      "admin": "ADMIN",
+      "owner": "OWNER"
+    },
+    "card": {
+      "streak": "Streak",
+      "best": "Best: {{count}}",
+      "achievements": "Achievements"
+    },
+    "rooms": {
+      "general": {
+        "title": "General",
+        "text": "Anything at all, in English or Ukrainian"
+      },
+      "beginners": {
+        "title": "Beginners A1–A2",
+        "text": "First steps: simple phrases and questions"
+      },
+      "intermediate": {
+        "title": "Intermediate B1–B2",
+        "text": "Talk in English, make mistakes, learn"
+      },
+      "advanced": {
+        "title": "Advanced C1–C2",
+        "text": "English only, harder topics"
+      },
+      "phrasal": {
+        "title": "Phrasal verbs",
+        "text": "Get up, give in, look forward to…"
+      },
+      "it": {
+        "title": "IT English",
+        "text": "English for working in tech"
+      },
+      "travel": {
+        "title": "Travel",
+        "text": "Trips, airports, hotels"
+      },
+      "help": {
+        "title": "Help",
+        "text": "Questions about Lexicove and Notion"
+      }
+    },
+    "chat": {
+      "rooms": "Rooms",
+      "direct": "Direct",
+      "dmHint": "Direct message: only the two of you can see it",
+      "slowMode": "Slow mode",
+      "secondsShort": "s",
+      "closed": "Closed",
+      "closedText": "Moderators closed this room. You can read but not post.",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "earlier": "Show earlier",
+      "empty": "It’s quiet here. Say the first word!",
+      "newMessages_one": "{{count}} new message",
+      "newMessages_other": "{{count}} new messages",
+      "deleted": "Message deleted",
+      "hidden": "Hidden after reports, waiting for a moderator",
+      "reply": "Reply",
+      "react": "React",
+      "report": "Report",
+      "delete": "Delete",
+      "banned": "You’re banned from the community until {{until}}.",
+      "muted": "You can’t post until {{until}}.",
+      "forever": "further notice",
+      "warning": "Warning from a moderator: {{reason}}",
+      "replyingTo": "Replying to {{name}}",
+      "placeholder": "Message…",
+      "send": "Send",
+      "noLinksYet": "You can post links one day after signing up.",
+      "hint": "Enter to send, Shift+Enter for a new line"
+    },
+    "rulesGate": {
+      "title": "Before you join the chat",
+      "text": "The Lexicove community is a place to learn together. A few simple rules:",
+      "items": [
+        "Respect others: no insults, harassment or hate speech.",
+        "No spam, ads or scams.",
+        "No adult or illegal content.",
+        "Don’t share personal data, yours or anyone else’s.",
+        "Mistakes in English are fine. Correct others kindly."
+      ],
+      "full": "All community rules",
+      "agree": "I’m at least 13 and I agree to the community rules.",
+      "enter": "Enter the chat"
+    },
+    "report": {
+      "title": "Report a message",
+      "why": "What’s wrong?",
+      "reasons": {
+        "spam": "Spam or ads",
+        "abuse": "Insults or harassment",
+        "hate": "Hate speech",
+        "sexual": "Adult content",
+        "other": "Something else"
+      },
+      "note": "Note for the moderators (optional)",
+      "send": "Send report",
+      "sent": "Thanks! The moderators will take a look."
+    },
+    "mod": {
+      "title": "Moderation",
+      "reportsAgainst_one": "{{count}} report",
+      "reportsAgainst_other": "{{count}} reports",
+      "reason": "Reason (the user will see it)",
+      "warn": "Warn",
+      "muteFor": "Mute for {{time}}",
+      "banFor": "Ban for {{time}}",
+      "banForever": "Ban for good",
+      "cannot": "Only an admin or the owner can moderate this user.",
+      "kinds": {
+        "warning": "Warning",
+        "mute": "Mute",
+        "ban": "Ban"
+      },
+      "revoke": "Lift",
+      "recent": "Recent messages ({{count}})",
+      "done": {
+        "warning": "Warning sent",
+        "mute": "User muted",
+        "ban": "User banned",
+        "revoked": "Restriction lifted",
+        "dismissed": "Reports dismissed",
+        "deleted": "Message deleted",
+        "room": "Room settings saved"
+      },
+      "queue": "Reports ({{count}})",
+      "queueEmpty": "No new reports. All calm 🌿",
+      "reports_one": "{{count}} report",
+      "reports_other": "{{count}} reports",
+      "autoHidden": "Hidden automatically",
+      "dismiss": "Keep",
+      "delete": "Delete",
+      "deleteAndMute": "Delete and mute for 1 h",
+      "active": "Active restrictions ({{count}})",
+      "activeEmpty": "Nobody is restricted right now.",
+      "until": "until {{date}}",
+      "auto": "auto filter",
+        "autoReason": "Auto filter: frequent swearing",
+      "rooms": "Rooms",
+      "off": "Off",
+      "close": "Close room"
+    },
+    "durations": {
+      "10": "10 min",
+      "60": "1 hour",
+      "1440": "24 hours",
+      "10080": "7 days"
+    },
+    "errors": {
+      "sign_in_first": "Sign in first",
+      "rules_not_accepted": "Accept the community rules first",
+      "banned": "You’re banned from the community",
+      "muted": "You can’t post for now",
+      "no_such_room": "No such room",
+      "room_closed": "This room is closed",
+      "not_friends": "Direct messages are for friends only",
+      "empty": "The message is empty",
+      "too_long": "Too long (500 characters at most)",
+      "bad_reply": "You can’t reply to that message",
+      "too_fast": "Slow down 🙂 Wait a few seconds",
+      "slow_mode": "Slow mode is on here: one message every {{seconds}} s",
+      "duplicate": "You just sent that",
+      "no_links_yet": "You can post links one day after signing up",
+      "no_such_user": "No one has that username",
+      "self": "That’s you 🙂",
+      "too_many": "Too many friend requests. Wait for some answers.",
+      "no_such_message": "That message is gone",
+      "own_message": "You can’t report your own message",
+      "forbidden": "Not allowed",
+      "no_such_sanction": "That restriction was already lifted",
+      "bad_duration": "Invalid duration",
+      "offline": "Can’t reach the server",
+      "unknown": "Something went wrong. Please try again."
+    }
+  },
+  "league": {
+    "tiers": {
+      "bronze": "Bronze",
+      "silver": "Silver",
+      "gold": "Gold",
+      "sapphire": "Sapphire",
+      "ruby": "Ruby",
+      "diamond": "Diamond",
+      "legend": "Legend"
+    },
+    "title": "{{tier}} league",
+    "subtitle": "At the end of the week the top {{promote}} move up a league.",
+    "notJoined": "Give your first answer this week to join a group of up to 30 players.",
+    "endsIn": "Week ends in {{time}}",
+    "prizes": "Prizes: 1st +{{first}}, 2nd +{{second}}, 3rd +{{third}} Coins",
+    "views": {
+      "label": "Table",
+      "group": "My group",
+      "friends": "Friends"
+    },
+    "empty": "Your group appears after your first answer this week.",
+    "noFriends": "Add friends to race them every week.",
+    "promoteZone": "Promotion zone",
+    "demoteZone": "Demotion zone",
+    "last": {
+      "title": "Last week: #{{rank}} in the {{tier}} league",
+      "promoted": "Promoted to {{tier}}! 🎉",
+      "stayed": "Staying in {{tier}}",
+      "demoted": "Down to {{tier}}. Win it back this week!"
+    }
+  },
+  "friends": {
+    "sent": "Friend request sent",
+    "accepted": "You’re friends now! 🤝",
+    "already": "There’s already a request",
+    "removed": "Removed from friends",
+    "add": "Add friend",
+    "accept": "Accept",
+    "decline": "Decline",
+    "cancel": "Cancel request",
+    "message": "Message",
+    "remove": "Remove friend",
+    "addTitle": "Add a friend",
+    "addText": "Type your friend’s username, for example @mykola",
+    "placeholder": "username",
+    "incoming": "Friend requests ({{count}})",
+    "list": "Friends ({{count}})",
+    "outgoing": "Sent requests ({{count}})",
+    "empty": "No friends yet. Share your username or add someone from the chat or your league.",
+    "waiting": "Waiting for an answer",
+    "seen": "seen {{date}}",
+    "username": {
+      "yours": "Your username",
+      "copy": "Copy",
+      "copied": "Username copied",
+      "edit": "Change",
+      "title": "Pick a username",
+      "text": "Friends find you by it. Everyone in the community can see it.",
+      "save": "Save",
+      "saved": "Username saved",
+      "taken": "That username is taken",
+      "rules": "3–24 characters: Latin letters, digits and _"
     }
   }
 }

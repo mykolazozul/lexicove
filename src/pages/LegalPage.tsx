@@ -7,8 +7,8 @@ import { REPO_URL } from '../lib/platform'
 
 type Section = { title: string; body: string }
 
-/** Privacy policy and terms of use. Public pages: Notion requires links to both. */
-export function LegalPage({ doc }: { doc: 'privacy' | 'terms' }) {
+/** Privacy policy, terms of use and community rules. Public pages: Notion requires the first two. */
+export function LegalPage({ doc }: { doc: 'privacy' | 'terms' | 'rules' }) {
   const { t } = useTranslation()
   const sections = t(`legal.${doc}.sections`, { returnObjects: true }) as Section[]
 

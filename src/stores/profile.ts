@@ -27,10 +27,10 @@ type ProfileState = {
   /** Re-reads the signed-in profile, e.g. after the server changed coins or XP. */
   refresh: () => Promise<void>
   setDailyGoal: (goal: number) => Promise<void>
+  /** Saves the @name friends search for. Throws 'taken' or 'invalid'. */
+  setUsername: (username: string | null) => Promise<void>
   clear: () => void
 }
-
-const COLUMNS = 'id, username, display_name, avatar_url, role, xp, coins, created_at, daily_goal, time_zone, equipped, boost_until'
 
 export function browserTimeZone(): string {
   try {
@@ -45,7 +45,8 @@ export const useProfile = create<ProfileState>()((set, get) => ({
 
   load: async (userId) => {
     if (!supabase) return
-    const { data, error } = await supabase.from('profiles').select(COLUMNS).eq('id', userId).maybeSingle()
+    // Other people's coins, time zone and goal are private, so the full row comes from my_profile().
+    const { data, error } = await supabase.rpc('my_profile').maybeSingle()
     if (error) {
       console.warn('Could not load profile', error.message)
       return
@@ -57,14 +58,15 @@ export const useProfile = create<ProfileState>()((set, get) => ({
     const zone = browserTimeZone()
     if (profile && profile.time_zone !== zone) {
       const { error: zoneError } = await supabase.from('profiles').update({ time_zone: zone }).eq('id', userId)
-      if (!zoneError) set({ profile: { ...profile, time_zone: zone } })
+      // The server keeps a new time zone at most once every three days, so read back what stuck.
+      if (!zoneError) await get().refresh()
     }
   },
 
   refresh: async () => {
     const id = get().profile?.id
     if (!supabase || !id) return
-    const { data } = await supabase.from('profiles').select(COLUMNS).eq('id', id).maybeSingle()
+    const { data } = await supabase.rpc('my_profile').maybeSingle()
     if (data) set({ profile: data as Profile })
   },
 
@@ -74,6 +76,14 @@ export const useProfile = create<ProfileState>()((set, get) => ({
     set({ profile: { ...profile, daily_goal: goal } })
     const { error } = await supabase.from('profiles').update({ daily_goal: goal }).eq('id', profile.id)
     if (error) set({ profile })
+  },
+
+  setUsername: async (username) => {
+    const profile = get().profile
+    if (!supabase || !profile) return
+    const { error } = await supabase.from('profiles').update({ username }).eq('id', profile.id)
+    if (error) throw new Error(error.code === '23505' ? 'taken' : 'invalid')
+    set({ profile: { ...profile, username } })
   },
 
   clear: () => set({ profile: null }),

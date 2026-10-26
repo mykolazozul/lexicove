@@ -22,6 +22,7 @@ const AdminPage = page(() => import('./pages/AdminPage'), 'AdminPage')
 const LearnPage = page(() => import('./pages/LearnPage'), 'LearnPage')
 const SessionPage = page(() => import('./pages/SessionPage'), 'SessionPage')
 const ShopPage = page(() => import('./pages/ShopPage'), 'ShopPage')
+const CommunityPage = page(() => import('./pages/CommunityPage'), 'CommunityPage')
 const WordsPage = page(() => import('./pages/WordsPage'), 'WordsPage')
 const NotionCallbackPage = page(() => import('./pages/NotionCallbackPage'), 'NotionCallbackPage')
 const LegalPage = page(() => import('./pages/LegalPage'), 'LegalPage')
@@ -30,6 +31,7 @@ const router = createBrowserRouter([
   { path: '/welcome', element: <WelcomePage /> },
   { path: '/privacy', element: <Lazy><LegalPage doc="privacy" /></Lazy> },
   { path: '/terms', element: <Lazy><LegalPage doc="terms" /></Lazy> },
+  { path: '/rules', element: <Lazy><LegalPage doc="rules" /></Lazy> },
   {
     path: '/',
     element: (
@@ -45,7 +47,7 @@ const router = createBrowserRouter([
       { path: 'notion/callback', element: <Lazy><NotionCallbackPage /></Lazy> },
       { path: 'games', element: <ComingSoonPage section="games" /> },
       { path: 'shop', element: <Lazy><ShopPage /></Lazy> },
-      { path: 'community', element: <ComingSoonPage section="community" /> },
+      { path: 'community', element: <Lazy><CommunityPage /></Lazy> },
       { path: 'profile', element: <ProfilePage /> },
       { path: 'settings', element: <SettingsPage /> },
       { path: 'admin', element: <Lazy><AdminPage /></Lazy> },
