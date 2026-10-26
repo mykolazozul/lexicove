@@ -25,8 +25,13 @@
   spelling, fill the gap, sentence builder, listening, dictation, pronunciation, categories
   and a rules quiz — plus a mixed daily lesson, daily goal, streak and accuracy.
 - **Admin panel:** usage statistics, users and roles, Notion sync health, free-plan limits.
+- **Phase 3, motivation:** server-side XP, levels and Coins, 30 achievements, daily and weekly
+  quests, a daily chest, streak freezes and double-XP boosts, and a shop with try-on: animated
+  avatars, frames, banners, four more themes, titles, name colours, card backs and sound packs.
+  The profile shows a six-month activity calendar, accuracy by category, the hardest words and
+  the week's review forecast.
 
-Lessons, the shop and the community arrive phase by phase. See the roadmap in [SPEC.md](SPEC.md#16-етапи).
+Games and the community arrive phase by phase. See the roadmap in [SPEC.md](SPEC.md#16-етапи).
 
 ## Features (planned)
 

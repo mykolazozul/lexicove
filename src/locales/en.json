@@ -41,7 +41,7 @@
     "subtitle": "Time for a few new words?",
     "goal": {
       "title": "Daily goal",
-      "text": "Learn {{goal}} words today to keep your flame alive.",
+      "text": "Give {{goal}} answers today to keep your flame alive. The goal pays +20 Coins.",
       "progress": "of {{goal}}",
       "start": "Start a lesson",
       "addWords": "Add words"
@@ -87,16 +87,6 @@
         "True or false blitz"
       ]
     },
-    "shop": {
-      "title": "Shop",
-      "text": "Spend the coins you earn in lessons. They can't be bought with money.",
-      "features": [
-        "Animated avatars, frames and profile banners",
-        "Themes and card designs",
-        "Chat name colours, stickers and titles",
-        "Streak freezes, 2x XP and hints"
-      ]
-    },
     "community": {
       "title": "Community",
       "text": "Learn with others: chat, friends, duels and leagues.",
@@ -115,14 +105,31 @@
     "createAccount": "Create account",
     "levelProgress": "{{current}} / {{needed}} XP to level {{next}}",
     "memberSince": "Member since {{date}}",
+    "customize": "Customise",
     "stats": {
       "bestStreak": "Best streak",
       "learned": "Words learned",
-      "duels": "Duels won",
-      "league": "League"
+      "answers": "Answers",
+      "accuracy": "Accuracy, 30 days"
+    },
+    "activity": {
+      "title": "Activity, last six months",
+      "summary": "Answers: {{answers}} · study days: {{days}}",
+      "less": "Less",
+      "more": "More"
+    },
+    "insights": {
+      "categories": "Accuracy by category",
+      "forecast": "Reviews this week",
+      "forecastHint": "How many words will be due each day. “Today” includes everything overdue.",
+      "today": "Today",
+      "hardest": "Hardest words",
+      "practice": "Practise",
+      "lapses_one": "forgotten {{count}} time",
+      "lapses_other": "forgotten {{count}} times",
+      "empty": "Study a little and this will show which topics go best."
     },
     "achievements": "Achievements",
-    "achievementsSoon": "Badges unlock in phase 3.",
     "roles": {
       "owner": "Owner",
       "admin": "Admin",
@@ -136,7 +143,8 @@
     "appleStyleHint": "The SF system font, continuous corners, capsule buttons and frosted glass. Turn it off to bring back the Lexicove look.",
     "themeGroups": {
       "dark": "Dark",
-      "light": "Light and automatic"
+      "light": "Light and automatic",
+      "shop": "From the shop"
     },
     "themes": {
       "auto": "Auto",
@@ -148,7 +156,11 @@
       "graphite": "Graphite",
       "daylight": "Daylight",
       "arcade": "Arcade",
-      "mono": "Mono"
+      "mono": "Mono",
+      "sakura": "Sakura",
+      "terminal": "Terminal",
+      "neon": "Neon",
+      "cosmos": "Cosmos"
     },
     "themeDescriptions": {
       "auto": "Follows your system",
@@ -160,9 +172,18 @@
       "graphite": "Dark minimal",
       "daylight": "Light and calm",
       "arcade": "Bright and playful",
-      "mono": "Minimal"
+      "mono": "Minimal",
+      "sakura": "Soft pink",
+      "terminal": "Green code",
+      "neon": "Cyberpunk",
+      "cosmos": "Deep space"
     },
-    "themeHint": "More themes are coming to the shop.",
+    "themeHint": "Themes with a lock are sold in the shop for Coins.",
+    "study": "Learning",
+    "dailyGoal": "Daily goal",
+    "dailyGoalHint": "Answers per day. Reaching it pays +20 Coins and +50 XP.",
+    "sounds": "Sounds",
+    "soundsHint": "Short cues for answers, Coins and new levels. The sound set can be changed in the shop.",
     "language": "Language",
     "privacy": "Privacy",
     "analytics": "Usage statistics",
@@ -287,7 +308,10 @@
       "correct": "{{correct}} of {{total}} correct",
       "seconds": "{{n}} s",
       "again": "Another round",
-      "back": "Back to Learn"
+      "back": "Back to Learn",
+      "levelUp": "Level {{level}}!",
+      "levelUpBonus": "+50 Coins for every new level",
+      "achievement": "New achievement"
     },
     "nothingToStudy": "Nothing to study here yet",
     "nothingToStudyText": "The words for this mode are all reviewed. Come back later or pick another mode.",
@@ -508,7 +532,7 @@
     "privacy": {
       "title": "Privacy policy",
       "sections": [
-        { "title": "What we store", "body": "Your account email and name, settings, the words and rules you add or sync, and your learning progress. If you connect Notion, a copy of the rows from the tables you choose and an encrypted Notion access token." },
+        { "title": "What we store", "body": "Your account email and name, settings, the words and rules you add or sync, and your learning progress: answers, streaks, XP, Coins, shop purchases, achievements and quests. If you connect Notion, a copy of the rows from the tables you choose and an encrypted Notion access token." },
         { "title": "Usage statistics", "body": "The app records a few events: opening it, viewing a section (just its name, no ids) and actions such as \"word saved\" or \"Notion synced\". Each event carries the platform (browser, installed app or desktop program), interface language, theme and the Apple-style switch.\nWhen you are signed in, the event is linked to your account. For guests no identifier is stored at all. No IP addresses, no tracking cookies and no third-party analytics are used. Events are deleted automatically after 90 days.\nYou can turn statistics off at any time in Settings → Privacy." },
         { "title": "Why", "body": "Only to run and improve the app: show your words, sync them with Notion, keep your progress on every device and understand which features help. We don't sell data or show ads." },
         { "title": "Who sees the data", "body": "Only you see your words and rules. The owner and administrators of Lexicove see, in the admin panel, your email, name, sign-in method, sign-up date, last activity time, number of words, the names of linked Notion tables and sync errors, plus aggregated statistics. This is needed to run the service and help with problems. The content of your words is not shown in the admin panel." },
@@ -525,6 +549,7 @@
         { "title": "Your account", "body": "You are responsible for keeping your account secure. One account per person; the community is open from age 13." },
         { "title": "Your content", "body": "Your words, rules and other content stay yours. You allow Lexicove to store and process them only to run the app." },
         { "title": "Community rules", "body": "No harassment, spam, scams or illegal content. Moderators may warn, temporarily restrict or ban an account." },
+        { "title": "Coins", "body": "Coins are an in-app reward for studying. They can't be bought, sold, exchanged for money or moved to another account. The server adds and spends them; in case of abuse (for example, automated answers) balances and purchases may be adjusted." },
         { "title": "Changes", "body": "These terms may be updated; the date at the top shows the latest version." }
       ]
     }
@@ -535,5 +560,285 @@
   },
   "errors": {
     "generic": "Something went wrong. Please try again."
+  },
+  "shop": {
+    "title": "Shop",
+    "subtitle": "Spend the Coins you earn in lessons on avatars, frames, banners, themes, sounds and boosts. Coins can’t be bought with money.",
+    "balance": "Your balance",
+    "earn": [
+      "+1 per correct answer",
+      "+20 for the daily goal",
+      "+50 per new level",
+      "Daily chest",
+      "Daily and weekly quests",
+      "Achievements"
+    ],
+    "kinds": {
+      "all": "All",
+      "owned": "Mine",
+      "avatar": "Avatars",
+      "frame": "Frames",
+      "banner": "Banners",
+      "theme": "Themes",
+      "title": "Titles",
+      "name_color": "Name colour",
+      "card_back": "Cards",
+      "sound": "Sounds",
+      "boost": "Boosts"
+    },
+    "rarity": {
+      "common": "Common",
+      "rare": "Rare",
+      "epic": "Epic",
+      "legendary": "Legendary"
+    },
+    "items": {
+      "avatar_fox": "Fox",
+      "avatar_panda": "Panda",
+      "avatar_cat": "Cat",
+      "avatar_penguin": "Penguin",
+      "avatar_owl": "Owl",
+      "avatar_octopus": "Octopus",
+      "avatar_lion": "Lion",
+      "avatar_robot": "Robot",
+      "avatar_alien": "Alien",
+      "avatar_unicorn": "Unicorn",
+      "avatar_dragon": "Dragon",
+      "avatar_crown": "Crown",
+      "frame_gradient": "Gradient",
+      "frame_sakura": "Sakura",
+      "frame_neon": "Neon",
+      "frame_gold": "Gold",
+      "frame_fire": "Flame",
+      "frame_rainbow": "Rainbow",
+      "banner_sunset": "Sunset",
+      "banner_aurora": "Aurora",
+      "banner_ocean": "Ocean",
+      "banner_stars": "Starry sky",
+      "banner_matrix": "Matrix",
+      "banner_lava": "Lava",
+      "theme_sakura": "Sakura theme",
+      "theme_terminal": "Terminal theme",
+      "theme_neon": "Neon theme",
+      "theme_cosmos": "Cosmos theme",
+      "title_rookie": "Rookie",
+      "title_bookworm": "Bookworm",
+      "title_wizard": "Word wizard",
+      "title_night_owl": "Night owl",
+      "title_unstoppable": "Unstoppable",
+      "title_all_rounder": "All-rounder",
+      "title_dictionary": "Walking dictionary",
+      "title_legend": "Legend",
+      "card_dots": "Dots",
+      "card_grid": "Grid",
+      "card_waves": "Waves",
+      "card_confetti": "Confetti",
+      "sound_soft": "Soft sounds",
+      "sound_arcade": "Arcade",
+      "sound_xylophone": "Xylophone",
+      "color_violet": "Violet name",
+      "color_cyan": "Cyan name",
+      "color_gold": "Gold name",
+      "color_gradient": "Rainbow name",
+      "streak_freeze": "Streak freeze",
+      "double_xp": "Double XP"
+    },
+    "describe": {
+      "avatar": "An animated avatar instead of a letter in your profile, menus and leaderboards.",
+      "frame": "A frame around your avatar. Some glow or slowly turn.",
+      "banner": "The background at the top of your profile.",
+      "theme": "A new look for the whole app. Switch it in Settings.",
+      "title": "A label next to your name. Titles with a lock come from achievements.",
+      "name_color": "The colour of your name in your profile and menus.",
+      "card_back": "A pattern on the lesson card.",
+      "sound": "A different set of sounds for answers, Coins and new levels. Tap to listen.",
+      "boost": "A streak freeze saves your streak by itself if you miss a day. Double XP is yours to start: 15 minutes of twice the XP."
+    },
+    "inStock_one": "In stock: {{count}}",
+    "inStock_other": "In stock: {{count}}",
+    "signIn": "Sign in to buy",
+    "claim": "Claim",
+    "equip": "Equip",
+    "equipped": "Equipped",
+    "apply": "Apply",
+    "active": "Active",
+    "useBoost": "Start ×2 XP",
+    "listen": "Listen",
+    "tryOn": "Try on: {{name}}",
+    "lockedHint": "Unlocked by the “{{achievement}}” achievement",
+    "bought": "Bought: {{name}}",
+    "boughtAndOn": "{{name}} is yours, and it’s on.",
+    "boostStarted": "Double XP is on for 15 minutes",
+    "boostActive": "Double XP",
+    "freezeUsed": "A streak freeze saved yesterday’s streak",
+    "empty": "Nothing here yet.",
+    "sampleTranslation": "a happy accident",
+    "errors": {
+      "not_enough_coins": "Not enough Coins",
+      "locked": "Unlock the achievement first",
+      "already_owned": "You already own this",
+      "not_owned": "Get this item first",
+      "chest_already_opened_today": "You already opened today’s chest",
+      "no_boost_left": "No boosts left",
+      "quest_not_finished": "This quest isn’t finished yet",
+      "already_claimed": "Reward already claimed",
+      "unknown": "That didn’t work. Please try again."
+    }
+  },
+  "quests": {
+    "title": "Quests",
+    "weekly": "Weekly",
+    "resets": "New in {{time}}",
+    "daysHours": "{{days}}d {{hours}}h",
+    "guest": "Three new quests every day and two every week, each paying Coins. Needs an account.",
+    "claimed_one": "+{{count}} Coin",
+    "claimed_other": "+{{count}} Coins",
+    "done": "Done",
+    "kinds": {
+      "answers_one": "Give {{count}} answer",
+      "answers_other": "Give {{count}} answers",
+      "correct_one": "{{count}} correct answer",
+      "correct_other": "{{count}} correct answers",
+      "goal": "Reach your daily goal",
+      "goal_days_one": "Daily goal on {{count}} day",
+      "goal_days_other": "Daily goal on {{count}} days",
+      "new_words_one": "Start {{count}} new word",
+      "new_words_other": "Start {{count}} new words",
+      "mode_cards": "Flashcards: {{count}} answers",
+      "mode_choice": "Quiz: {{count}} answers",
+      "mode_typing": "Spell it: {{count}} answers"
+    }
+  },
+  "chest": {
+    "title": "Daily chest",
+    "open": "Open",
+    "guest": "Sign in to get a gift every day.",
+    "comeBack": "Next one in {{time}}"
+  },
+  "achievements": {
+    "secret": "Secret achievement",
+    "secretHint": "You’ll find out how once you get it.",
+    "items": {
+      "first_answer": {
+        "title": "First step",
+        "text": "Give your first answer."
+      },
+      "answers_100": {
+        "title": "Century",
+        "text": "Give 100 answers."
+      },
+      "answers_1000": {
+        "title": "Thousand club",
+        "text": "Give 1,000 answers."
+      },
+      "answers_5000": {
+        "title": "Marathoner",
+        "text": "Give 5,000 answers."
+      },
+      "correct_50": {
+        "title": "On target",
+        "text": "50 correct answers."
+      },
+      "correct_500": {
+        "title": "Sharpshooter",
+        "text": "500 correct answers."
+      },
+      "correct_2500": {
+        "title": "Precision master",
+        "text": "2,500 correct answers."
+      },
+      "learned_10": {
+        "title": "First words",
+        "text": "Learn 10 words."
+      },
+      "learned_100": {
+        "title": "Wordsmith",
+        "text": "Learn 100 words."
+      },
+      "learned_500": {
+        "title": "Scholar",
+        "text": "Learn 500 words."
+      },
+      "learned_1000": {
+        "title": "Polyglot",
+        "text": "Learn 1,000 words."
+      },
+      "streak_3": {
+        "title": "Warming up",
+        "text": "Study 3 days in a row."
+      },
+      "streak_7": {
+        "title": "One week",
+        "text": "Study 7 days in a row."
+      },
+      "streak_30": {
+        "title": "Month of fire",
+        "text": "Study 30 days in a row."
+      },
+      "streak_100": {
+        "title": "Hundred days",
+        "text": "Study 100 days in a row."
+      },
+      "streak_365": {
+        "title": "A whole year",
+        "text": "Study 365 days in a row."
+      },
+      "goal_1": {
+        "title": "Goal!",
+        "text": "Reach your daily goal."
+      },
+      "goal_10": {
+        "title": "Discipline",
+        "text": "Reach your daily goal 10 times."
+      },
+      "goal_50": {
+        "title": "Iron will",
+        "text": "Reach your daily goal 50 times."
+      },
+      "modes_5": {
+        "title": "Explorer",
+        "text": "Try 5 different modes."
+      },
+      "modes_all": {
+        "title": "Every mode",
+        "text": "Try all 10 modes."
+      },
+      "words_50": {
+        "title": "Collector",
+        "text": "50 words in your dictionary."
+      },
+      "words_500": {
+        "title": "Librarian",
+        "text": "500 words in your dictionary."
+      },
+      "notion": {
+        "title": "In sync",
+        "text": "Connect Notion."
+      },
+      "level_5": {
+        "title": "Level 5",
+        "text": "Reach level 5."
+      },
+      "level_10": {
+        "title": "Level 10",
+        "text": "Reach level 10."
+      },
+      "level_25": {
+        "title": "Level 25",
+        "text": "Reach level 25."
+      },
+      "level_50": {
+        "title": "Level 50",
+        "text": "Reach level 50."
+      },
+      "night_owl": {
+        "title": "Night owl",
+        "text": "Study between midnight and 5 am."
+      },
+      "early_bird": {
+        "title": "Early bird",
+        "text": "Study between 5 and 7 am."
+      }
+    }
   }
 }

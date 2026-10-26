@@ -27,7 +27,7 @@ export function LegalPage({ doc }: { doc: 'privacy' | 'terms' }) {
       <main className="mx-auto max-w-3xl px-4 pb-16 sm:px-6">
         <Card padding="p-6 sm:p-10">
           <h1 className="font-display text-3xl font-semibold tracking-tight">{t(`legal.${doc}.title`)}</h1>
-          <p className="mt-2 text-sm text-subtle">{t('legal.updated', { date: '25.10.2026' })}</p>
+          <p className="mt-2 text-sm text-subtle">{t('legal.updated', { date: '26.10.2026' })}</p>
           <div className="mt-8 flex flex-col gap-6">
             {sections.map((section) => (
               <section key={section.title}>

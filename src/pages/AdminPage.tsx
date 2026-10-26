@@ -12,7 +12,7 @@ import {
   UserPlus,
   Users,
 } from 'lucide-react'
-import { BarList, ColumnChart, formatNumber, Heatmap, Meter, type Point } from '../components/admin/charts'
+import { BarList, ColumnChart, formatNumber, Heatmap, Meter, type Point } from '../components/charts'
 import { BrandIcon } from '../components/BrandIcon'
 import { relativeTime } from '../components/words/NotionPanel'
 import { Badge, Card, IconChip, Reveal, Segmented, type ChipTone } from '../components/ui'

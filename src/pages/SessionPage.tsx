@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { AnimatePresence, motion } from 'motion/react'
-import { ArrowRight, Check, CircleCheck, CircleX, RotateCcw, Timer, Trophy, X } from 'lucide-react'
+import { ArrowRight, Check, CircleCheck, CircleX, Coins, RotateCcw, Sparkles, Timer, Trophy, X } from 'lucide-react'
 import { MODES, NEW_PER_LESSON, SESSION_SIZE } from '../app/modes'
 import { BuilderQuestion, ChoiceQuestion, Flashcard, SpeakQuestion, TypeQuestion, type QuestionResult } from '../components/learn/questions'
 import { SpeakButtons } from '../components/learn/parts'
@@ -24,9 +24,27 @@ import {
   type StudyWord,
   type WordMode,
 } from '../lib/study'
+import { useSound } from '../lib/cosmetics'
+import { levelFromXp } from '../lib/progression'
 import { useViewer } from '../lib/viewer'
+import { useEconomy, useEquipped } from '../stores/economy'
 import { useLibrary, type Rule } from '../stores/library'
+import { useProfile } from '../stores/profile'
 import { useStudy } from '../stores/study'
+
+/** XP, Coins and achievements before the session, to show what it earned at the end. */
+type Snapshot = { xp: number; coins: number; unlocked: Set<string> | null }
+
+function snapshot(): Snapshot {
+  const profile = useProfile.getState().profile
+  const economy = useEconomy.getState()
+  return {
+    xp: profile?.xp ?? 0,
+    coins: profile?.coins ?? 0,
+    // Unknown until the achievements have loaded; then nothing counts as new.
+    unlocked: economy.mineLoaded ? new Set(economy.unlocked.keys()) : null,
+  }
+}
 
 type Step =
   | { id: string; mode: 'cards'; word: StudyWord; isNew: boolean }
@@ -145,6 +163,10 @@ export function SessionPage() {
   const [saveError, setSaveError] = useState<string | null>(null)
   const startedAt = useRef(Date.now())
   const questionStartedAt = useRef(Date.now())
+  const pending = useRef<Array<Promise<unknown>>>([])
+  const before = useRef<Snapshot>(snapshot())
+  const sound = useSound()
+  const { cardBack } = useEquipped()
 
   useEffect(() => {
     if (!viewer.isGuest && !loaded) void load()
@@ -159,6 +181,8 @@ export function SessionPage() {
     setOutcomes([])
     startedAt.current = Date.now()
     questionStartedAt.current = Date.now()
+    pending.current = []
+    before.current = snapshot()
   }, [mode, words, rules])
 
   // Build the session once words and progress are in.
@@ -171,7 +195,8 @@ export function SessionPage() {
   const record = useCallback(
     (current: Step, grade: Grade, correct: boolean, expected?: string) => {
       setOutcomes((list) => [...list, { step: current, correct, expected }])
-      answer({
+      sound(correct ? 'correct' : 'wrong')
+      const saving = answer({
         wordId: current.mode === 'rules' ? undefined : current.word.id,
         ruleId: current.mode === 'rules' ? current.rule.id : undefined,
         mode: current.mode,
@@ -179,8 +204,9 @@ export function SessionPage() {
         correct,
         durationMs: Date.now() - questionStartedAt.current,
       }).catch((error: unknown) => setSaveError(error instanceof Error ? error.message : String(error)))
+      pending.current.push(saving)
     },
-    [answer],
+    [answer, sound],
   )
 
   const next = useCallback(() => {
@@ -238,7 +264,15 @@ export function SessionPage() {
   }
 
   if (!step) {
-    return <Summary outcomes={outcomes} seconds={Math.round((Date.now() - startedAt.current) / 1000)} onAgain={start} />
+    return (
+      <Summary
+        outcomes={outcomes}
+        seconds={Math.round((Date.now() - startedAt.current) / 1000)}
+        pending={pending.current}
+        before={before.current}
+        onAgain={start}
+      />
+    )
   }
 
   return (
@@ -266,7 +300,7 @@ export function SessionPage() {
           exit={{ opacity: 0, x: -24 }}
           transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
         >
-          <Card glow padding="p-6 sm:p-10">
+          <Card glow padding="p-6 sm:p-10" className={cardBack ? `card-back-${cardBack.data.style}` : undefined}>
             <StepView step={step} progress={progress} onResult={onResult} onRate={onRate} onSkip={next} />
           </Card>
         </motion.div>
@@ -435,8 +469,59 @@ function Feedback({ step, result, onNext }: { step: Step; result: QuestionResult
   )
 }
 
-function Summary({ outcomes, seconds, onAgain }: { outcomes: Outcome[]; seconds: number; onAgain: () => void }) {
+type Rewards = { xp: number; coins: number; level: number | null; achievements: string[] }
+
+/** Waits for the last answers to be saved, then asks the server what they earned. */
+function useRewards(pending: Array<Promise<unknown>>, before: Snapshot): Rewards | null {
+  const [rewards, setRewards] = useState<Rewards | null>(null)
+  const sound = useSound()
+
+  useEffect(() => {
+    let cancelled = false
+    void (async () => {
+      await Promise.allSettled(pending)
+      await Promise.all([useProfile.getState().refresh(), useEconomy.getState().loadMine(), useStudy.getState().refreshSummary()])
+      if (cancelled) return
+      const profile = useProfile.getState().profile
+      const xp = profile?.xp ?? before.xp
+      const levelBefore = levelFromXp(before.xp).level
+      const levelAfter = levelFromXp(xp).level
+      const known = before.unlocked
+      const achievements = known ? [...useEconomy.getState().unlocked.keys()].filter((id) => !known.has(id)) : []
+      const result = {
+        xp: Math.max(0, xp - before.xp),
+        coins: Math.max(0, (profile?.coins ?? before.coins) - before.coins),
+        level: levelAfter > levelBefore ? levelAfter : null,
+        achievements,
+      }
+      setRewards(result)
+      if (result.level || achievements.length) sound('level')
+      else if (result.coins) sound('coin')
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [pending, before, sound])
+
+  return rewards
+}
+
+function Summary({
+  outcomes,
+  seconds,
+  pending,
+  before,
+  onAgain,
+}: {
+  outcomes: Outcome[]
+  seconds: number
+  pending: Array<Promise<unknown>>
+  before: Snapshot
+  onAgain: () => void
+}) {
   const { t } = useTranslation()
+  const rewards = useRewards(pending, before)
+  const achievements = useEconomy((s) => s.achievements)
   const correct = outcomes.filter((o) => o.correct).length
   const share = outcomes.length ? Math.round((correct / outcomes.length) * 100) : 0
   const minutes = Math.floor(seconds / 60)
@@ -458,6 +543,59 @@ function Summary({ outcomes, seconds, onAgain }: { outcomes: Outcome[]; seconds:
             {minutes > 0 ? `${minutes}:${String(rest).padStart(2, '0')}` : t('learn.summary.seconds', { n: rest })}
           </span>
         </div>
+
+        <div className="flex min-h-12 flex-wrap justify-center gap-2">
+          {rewards ? (
+            <>
+              <motion.span initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="inline-flex items-center gap-1.5 rounded-full border border-xp/30 bg-xp/12 px-4 py-2 font-display font-semibold text-xp tabular-nums">
+                <Sparkles className="size-4" />+{rewards.xp} XP
+              </motion.span>
+              <motion.span initial={{ scale: 0.6, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.1 }} className="inline-flex items-center gap-1.5 rounded-full border border-coin/30 bg-coin/12 px-4 py-2 font-display font-semibold text-coin tabular-nums">
+                <Coins className="size-4" />+{rewards.coins}
+              </motion.span>
+            </>
+          ) : (
+            <span className="h-10 w-48 animate-pulse rounded-full bg-surface" />
+          )}
+        </div>
+
+        <AnimatePresence>
+          {rewards?.level && (
+            <motion.div
+              initial={{ y: 12, opacity: 0, scale: 0.9 }}
+              animate={{ y: 0, opacity: 1, scale: 1 }}
+              transition={{ type: 'spring', stiffness: 320, damping: 18, delay: 0.25 }}
+              className="bg-gradient-accent w-full rounded-card px-5 py-4 text-on-accent shadow-[var(--shadow-accent)]"
+            >
+              <div className="font-display text-xl font-semibold">{t('learn.summary.levelUp', { level: rewards.level })}</div>
+              <div className="text-sm opacity-85">{t('learn.summary.levelUpBonus')}</div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {rewards && rewards.achievements.length > 0 && (
+          <div className="flex w-full flex-col gap-2">
+            {rewards.achievements.map((id, index) => {
+              const achievement = achievements.find((item) => item.id === id)
+              return (
+                <motion.div
+                  key={id}
+                  initial={{ x: -16, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ delay: 0.35 + index * 0.1 }}
+                  className={cx('glass flex items-center gap-3 rounded-control px-4 py-3 text-left', achievement && `rarity-${achievement.rarity}`)}
+                >
+                  <span className="text-2xl">{achievement?.icon ?? '🏅'}</span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-xs font-semibold text-muted uppercase">{t('learn.summary.achievement')}</span>
+                    <span className="block truncate font-semibold">{t(`achievements.items.${id}.title`)}</span>
+                  </span>
+                  {achievement && achievement.reward > 0 && <span className="text-sm font-semibold text-coin">+{achievement.reward} 🪙</span>}
+                </motion.div>
+              )
+            })}
+          </div>
+        )}
         <div className="mt-2 flex flex-wrap justify-center gap-2">
           <button type="button" className="btn btn-primary" onClick={onAgain}>
             <RotateCcw className="size-4" />

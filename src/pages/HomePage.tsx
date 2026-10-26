@@ -2,10 +2,10 @@ import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { ArrowRight, Coins, Flame, Lock, Sparkles, Target, Trophy } from 'lucide-react'
 import { BrandIcon } from '../components/BrandIcon'
+import { ChestCard, QuestsCard } from '../components/home/Rewards'
 import { Card, IconChip, ProgressRing, Reveal, type ChipTone } from '../components/ui'
 import { cx } from '../lib/cx'
 import { useViewer } from '../lib/viewer'
-import { useSettings } from '../stores/settings'
 import { useStudy } from '../stores/study'
 
 function greetingKey(hour: number) {
@@ -27,7 +27,7 @@ const ISLANDS = [
 export function HomePage() {
   const { t, i18n } = useTranslation()
   const viewer = useViewer()
-  const dailyGoal = useSettings((s) => s.dailyGoal)
+  const dailyGoal = viewer.dailyGoal
   const summary = useStudy((s) => s.summary)
   const learnedToday = summary?.today ?? 0
   const accuracy =
@@ -84,7 +84,7 @@ export function HomePage() {
         </Reveal>
 
         <Reveal delay={0.1}>
-          <StreakCard streak={viewer.streak} locale={i18n.language} />
+          <StreakCard streak={viewer.streak} locale={i18n.language} activeDays={summary?.days ?? []} />
         </Reveal>
       </div>
 
@@ -96,6 +96,15 @@ export function HomePage() {
           <StatTile icon={Target} tone="accent-2" label={t('home.stats.accuracy')} value={accuracy} />
         </div>
       </Reveal>
+
+      <div className="grid gap-4 lg:grid-cols-3">
+        <Reveal delay={0.18} className="lg:col-span-2">
+          <QuestsCard />
+        </Reveal>
+        <Reveal delay={0.2}>
+          <ChestCard />
+        </Reveal>
+      </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Reveal delay={0.2}>
@@ -140,17 +149,20 @@ export function HomePage() {
   )
 }
 
-function StreakCard({ streak, locale }: { streak: number; locale: string }) {
+function StreakCard({ streak, locale, activeDays }: { streak: number; locale: string; activeDays: string[] }) {
   const { t } = useTranslation()
   const today = new Date()
+  const active = new Set(activeDays)
   // Monday-first week, matching the Ukrainian calendar.
   const mondayOffset = (today.getDay() + 6) % 7
   const days = Array.from({ length: 7 }, (_, i) => {
     const date = new Date(today)
     date.setDate(today.getDate() - mondayOffset + i)
+    const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     return {
       label: date.toLocaleDateString(locale, { weekday: 'narrow' }),
       isToday: i === mondayOffset,
+      done: active.has(key),
     }
   })
 
@@ -173,7 +185,11 @@ function StreakCard({ streak, locale }: { streak: number; locale: string }) {
             <span
               className={cx(
                 'grid size-8 place-items-center rounded-full border text-xs',
-                day.isToday ? 'border-fire/50 bg-fire/10 text-fire' : 'border-line text-subtle',
+                day.done
+                  ? 'border-fire bg-fire text-bg'
+                  : day.isToday
+                    ? 'border-fire/50 bg-fire/10 text-fire'
+                    : 'border-line text-subtle',
               )}
             >
               <Flame className="size-3.5" />

@@ -15,7 +15,12 @@ The code is public, so the app assumes anyone can read it and call the API direc
   policies allow. Users can edit their cosmetic profile fields; role, XP and coins are
   server-managed and protected by column-level grants.
 - **Rewards and moderation run on the server.** XP, coins, purchases, duels, mutes and bans
-  are never trusted from the client.
+  are never trusted from the client. A trigger on `review_log` grants XP and Coins (with daily
+  caps), counts streaks, quests and achievements; users can read their economy tables but not
+  write them. The shop, quests, chest, boosts and streak freezes are SECURITY DEFINER functions
+  (`buy_item`, `equip_item`, `claim_quest`, `open_daily_chest`, `use_boost`,
+  `apply_streak_freeze`, `ensure_quests`) that act only on `auth.uid()` and lock the balance row
+  before spending, so the advisor lists them on purpose.
 - **Policy helpers aren't exposed.** Functions used by policies live in a `private` schema
   that the REST API doesn't serve.
 - **Admin functions check the role first.** `admin_*` functions run as SECURITY DEFINER (they
@@ -39,5 +44,5 @@ The code is public, so the app assumes anyone can read it and call the API direc
 
 1. `npm run lint:secrets`: no credentials in the tree
 2. `npm audit`: no known vulnerable dependencies
-3. Supabase security advisor: no warnings
+3. Supabase security advisor: no warnings beyond the intentional definer functions listed above
 4. Review new code for XSS, reward forgery, mute/ban bypass and token leaks

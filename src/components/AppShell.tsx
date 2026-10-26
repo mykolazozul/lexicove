@@ -1,18 +1,24 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'motion/react'
-import { Coins, Flame, Settings, Shield, Sparkles, type LucideIcon } from 'lucide-react'
+import { Coins, Flame, Settings, Shield, Sparkles, Zap, type LucideIcon } from 'lucide-react'
 import { isAdmin } from '../lib/admin'
 import { NAV, type NavKey } from '../app/nav'
+import { useShopThemeGuard } from '../lib/cosmetics'
 import { cx } from '../lib/cx'
+import i18n from '../lib/i18n'
 import { useViewer } from '../lib/viewer'
 import { useAuth } from '../stores/auth'
+import { useEconomy, useEquipped } from '../stores/economy'
 import { useLibrary } from '../stores/library'
 import { useStudy } from '../stores/study'
 import { useProfile } from '../stores/profile'
+import { toast } from '../stores/toast'
+import { DisplayName, UserAvatar } from './cosmetics'
 import { Logo } from './Logo'
-import { Avatar, ProgressBar } from './ui'
+import { Toaster } from './Toaster'
+import { ProgressBar } from './ui'
 
 export function AppShell() {
   const session = useAuth((s) => s.session)
@@ -23,16 +29,34 @@ export function AppShell() {
   const resetLibrary = useLibrary((s) => s.reset)
   const resetStudy = useStudy((s) => s.reset)
   const refreshSummary = useStudy((s) => s.refreshSummary)
+  const loadCatalog = useEconomy((s) => s.loadCatalog)
+  const loadMine = useEconomy((s) => s.loadMine)
+  const resetEconomy = useEconomy((s) => s.reset)
+  const applyStreakFreeze = useEconomy((s) => s.applyStreakFreeze)
+
+  useShopThemeGuard()
+
+  useEffect(() => {
+    void loadCatalog()
+  }, [loadCatalog])
 
   const userId = session?.user.id
   useEffect(() => {
     resetLibrary()
     resetStudy()
-    if (userId) {
-      void loadProfile(userId)
+    resetEconomy()
+    if (!userId) {
+      clearProfile()
+      return
+    }
+    void loadProfile(userId)
+    void loadMine()
+    // A missed yesterday is covered by a streak freeze before the streak is counted.
+    void applyStreakFreeze().then((saved) => {
+      if (saved) toast(i18n.t('shop.freezeUsed'), 'reward', '🧊')
       void refreshSummary()
-    } else clearProfile()
-  }, [userId, loadProfile, clearProfile, resetLibrary, resetStudy, refreshSummary])
+    })
+  }, [userId, loadProfile, clearProfile, resetLibrary, resetStudy, resetEconomy, loadMine, applyStreakFreeze, refreshSummary])
 
   useEffect(() => {
     window.scrollTo({ top: 0 })
@@ -55,6 +79,7 @@ export function AppShell() {
         </motion.div>
       </main>
       <BottomBar />
+      <Toaster />
     </div>
   )
 }
@@ -69,6 +94,7 @@ function currentKey(pathname: string): NavKey | 'settings' | 'admin' | null {
 function Sidebar() {
   const { t } = useTranslation()
   const viewer = useViewer()
+  const equipped = useEquipped()
 
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden w-68 flex-col border-r border-line bg-bg/55 px-4 py-6 backdrop-blur-2xl lg:flex">
@@ -90,9 +116,9 @@ function Sidebar() {
           className="glass ring-gradient mt-3 flex flex-col gap-3 rounded-card p-3.5 transition-transform hover:-translate-y-0.5"
         >
           <span className="flex items-center gap-3">
-            <Avatar name={viewer.name} url={viewer.avatarUrl} size={38} />
+            <UserAvatar name={viewer.name} url={viewer.avatarUrl} size={40} avatar={equipped.avatar} frame={equipped.frame} />
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-sm font-semibold">{viewer.name}</span>
+              <DisplayName name={viewer.name} color={equipped.nameColor} className="block truncate text-sm font-semibold" />
               <span className="block text-xs text-muted">{t('common.level', { level: viewer.level })}</span>
             </span>
             <span className="inline-flex items-center gap-1 text-xs font-bold text-coin tabular-nums">
@@ -141,6 +167,7 @@ function SidebarLink({ to, icon: Icon, label }: { to: string; icon: LucideIcon; 
 function TopBar() {
   const { t } = useTranslation()
   const viewer = useViewer()
+  const equipped = useEquipped()
   const { pathname } = useLocation()
   const key = currentKey(pathname)
 
@@ -153,6 +180,7 @@ function TopBar() {
         <h1 className="hidden font-display text-xl font-semibold lg:block">{key ? t(`nav.${key}`) : ''}</h1>
 
         <div className="flex items-center gap-2">
+          {viewer.boostUntil && <BoostPill until={viewer.boostUntil} />}
           <StatPill icon={Flame} value={viewer.streak} label={t('common.streak')} tone="text-fire" />
           <Link to="/shop" className="rounded-full">
             <StatPill icon={Coins} value={viewer.coins} label={t('common.coins')} tone="text-coin" />
@@ -173,11 +201,30 @@ function TopBar() {
             <Settings className="size-5" />
           </Link>
           <Link to="/profile" aria-label={t('nav.profile')} className="hidden rounded-full lg:block">
-            <Avatar name={viewer.name} url={viewer.avatarUrl} size={40} />
+            <UserAvatar name={viewer.name} url={viewer.avatarUrl} size={40} avatar={equipped.avatar} frame={equipped.frame} />
           </Link>
         </div>
       </div>
     </header>
+  )
+}
+
+/** Double XP is on: shows the minutes left and disappears when the boost ends. */
+function BoostPill({ until }: { until: Date }) {
+  const { t } = useTranslation()
+  const [now, setNow] = useState(() => Date.now())
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), 1000)
+    return () => clearInterval(timer)
+  }, [])
+  const left = Math.max(0, Math.round((until.getTime() - now) / 1000))
+  if (left === 0) return null
+  return (
+    <span title={t('shop.boostActive')} className="glass inline-flex h-10 items-center gap-1.5 rounded-full px-3 text-sm font-bold text-xp tabular-nums">
+      <Zap className="size-[1.1rem]" strokeWidth={2.4} aria-hidden="true" />
+      <span className="hidden sm:inline">×2</span>
+      {Math.floor(left / 60)}:{String(left % 60).padStart(2, '0')}
+    </span>
   )
 }
 

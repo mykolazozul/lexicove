@@ -1,15 +1,19 @@
 import { Link, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { Check, ChevronRight, ExternalLink, LogIn, LogOut, Shield } from 'lucide-react'
+import { Check, ChevronRight, Coins, ExternalLink, Lock, LogIn, LogOut, Shield, Volume2 } from 'lucide-react'
 import { isAdmin } from '../lib/admin'
 import { siApple, siGithub } from 'simple-icons'
+import { ThemePreview } from '../components/cosmetics'
 import { Card, Reveal, SectionTitle, Segmented, Switch } from '../components/ui'
+import { useOwnedThemes } from '../lib/cosmetics'
 import { cx } from '../lib/cx'
 import { LOCALES, LOCALE_NAMES } from '../lib/locale'
 import { APP_VERSION, REPO_URL } from '../lib/platform'
 import { useViewer } from '../lib/viewer'
 import { useAuth } from '../stores/auth'
-import { DARK_THEMES, LIGHT_THEMES, useSettings, type Theme, type ThemeChoice } from '../stores/settings'
+import { useEconomy } from '../stores/economy'
+import { useProfile } from '../stores/profile'
+import { DAILY_GOALS, DARK_THEMES, LIGHT_THEMES, SHOP_THEMES, useSettings, type ThemeChoice } from '../stores/settings'
 
 const THEME_GROUPS: Array<{ key: 'dark' | 'light'; themes: readonly ThemeChoice[] }> = [
   { key: 'dark', themes: DARK_THEMES },
@@ -21,7 +25,16 @@ export function SettingsPage() {
   const navigate = useNavigate()
   const viewer = useViewer()
   const signOut = useAuth((s) => s.signOut)
-  const { theme, setTheme, appleStyle, setAppleStyle, analytics, setAnalytics, locale, setLocale } = useSettings()
+  const { theme, setTheme, appleStyle, setAppleStyle, analytics, setAnalytics, sounds, setSounds, locale, setLocale, setDailyGoal } =
+    useSettings()
+  const saveDailyGoal = useProfile((s) => s.setDailyGoal)
+  const owned = useOwnedThemes()
+  const items = useEconomy((s) => s.items)
+
+  function chooseGoal(goal: number) {
+    setDailyGoal(goal)
+    if (!viewer.isGuest) void saveDailyGoal(goal)
+  }
 
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-8">
@@ -55,7 +68,50 @@ export function SettingsPage() {
               </div>
             </div>
           ))}
+          <div className="mb-5">
+            <h3 className="mb-2.5 text-sm font-semibold text-muted">{t('settings.themeGroups.shop')}</h3>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {SHOP_THEMES.map((choice) => (
+                <ThemeCard
+                  key={choice}
+                  choice={choice}
+                  active={theme === choice}
+                  locked={!owned.has(choice)}
+                  price={items.find((item) => item.id === `theme_${choice}`)?.price}
+                  onSelect={() => (owned.has(choice) ? setTheme(choice) : navigate('/shop'))}
+                />
+              ))}
+            </div>
+          </div>
           <p className="text-sm text-muted">{t('settings.themeHint')}</p>
+        </section>
+      </Reveal>
+
+      <Reveal delay={0.03}>
+        <section>
+          <SectionTitle>{t('settings.study')}</SectionTitle>
+          <Card className="flex flex-col gap-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0">
+                <div className="font-semibold">{t('settings.dailyGoal')}</div>
+                <p className="mt-0.5 text-sm text-muted">{t('settings.dailyGoalHint')}</p>
+              </div>
+              <Segmented
+                label={t('settings.dailyGoal')}
+                value={String(viewer.dailyGoal)}
+                onChange={(value) => chooseGoal(Number(value))}
+                options={DAILY_GOALS.map((goal) => ({ value: String(goal), label: String(goal) }))}
+              />
+            </div>
+            <div className="flex items-center gap-4 border-t border-line pt-5">
+              <Volume2 className="size-5 shrink-0 text-muted" />
+              <div className="min-w-0 flex-1">
+                <div className="font-semibold">{t('settings.sounds')}</div>
+                <p className="mt-0.5 text-sm text-muted">{t('settings.soundsHint')}</p>
+              </div>
+              <Switch checked={sounds} onChange={setSounds} label={t('settings.sounds')} />
+            </div>
+          </Card>
         </section>
       </Reveal>
 
@@ -151,7 +207,20 @@ export function SettingsPage() {
   )
 }
 
-function ThemeCard({ choice, active, onSelect }: { choice: ThemeChoice; active: boolean; onSelect: () => void }) {
+function ThemeCard({
+  choice,
+  active,
+  locked = false,
+  price,
+  onSelect,
+}: {
+  choice: ThemeChoice
+  active: boolean
+  /** A shop theme this account doesn't own yet: the card opens the shop instead. */
+  locked?: boolean
+  price?: number
+  onSelect: () => void
+}) {
   const { t } = useTranslation()
   return (
     <button
@@ -171,6 +240,17 @@ function ThemeCard({ choice, active, onSelect }: { choice: ThemeChoice; active: 
       ) : (
         <ThemePreview theme={choice} className="h-24" />
       )}
+      {locked && (
+        <span className="absolute top-2 right-2 inline-flex items-center gap-1 rounded-full bg-bg/80 px-2 py-1 text-xs font-semibold backdrop-blur">
+          <Lock className="size-3" />
+          {price !== undefined && (
+            <>
+              <Coins className="size-3 text-coin" />
+              {price}
+            </>
+          )}
+        </span>
+      )}
       <div className="flex items-start justify-between gap-2 bg-surface p-3">
         <div>
           <div className="font-semibold">{t(`settings.themes.${choice}`)}</div>
@@ -186,16 +266,3 @@ function ThemeCard({ choice, active, onSelect }: { choice: ThemeChoice; active: 
   )
 }
 
-/** A tiny mock screen drawn with the given theme's own colours. */
-function ThemePreview({ theme, className }: { theme: Theme; className?: string }) {
-  return (
-    <div data-theme={theme} className={cx('relative isolate overflow-hidden bg-bg p-3', className)}>
-      <div className="aurora absolute" />
-      <div className="glass flex h-full flex-col gap-1.5 rounded-[var(--radius-md)] p-2">
-        <div className="h-1.5 w-1/2 rounded-full bg-fg/80" />
-        <div className="h-1.5 w-3/4 rounded-full bg-muted/50" />
-        <div className="bg-gradient-accent mt-auto h-3.5 w-2/5 rounded-full" />
-      </div>
-    </div>
-  )
-}

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../stores/auth'
 import { useProfile } from '../stores/profile'
+import { useSettings } from '../stores/settings'
 import { useStudy } from '../stores/study'
 import { levelFromXp } from './progression'
 
@@ -20,6 +21,8 @@ export function useViewer() {
     t('common.guest')
 
   const xp = profile?.xp ?? 0
+  const localGoal = useSettings((s) => s.dailyGoal)
+  const boostUntil = profile?.boost_until ? new Date(profile.boost_until) : null
 
   return {
     isGuest: !user,
@@ -31,6 +34,9 @@ export function useViewer() {
     coins: profile?.coins ?? 0,
     streak,
     memberSince: profile?.created_at ?? null,
+    dailyGoal: profile?.daily_goal ?? localGoal,
+    /** When the double-XP boost ends, if one is running. */
+    boostUntil: boostUntil && boostUntil.getTime() > Date.now() ? boostUntil : null,
     ...levelFromXp(xp),
   }
 }

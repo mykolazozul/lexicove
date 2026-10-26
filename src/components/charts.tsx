@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { cx } from '../../lib/cx'
+import { cx } from '../lib/cx'
 
-// Admin charts. One measure per chart, a single accent hue for magnitude, thin marks with
+// Charts for the admin panel and the profile. One measure per chart, a single accent hue for magnitude, thin marks with
 // 4px rounded data ends and 2px gaps, recessive hairline axes, a tooltip on every mark and a
 // screen-reader table with the same numbers.
 
@@ -132,15 +132,18 @@ export function BarList({
   items,
   caption,
   total,
+  max: scale,
   format = formatNumber,
 }: {
   items: Point[]
   caption: string
   /** When given, the share of this total is shown next to the value. */
   total?: number
+  /** Fixed full-bar value, e.g. 100 for percentages; otherwise the largest item. */
+  max?: number
   format?: (value: number) => string
 }) {
-  const max = Math.max(1, ...items.map((item) => item.value))
+  const max = scale ?? Math.max(1, ...items.map((item) => item.value))
   if (items.length === 0) return <p className="text-sm text-subtle">—</p>
 
   return (
@@ -171,6 +174,99 @@ export function BarList({
   )
 }
 
+/** Five quantised steps of the accent from faint to full; 0 is an empty cell. */
+function heatFill(level: number): string {
+  return level === 0 ? 'var(--line)' : `color-mix(in oklab, var(--accent) ${[0, 22, 40, 58, 78, 100][level]}%, var(--surface))`
+}
+
+function heatStep(count: number, max: number): number {
+  return count === 0 || max === 0 ? 0 : Math.min(5, Math.ceil((count / max) * 5))
+}
+
+function dayKey(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+}
+
+/** A GitHub-style calendar: one column per week (Monday on top), today in the last column. */
+export function ActivityCalendar({
+  days,
+  weeks = 26,
+  locale,
+  caption,
+  lowLabel,
+  highLabel,
+}: {
+  days: Array<{ day: string; count: number }>
+  weeks?: number
+  locale: string
+  caption: string
+  lowLabel: string
+  highLabel: string
+}) {
+  const counts = new Map(days.map((entry) => [entry.day, entry.count]))
+  const max = Math.max(0, ...days.map((entry) => entry.count))
+  const today = new Date()
+  const start = new Date(today)
+  start.setDate(today.getDate() - ((today.getDay() + 6) % 7) - (weeks - 1) * 7)
+
+  const columns = Array.from({ length: weeks }, (_, week) =>
+    Array.from({ length: 7 }, (_, weekday) => {
+      const date = new Date(start)
+      date.setDate(start.getDate() + week * 7 + weekday)
+      return { date, key: dayKey(date), future: date > today }
+    }),
+  )
+  const label = (date: Date) => date.toLocaleDateString(locale, { day: 'numeric', month: 'short' })
+
+  return (
+    <figure>
+      <div className="overflow-x-auto pb-1">
+        <div className="inline-flex min-w-full flex-col gap-1.5">
+          <div className="grid gap-[3px] text-[0.65rem] text-subtle" style={{ gridTemplateColumns: `repeat(${weeks}, minmax(11px, 16px))` }}>
+            {columns.map((column, index) => {
+              const first = column[0]!.date
+              const showMonth = index === 0 || first.getDate() <= 7
+              return (
+                <span key={index} className="h-3 overflow-visible whitespace-nowrap">
+                  {showMonth && index < weeks - 2 ? first.toLocaleDateString(locale, { month: 'short' }) : ''}
+                </span>
+              )
+            })}
+          </div>
+          <div className="grid gap-[3px]" style={{ gridTemplateColumns: `repeat(${weeks}, minmax(11px, 16px))` }}>
+            {columns.map((column, index) => (
+              <div key={index} className="grid gap-[3px]">
+                {column.map(({ date, key, future }) => {
+                  const count = counts.get(key) ?? 0
+                  return (
+                    <span
+                      key={key}
+                      title={future ? undefined : `${label(date)} — ${formatNumber(count)}`}
+                      className="aspect-square min-h-[11px] rounded-[3px]"
+                      style={{ background: future ? 'transparent' : heatFill(heatStep(count, max)) }}
+                    />
+                  )
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <figcaption className="mt-3 flex items-center justify-end gap-1.5 text-xs text-subtle">
+        {lowLabel}
+        {[0, 1, 2, 3, 4, 5].map((level) => (
+          <span key={level} className="size-3 rounded-[3px]" style={{ background: heatFill(level) }} />
+        ))}
+        {highLabel}
+      </figcaption>
+      <SrTable
+        caption={caption}
+        points={days.filter((entry) => entry.count > 0).map((entry) => ({ label: entry.day, value: entry.count }))}
+      />
+    </figure>
+  )
+}
+
 /** Weekday x hour grid. One hue, five quantised steps from faint to full. */
 export function Heatmap({
   cells,
@@ -188,9 +284,8 @@ export function Heatmap({
 }) {
   const grid = new Map(cells.map((cell) => [`${cell.dow}:${cell.hour}`, cell.count]))
   const max = Math.max(0, ...cells.map((cell) => cell.count))
-  const step = (count: number) => (count === 0 || max === 0 ? 0 : Math.min(5, Math.ceil((count / max) * 5)))
-  const fill = (level: number) =>
-    level === 0 ? 'var(--line)' : `color-mix(in oklab, var(--accent) ${[0, 22, 40, 58, 78, 100][level]}%, var(--surface))`
+  const step = (count: number) => heatStep(count, max)
+  const fill = heatFill
 
   return (
     <figure>

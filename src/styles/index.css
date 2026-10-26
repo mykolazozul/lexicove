@@ -309,6 +309,129 @@
   --aurora-3: transparent;
 }
 
+/* ---------- Shop themes ----------
+   Bought with Coins (shop_items kind "theme"). Settings only lets owners pick them. */
+
+[data-theme="sakura"] {
+  color-scheme: dark;
+  --bg: #12080e;
+  --elevated: #1d0d17;
+  --surface: rgb(253 205 230 / 0.045);
+  --surface-hover: rgb(253 205 230 / 0.08);
+  --line: rgb(253 205 230 / 0.1);
+  --fg: #fff0f6;
+  --muted: #c49aae;
+  --subtle: #82586c;
+  --accent: #f472b6;
+  --accent-2: #fda4af;
+  --on-accent: #2a0717;
+  --coin: #fbbf24;
+  --fire: #fb7185;
+  --xp: #f9a8d4;
+  --success: #34d399;
+  --danger: #f87171;
+  --radius-lg: 24px;
+  --radius-md: 15px;
+  --glass-blur: 20px;
+  --shadow-card: inset 0 1px 0 0 rgb(253 205 230 / 0.05), 0 24px 48px -28px rgb(0 0 0 / 0.7);
+  --shadow-accent: 0 10px 30px -10px rgb(244 114 182 / 0.6);
+  --press-y: 1px;
+  --press-shadow: var(--shadow-accent);
+  --aurora-1: rgb(244 114 182 / 0.2);
+  --aurora-2: rgb(253 164 175 / 0.12);
+  --aurora-3: rgb(192 132 252 / 0.12);
+}
+
+[data-theme="terminal"] {
+  color-scheme: dark;
+  --bg: #020604;
+  --elevated: #06110a;
+  --surface: rgb(74 222 128 / 0.035);
+  --surface-hover: rgb(74 222 128 / 0.07);
+  --line: rgb(74 222 128 / 0.14);
+  --fg: #d7fbe6;
+  --muted: #7fbf9a;
+  --subtle: #4a7a5e;
+  --accent: #22c55e;
+  --accent-2: #a3e635;
+  --on-accent: #021a0a;
+  --coin: #facc15;
+  --fire: #f97316;
+  --xp: #4ade80;
+  --success: #4ade80;
+  --danger: #f87171;
+  --radius-lg: 10px;
+  --radius-md: 6px;
+  --glass-blur: 6px;
+  --shadow-card: inset 0 1px 0 0 rgb(74 222 128 / 0.05), 0 24px 48px -28px rgb(0 0 0 / 0.8);
+  --shadow-accent: 0 0 24px -6px rgb(34 197 94 / 0.7);
+  --press-y: 1px;
+  --press-shadow: var(--shadow-accent);
+  --aurora-1: rgb(34 197 94 / 0.1);
+  --aurora-2: rgb(163 230 53 / 0.06);
+  --aurora-3: rgb(16 185 129 / 0.06);
+}
+
+[data-theme="neon"] {
+  color-scheme: dark;
+  --bg: #07020f;
+  --elevated: #12051f;
+  --surface: rgb(240 171 252 / 0.045);
+  --surface-hover: rgb(240 171 252 / 0.085);
+  --line: rgb(240 171 252 / 0.12);
+  --fg: #fdf4ff;
+  --muted: #b49ac8;
+  --subtle: #6d5a85;
+  --accent: #e879f9;
+  --accent-2: #22d3ee;
+  --on-accent: #1a0326;
+  --coin: #fde047;
+  --fire: #fb923c;
+  --xp: #f0abfc;
+  --success: #4ade80;
+  --danger: #fb7185;
+  --radius-lg: 20px;
+  --radius-md: 12px;
+  --glass-blur: 18px;
+  --shadow-card: inset 0 1px 0 0 rgb(240 171 252 / 0.06), 0 24px 48px -28px rgb(0 0 0 / 0.8);
+  --shadow-accent: 0 0 28px -4px rgb(232 121 249 / 0.75);
+  --press-y: 1px;
+  --press-shadow: var(--shadow-accent);
+  --aurora-1: rgb(232 121 249 / 0.26);
+  --aurora-2: rgb(34 211 238 / 0.2);
+  --aurora-3: rgb(99 102 241 / 0.14);
+}
+
+[data-theme="cosmos"] {
+  color-scheme: dark;
+  --bg: #03030c;
+  --elevated: #0b0b1f;
+  --surface: rgb(199 210 254 / 0.04);
+  --surface-hover: rgb(199 210 254 / 0.075);
+  --line: rgb(199 210 254 / 0.09);
+  --fg: #eef0ff;
+  --muted: #9a9cc9;
+  --subtle: #5c5e8e;
+  --accent: #6d72f6;
+  --accent-2: #c084fc;
+  --on-accent: #ffffff;
+  --coin: #fcd34d;
+  --fire: #fb923c;
+  --xp: #a5b4fc;
+  --success: #34d399;
+  --danger: #f87171;
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --glass-blur: 22px;
+  --shadow-card: inset 0 1px 0 0 rgb(199 210 254 / 0.05), 0 24px 48px -28px rgb(0 0 0 / 0.8);
+  --shadow-accent: 0 10px 30px -10px rgb(109 114 246 / 0.7);
+  --press-y: 1px;
+  --press-shadow: var(--shadow-accent);
+  --aurora-1: rgb(109 114 246 / 0.24);
+  --aurora-2: rgb(192 132 252 / 0.16);
+  --aurora-3: rgb(56 189 248 / 0.1);
+}
+
 /* ---------- Premium finish ----------
    How strongly each theme shows the gradient hairline on cards (--ring), the light that follows
    the cursor (--spot), the film grain over the background (--grain) and the top sheen on glass
@@ -319,11 +442,27 @@
 [data-theme="ocean"],
 [data-theme="forest"],
 [data-theme="ember"],
-[data-theme="dusk"] {
+[data-theme="dusk"],
+[data-theme="sakura"],
+[data-theme="cosmos"] {
   --ring: 48%;
   --spot: 12%;
   --grain: 0.06;
   --sheen: 0.03;
+}
+
+[data-theme="neon"] {
+  --ring: 72%;
+  --spot: 18%;
+  --grain: 0.05;
+  --sheen: 0.04;
+}
+
+[data-theme="terminal"] {
+  --ring: 40%;
+  --spot: 10%;
+  --grain: 0.08;
+  --sheen: 0;
 }
 
 [data-theme="graphite"] {
@@ -436,6 +575,27 @@
 
 [data-style="apple"] .segmented [aria-checked="true"] {
   color: var(--fg);
+}
+
+/* Terminal keeps its monospace headings in every style. */
+[data-theme="terminal"] {
+  --app-font-display: ui-monospace, "Cascadia Code", "JetBrains Mono", "SF Mono", Consolas, monospace;
+}
+
+/* Cosmos draws a faint star field over its aurora. */
+[data-theme="cosmos"] .aurora::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, rgb(255 255 255 / 0.7), transparent),
+    radial-gradient(1px 1px at 68% 12%, rgb(255 255 255 / 0.55), transparent),
+    radial-gradient(1.5px 1.5px at 32% 64%, rgb(255 255 255 / 0.6), transparent),
+    radial-gradient(1px 1px at 84% 48%, rgb(255 255 255 / 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 52% 86%, rgb(255 255 255 / 0.45), transparent),
+    radial-gradient(1px 1px at 92% 82%, rgb(255 255 255 / 0.6), transparent);
+  background-size: 420px 420px;
+  animation: twinkle 6s ease-in-out infinite alternate;
 }
 
 /* ---------- Base ---------- */
@@ -689,6 +849,279 @@
   }
 }
 
+/* ---------- Shop cosmetics ----------
+   Animated avatars, frames, banners, card backs and name colours. Each class matches the
+   "motion" or "style" value of a shop item (see the catalog in the economy migration). */
+
+@property --turn {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.avatar-bob {
+  animation: avatar-bob 3.2s ease-in-out infinite;
+}
+.avatar-tilt {
+  animation: avatar-tilt 4s ease-in-out infinite;
+}
+.avatar-wave {
+  animation: avatar-wave 2.6s ease-in-out infinite;
+  transform-origin: 50% 80%;
+}
+.avatar-glitch {
+  animation: avatar-glitch 3.6s steps(1) infinite;
+}
+.avatar-flame {
+  animation: avatar-flame 2.2s ease-in-out infinite;
+}
+
+.frame {
+  display: inline-grid;
+  place-items: center;
+  border-radius: 9999px;
+}
+.frame-gradient {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+}
+.frame-sakura {
+  background: conic-gradient(from var(--turn), #fbcfe8, #f472b6, #fda4af, #fce7f3, #fbcfe8);
+  animation: frame-turn 9s linear infinite;
+}
+.frame-neon {
+  background: linear-gradient(135deg, #22d3ee, #e879f9);
+  box-shadow:
+    0 0 10px rgb(34 211 238 / 0.7),
+    0 0 26px rgb(232 121 249 / 0.45);
+  animation: neon-pulse 2.4s ease-in-out infinite;
+}
+.frame-gold {
+  background: conic-gradient(from var(--turn), #fef3c7, #f59e0b, #b45309, #fde68a, #f59e0b, #fef3c7);
+  animation: frame-turn 6s linear infinite;
+}
+.frame-fire {
+  background: conic-gradient(from var(--turn), #fbbf24, #f97316, #ef4444, #f97316, #fbbf24);
+  box-shadow: 0 0 22px -2px rgb(249 115 22 / 0.65);
+  animation: frame-turn 2.6s linear infinite;
+}
+.frame-rainbow {
+  background: conic-gradient(from var(--turn), #f43f5e, #f59e0b, #eab308, #22c55e, #06b6d4, #6366f1, #d946ef, #f43f5e);
+  box-shadow: 0 0 20px -4px rgb(168 85 247 / 0.6);
+  animation: frame-turn 4s linear infinite;
+}
+
+.banner-default {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+}
+.banner-sunset {
+  background: linear-gradient(135deg, #fb923c, #db2777 55%, #7c3aed);
+}
+.banner-aurora {
+  background:
+    radial-gradient(60% 120% at 20% 100%, rgb(52 211 153 / 0.85), transparent 60%),
+    radial-gradient(50% 120% at 70% 0%, rgb(139 92 246 / 0.85), transparent 60%),
+    radial-gradient(40% 100% at 95% 90%, rgb(34 211 238 / 0.7), transparent 60%),
+    #0b1324;
+  background-size: 160% 160%;
+  animation: banner-drift 12s ease-in-out infinite alternate;
+}
+.banner-ocean {
+  background:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='60' viewBox='0 0 240 60'><path d='M0 30 Q30 10 60 30 T120 30 T180 30 T240 30 V60 H0Z' fill='rgb(255 255 255 / 0.12)'/></svg>") repeat-x bottom / 240px 60px,
+    linear-gradient(180deg, #38bdf8, #1d4ed8 70%, #172554);
+  animation: banner-waves 8s linear infinite;
+}
+.banner-stars {
+  background:
+    radial-gradient(1.5px 1.5px at 10% 30%, #fff, transparent),
+    radial-gradient(1px 1px at 30% 70%, #fff, transparent),
+    radial-gradient(2px 2px at 55% 25%, #fff, transparent),
+    radial-gradient(1px 1px at 75% 60%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 90% 20%, #fff, transparent),
+    radial-gradient(1px 1px at 45% 85%, #fff, transparent),
+    radial-gradient(80% 140% at 80% 120%, rgb(124 58 237 / 0.6), transparent 60%),
+    #070720;
+  background-size: 180px 120px, 180px 120px, 180px 120px, 180px 120px, 180px 120px, 180px 120px, 100% 100%, auto;
+  animation: twinkle 3.5s ease-in-out infinite alternate;
+}
+.banner-matrix {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 14px, rgb(34 197 94 / 0.16) 14px 16px),
+    repeating-linear-gradient(180deg, rgb(74 222 128 / 0.5) 0 2px, transparent 2px 9px),
+    #010a04;
+  background-size: 16px 100%, 16px 180px, auto;
+  animation: banner-rain 3s linear infinite;
+}
+.banner-lava {
+  background:
+    radial-gradient(40% 70% at 20% 80%, #fbbf24, transparent 60%),
+    radial-gradient(45% 80% at 65% 30%, #ef4444, transparent 60%),
+    radial-gradient(35% 70% at 90% 90%, #f97316, transparent 60%),
+    #450a0a;
+  background-size: 180% 180%;
+  animation: banner-drift 7s ease-in-out infinite alternate;
+}
+
+.card-back-dots {
+  background-image: radial-gradient(color-mix(in oklab, var(--accent) 30%, transparent) 1.2px, transparent 1.6px);
+  background-size: 18px 18px;
+}
+.card-back-grid {
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--accent) 14%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--accent) 14%, transparent) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.card-back-waves {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='24' viewBox='0 0 80 24'><path d='M0 12 Q20 0 40 12 T80 12' fill='none' stroke='rgb(139 92 246 / 0.28)' stroke-width='1.5'/></svg>");
+  background-size: 80px 24px;
+}
+.card-back-confetti {
+  background-image:
+    radial-gradient(circle at 20% 30%, rgb(244 114 182 / 0.35) 2px, transparent 3px),
+    radial-gradient(circle at 70% 20%, rgb(34 211 238 / 0.35) 2px, transparent 3px),
+    radial-gradient(circle at 45% 75%, rgb(251 191 36 / 0.35) 2px, transparent 3px),
+    radial-gradient(circle at 85% 65%, rgb(139 92 246 / 0.35) 2px, transparent 3px);
+  background-size: 90px 90px;
+}
+
+.name-gradient {
+  background: linear-gradient(90deg, #f472b6, #a78bfa, #22d3ee, #f472b6);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: name-shift 6s linear infinite;
+}
+
+/* Shop rarity accents */
+.rarity-common {
+  --rarity: #94a3b8;
+}
+.rarity-rare {
+  --rarity: #38bdf8;
+}
+.rarity-epic {
+  --rarity: #c084fc;
+}
+.rarity-legendary {
+  --rarity: #fbbf24;
+}
+
+/* The daily chest wobbles while it waits to be opened. */
+.chest-ready {
+  animation: chest-wobble 2.4s ease-in-out infinite;
+}
+
+@keyframes avatar-bob {
+  50% {
+    transform: translateY(-7%);
+  }
+}
+@keyframes avatar-tilt {
+  25% {
+    transform: rotate(-8deg);
+  }
+  75% {
+    transform: rotate(8deg);
+  }
+}
+@keyframes avatar-wave {
+  20% {
+    transform: rotate(-10deg) scale(1.04);
+  }
+  40% {
+    transform: rotate(8deg) scale(1.04);
+  }
+  60% {
+    transform: rotate(0) scale(1);
+  }
+}
+@keyframes avatar-glitch {
+  0%,
+  86%,
+  100% {
+    transform: none;
+    filter: none;
+  }
+  88% {
+    transform: translate(-3%, 2%);
+    filter: hue-rotate(90deg);
+  }
+  91% {
+    transform: translate(3%, -2%);
+    filter: hue-rotate(-90deg) saturate(1.6);
+  }
+  94% {
+    transform: translate(-1%, 0);
+  }
+}
+@keyframes avatar-flame {
+  50% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 6px rgb(251 191 36 / 0.9));
+  }
+}
+@keyframes frame-turn {
+  to {
+    --turn: 360deg;
+  }
+}
+@keyframes neon-pulse {
+  50% {
+    box-shadow:
+      0 0 16px rgb(34 211 238 / 0.9),
+      0 0 38px rgb(232 121 249 / 0.6);
+  }
+}
+@keyframes banner-drift {
+  to {
+    background-position: 100% 100%;
+  }
+}
+@keyframes banner-waves {
+  to {
+    background-position: 240px bottom, 0 0;
+  }
+}
+@keyframes banner-rain {
+  to {
+    background-position: 0 0, 0 180px, 0 0;
+  }
+}
+@keyframes twinkle {
+  from {
+    opacity: 0.75;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes name-shift {
+  to {
+    background-position: 300% 0;
+  }
+}
+@keyframes chest-wobble {
+  0%,
+  70%,
+  100% {
+    transform: rotate(0);
+  }
+  76% {
+    transform: rotate(-9deg) scale(1.05);
+  }
+  82% {
+    transform: rotate(8deg) scale(1.05);
+  }
+  88% {
+    transform: rotate(-5deg);
+  }
+  94% {
+    transform: rotate(3deg);
+  }
+}
+
 @keyframes aurora-drift {
   0% {
     transform: translate3d(0, 0, 0) scale(1);
@@ -699,7 +1132,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .aurora {
-    animation: none;
+  .aurora,
+  .aurora::after,
+  [class*="avatar-"],
+  [class*="frame-"],
+  [class*="banner-"],
+  .name-gradient,
+  .chest-ready {
+    animation: none !important;
   }
 }

@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { review, type Grade, type ProgressRow } from '../lib/srs'
 import { streakFrom, type Mode } from '../lib/study'
 import { supabase } from '../lib/supabase'
+import { browserTimeZone } from './profile'
 
 export type StudySummary = {
   today: number
@@ -11,6 +12,14 @@ export type StudySummary = {
   learned: number
   due: number
   started: number
+  /** Answers per local day over the last half year. */
+  activity: Array<{ day: string; count: number }>
+}
+
+export type StudyInsights = {
+  categories: Array<{ name: string; correct: number; total: number }>
+  hardest: Array<{ word: string; translation: string; lapses: number }>
+  forecast: Array<{ day: string; count: number }>
 }
 
 type Answer = {
@@ -26,9 +35,11 @@ type StudyState = {
   progress: Map<string, ProgressRow>
   progressLoaded: boolean
   summary: StudySummary | null
+  insights: StudyInsights | null
   streak: number
   loadProgress: () => Promise<void>
   refreshSummary: () => Promise<void>
+  loadInsights: () => Promise<void>
   answer: (answer: Answer) => Promise<void>
   reset: () => void
 }
@@ -36,13 +47,7 @@ type StudyState = {
 const PROGRESS_COLUMNS =
   'word_id, due, stability, difficulty, elapsed_days, scheduled_days, learning_steps, reps, lapses, state, last_review'
 
-function timeZone(): string {
-  try {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'
-  } catch {
-    return 'UTC'
-  }
-}
+const timeZone = browserTimeZone
 
 /** Today's date (YYYY-MM-DD) in the user's own time zone. */
 export function localToday(): string {
@@ -53,6 +58,7 @@ export const useStudy = create<StudyState>()((set, get) => ({
   progress: new Map(),
   progressLoaded: false,
   summary: null,
+  insights: null,
   streak: 0,
 
   loadProgress: async () => {
@@ -76,6 +82,12 @@ export const useStudy = create<StudyState>()((set, get) => ({
     if (error) return
     const summary = data as StudySummary
     set({ summary, streak: streakFrom(summary.days, localToday()) })
+  },
+
+  loadInsights: async () => {
+    if (!supabase) return
+    const { data, error } = await supabase.rpc('study_insights')
+    if (!error) set({ insights: data as StudyInsights })
   },
 
   answer: async ({ wordId, ruleId, mode, grade, correct, durationMs }) => {
@@ -111,6 +123,9 @@ export const useStudy = create<StudyState>()((set, get) => ({
         today: summary.today + 1,
         today_correct: summary.today_correct + (correct ? 1 : 0),
         days,
+        activity: summary.activity.some((entry) => entry.day === today)
+          ? summary.activity.map((entry) => (entry.day === today ? { ...entry, count: entry.count + 1 } : entry))
+          : [...summary.activity, { day: today, count: 1 }],
         accuracy_30d: {
           correct: summary.accuracy_30d.correct + (correct ? 1 : 0),
           total: summary.accuracy_30d.total + 1,
@@ -120,5 +135,5 @@ export const useStudy = create<StudyState>()((set, get) => ({
     }
   },
 
-  reset: () => set({ progress: new Map(), progressLoaded: false, summary: null, streak: 0 }),
+  reset: () => set({ progress: new Map(), progressLoaded: false, summary: null, insights: null, streak: 0 }),
 }))
