@@ -231,7 +231,7 @@
     "code": {
       "sent": "We sent a confirmation code to {{email}}. Type it here, no need to open a new tab.",
       "label": "Code from the email",
-      "hint": "It arrives within a minute. Can’t see it? Check Spam and Promotions.",
+      "hint": "It arrives within a minute. Can’t see it? Check Spam and Promotions. If the email has a button instead of a code, press it and this page will carry on by itself.",
       "confirm": "Confirm email",
       "otherEmail": "Different email",
       "resend": "Send the code again",
@@ -244,7 +244,9 @@
       "weak_password": "That password is too simple. Use at least 8 characters.",
       "over_email_send_rate_limit": "Too many emails in a short time. Wait a few minutes.",
       "otp_expired": "The code is wrong or has expired. Check it or send a new one.",
-      "email_address_invalid": "Check the email address"
+      "email_address_invalid": "Check the email address",
+      "email_address_not_authorized": "We can’t send email to this address right now. Try again a bit later or continue as a guest.",
+      "email_send_failed": "We couldn’t send the email. Try again in a minute."
     },
     "notConfigured": "The server isn't connected yet, so only guest mode works for now.",
     "desktopOauth": "In the desktop app, email sign-in works for now. Google, GitHub, Discord and Notion are coming in an update.",
