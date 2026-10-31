@@ -13,6 +13,8 @@ type AuthState = {
   ready: boolean
   session: Session | null
   localGuest: boolean
+  /** Signed in with a reset code or link, and the new password isn't saved yet. */
+  passwordRecovery: boolean
   init: () => () => void
   signInWithProvider: (provider: OAuthProvider) => Promise<void>
   signInWithEmail: (email: string, password: string) => Promise<void>
@@ -20,6 +22,13 @@ type AuthState = {
   /** Confirms a new account with the code from the email, right on the sign-up page. */
   verifySignupCode: (email: string, code: string) => Promise<void>
   resendSignupCode: (email: string) => Promise<void>
+  /** Emails a reset code. Succeeds for unknown addresses too, so nobody can probe who has an account. */
+  sendPasswordReset: (email: string) => Promise<void>
+  /** Signs in with the reset code; the new password is set next with setNewPassword. */
+  verifyResetCode: (email: string, code: string) => Promise<void>
+  setNewPassword: (password: string) => Promise<void>
+  /** Keeps the old password and goes into the app. */
+  skipNewPassword: () => void
   continueAsGuest: () => void
   signOut: () => Promise<void>
 }
@@ -33,6 +42,7 @@ export const useAuth = create<AuthState>()((set) => ({
   ready: false,
   session: null,
   localGuest: readFlag(LOCAL_GUEST_KEY),
+  passwordRecovery: false,
 
   init: () => {
     if (!supabase) {
@@ -40,8 +50,12 @@ export const useAuth = create<AuthState>()((set) => ({
       return () => {}
     }
     // INITIAL_SESSION fires once the stored session (or an OAuth ?code=) has been processed.
-    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+    // A reset code or link arrives as PASSWORD_RECOVERY, together with its session, so the
+    // welcome page can ask for the new password before letting the person in.
+    const { data } = supabase.auth.onAuthStateChange((event, session) => {
       set({ session, ready: true })
+      if (event === 'PASSWORD_RECOVERY') set({ passwordRecovery: true })
+      if (event === 'SIGNED_OUT' || event === 'USER_UPDATED') set({ passwordRecovery: false })
       if (session) {
         writeFlag(LOCAL_GUEST_KEY, false)
         set({ localGuest: false })
@@ -86,6 +100,26 @@ export const useAuth = create<AuthState>()((set) => ({
     const { error } = await client().auth.resend({ type: 'signup', email, options: { emailRedirectTo: `${window.location.origin}/` } })
     if (error) throw error
   },
+
+  sendPasswordReset: async (email) => {
+    // The link fallback lands on the welcome page, which then asks for the new password.
+    const { error } = await client().auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/welcome` })
+    if (error) throw error
+  },
+
+  verifyResetCode: async (email, code) => {
+    const { error } = await client().auth.verifyOtp({ email, token: code.replace(/\D/g, ''), type: 'recovery' })
+    if (error) throw error
+  },
+
+  setNewPassword: async (password) => {
+    const { error } = await client().auth.updateUser({ password })
+    if (error) throw error
+    // Whoever knew the old password is signed out everywhere else.
+    await client().auth.signOut({ scope: 'others' }).catch(() => {})
+  },
+
+  skipNewPassword: () => set({ passwordRecovery: false }),
 
   continueAsGuest: () => {
     writeFlag(LOCAL_GUEST_KEY, true)

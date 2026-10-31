@@ -52,6 +52,12 @@ into **Authentication → Emails → Templates → Confirm signup** (Source tab)
 (**Authentication → Sign In / Providers → Email**). The template shows `{{ .Token }}`, so the
 code works even if the email app opens links in another browser.
 
+Password resets work the same way: paste
+[supabase/templates/reset-password.html](../supabase/templates/reset-password.html) into
+**Templates → Reset password** with the subject "Код для відновлення пароля Lexicove". The
+code is typed on the sign-in page under "Forgot your password?", and the new password is
+chosen right there. Supabase only lets you edit templates once custom SMTP is set up.
+
 ### Chat photos
 
 Migration `20261026160000_chat_images.sql` creates the public `chat-images` Storage bucket.

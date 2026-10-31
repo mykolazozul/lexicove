@@ -222,6 +222,21 @@
     "email": "Email",
     "password": "Password",
     "passwordHint": "At least 8 characters",
+    "forgot": "Forgot your password?",
+    "reset": {
+      "title": "Reset your password",
+      "text": "We’ll email you a code and you’ll set a new password right here.",
+      "send": "Send the code",
+      "back": "Back to sign in",
+      "sent": "If there’s an account for {{email}}, we’ve sent it a code. Type it here, no need to open a new tab.",
+      "next": "Continue",
+      "newTitle": "New password",
+      "newText": "Code accepted. Choose a new password for {{email}}.",
+      "newPassword": "New password",
+      "save": "Save password",
+      "keepOld": "Keep my old password",
+      "done": "Password changed. Other devices will need to sign in again."
+    },
     "tabSignIn": "Sign in",
     "tabSignUp": "Sign up",
     "signIn": "Sign in",
@@ -246,7 +261,8 @@
       "otp_expired": "The code is wrong or has expired. Check it or send a new one.",
       "email_address_invalid": "Check the email address",
       "email_address_not_authorized": "We can’t send email to this address right now. Try again a bit later or continue as a guest.",
-      "email_send_failed": "We couldn’t send the email. Try again in a minute."
+      "email_send_failed": "We couldn’t send the email. Try again in a minute.",
+      "same_password": "The new password must be different from the old one."
     },
     "notConfigured": "The server isn't connected yet, so only guest mode works for now.",
     "desktopOauth": "In the desktop app, email sign-in works for now. Google, GitHub, Discord and Notion are coming in an update.",
