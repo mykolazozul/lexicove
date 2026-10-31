@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { ArrowRight, Coins, Flame, Lock, Sparkles, Target, Trophy } from 'lucide-react'
 import { BrandIcon } from '../components/BrandIcon'
 import { ChestCard, QuestsCard } from '../components/home/Rewards'
+import { WordOfDayCard } from '../components/home/WordOfDay'
 import { Card, IconChip, ProgressRing, Reveal, type ChipTone } from '../components/ui'
 import { cx } from '../lib/cx'
 import { useViewer } from '../lib/viewer'
@@ -97,17 +98,11 @@ export function HomePage() {
         </div>
       </Reveal>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Reveal delay={0.18} className="lg:col-span-2">
-          <QuestsCard />
-        </Reveal>
-        <Reveal delay={0.2}>
-          <ChestCard />
-        </Reveal>
-      </div>
-
       <div className="grid gap-4 lg:grid-cols-2">
-        <Reveal delay={0.2}>
+        <Reveal delay={0.17}>
+          <WordOfDayCard />
+        </Reveal>
+        <Reveal delay={0.19}>
           <Card className="flex h-full flex-col">
             <div className="flex items-start justify-between gap-3">
               <span className="grid size-12 place-items-center rounded-control bg-fg text-bg">
@@ -122,12 +117,23 @@ export function HomePage() {
             </Link>
           </Card>
         </Reveal>
+      </div>
 
+      <div className="grid gap-4 lg:grid-cols-3">
+        <Reveal delay={0.2} className="lg:col-span-2">
+          <QuestsCard />
+        </Reveal>
+        <Reveal delay={0.22}>
+          <ChestCard />
+        </Reveal>
+      </div>
+
+      <div>
         <Reveal delay={0.25}>
           <Card className="h-full">
             <h3 className="font-display text-lg font-semibold">{t('home.islands.title')}</h3>
             <p className="mt-2 text-muted">{t('home.islands.text')}</p>
-            <ul className="mt-5 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+            <ul className="mt-5 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
               {ISLANDS.map((island, index) => (
                 <li
                   key={island.key}

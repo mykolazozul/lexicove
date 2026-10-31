@@ -42,7 +42,11 @@ The code is public, so the app assumes anyone can read it and call the API direc
   code expires after an hour.
 - **Password resets use a one-time code too.** The page answers the same way whether or not an
   account exists, so nobody can probe addresses, and saving the new password signs the account
-  out on every other device.
+  out on every other device. Changing the password in Settings asks for the same emailed code,
+  so a session left open on someone else's computer can't lock the owner out.
+- **Starter decks and the word of the day run with the caller's rights.** `add_starter_deck`,
+  `starter_decks` and `word_of_the_day` are SECURITY INVOKER, so the usual policies, column
+  grants and the per-user row limit apply; guests only ever see starter-deck words.
 - **Push reminders keep their keys on the server.** The VAPID key pair and the cron token live in
   Vault and are read only by the `push` function with the service role. Subscriptions are accepted
   only for the browsers' own push services, so the function never posts anywhere else.

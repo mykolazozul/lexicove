@@ -22,6 +22,8 @@ export type Profile = {
   verified: boolean
   display_name_changed_at: string | null
   username_changed_at: string | null
+  /** Whether the word of the day comes as a notification at 09:00 (when reminders are on). */
+  word_push: boolean
 }
 
 type ProfileState = {
@@ -30,6 +32,7 @@ type ProfileState = {
   /** Re-reads the signed-in profile, e.g. after the server changed coins or XP. */
   refresh: () => Promise<void>
   setDailyGoal: (goal: number) => Promise<void>
+  setWordPush: (on: boolean) => Promise<void>
   /** Saves the @name friends search for. Throws a NameError. */
   setUsername: (username: string) => Promise<void>
   /** Saves the name everyone sees. Throws a NameError. */
@@ -97,6 +100,14 @@ export const useProfile = create<ProfileState>()((set, get) => ({
     if (!supabase || !profile) return
     set({ profile: { ...profile, daily_goal: goal } })
     const { error } = await supabase.from('profiles').update({ daily_goal: goal }).eq('id', profile.id)
+    if (error) set({ profile })
+  },
+
+  setWordPush: async (on) => {
+    const profile = get().profile
+    if (!supabase || !profile) return
+    set({ profile: { ...profile, word_push: on } })
+    const { error } = await supabase.from('profiles').update({ word_push: on }).eq('id', profile.id)
     if (error) set({ profile })
   },
 

@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { ArrowRight, BookOpen, Flame, Lock } from 'lucide-react'
+import { ArrowRight, BookOpen, Flame, Layers, Lock } from 'lucide-react'
 import { MODES } from '../app/modes'
 import { GuestNotice } from '../components/GuestNotice'
 import { Card, IconChip, ProgressRing, Reveal } from '../components/ui'
@@ -53,9 +53,15 @@ export function LearnPage() {
         <BookOpen className="size-10 text-accent" strokeWidth={1.8} />
         <h2 className="font-display text-xl font-semibold">{t('learn.noWords')}</h2>
         <p className="max-w-sm text-muted">{t('learn.noWordsText')}</p>
-        <Link to="/words" className="btn btn-primary mt-2">
-          {t('nav.words')}
-        </Link>
+        <div className="mt-2 flex flex-wrap justify-center gap-2">
+          <Link to="/words?decks=1" className="btn btn-primary">
+            <Layers className="size-4" />
+            {t('words.decks.choose')}
+          </Link>
+          <Link to="/words" className="btn btn-secondary">
+            {t('nav.words')}
+          </Link>
+        </div>
       </Card>
     )
   }

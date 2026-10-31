@@ -2,8 +2,9 @@ import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate, useSearchParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { AnimatePresence, motion } from 'motion/react'
-import { BookOpen, CloudOff, Download, History, Plus, Search, Upload } from 'lucide-react'
+import { BookOpen, CloudOff, Download, History, Layers, Plus, Search, Upload } from 'lucide-react'
 import { GuestNotice } from '../components/GuestNotice'
+import { DecksDialog } from '../components/words/DecksDialog'
 import { ImportDialog } from '../components/words/ImportDialog'
 import { NotionPanel } from '../components/words/NotionPanel'
 import { notionErrorText } from '../components/words/notionErrors'
@@ -34,6 +35,7 @@ export function WordsPage() {
   const [editorOpen, setEditorOpen] = useState(false)
   const [pickerOpen, setPickerOpen] = useState(false)
   const [importOpen, setImportOpen] = useState(false)
+  const [decksOpen, setDecksOpen] = useState(false)
   const [toast, setToast] = useState<Toast>(null)
   const deferredQuery = useDeferredValue(query)
 
@@ -45,6 +47,11 @@ export function WordsPage() {
   useEffect(() => {
     if (params.get('connected') === '1') {
       setPickerOpen(true)
+      setParams({}, { replace: true })
+    }
+    // Links from the Learn page and the first-visit tips open the starter decks.
+    if (params.get('decks') === '1') {
+      setDecksOpen(true)
       setParams({}, { replace: true })
     }
   }, [params, setParams])
@@ -140,6 +147,12 @@ export function WordsPage() {
         />
         <div className="ml-auto flex flex-wrap gap-2">
           {tab === 'words' && (
+            <button type="button" className="btn btn-ghost" onClick={() => setDecksOpen(true)}>
+              <Layers className="size-4" />
+              <span className="hidden sm:inline">{t('words.decks.button')}</span>
+            </button>
+          )}
+          {tab === 'words' && (
             <button type="button" className="btn btn-ghost" onClick={() => setImportOpen(true)}>
               <Upload className="size-4" />
               <span className="hidden sm:inline">{t('words.csv.import')}</span>
@@ -186,7 +199,12 @@ export function WordsPage() {
       {loading && !loaded ? (
         <ListSkeleton />
       ) : visible.length === 0 ? (
-        <EmptyState searching={Boolean(query || group)} hasSources={sources.length > 0} onAdd={() => openEditor()} />
+        <EmptyState
+          searching={Boolean(query || group)}
+          hasSources={sources.length > 0}
+          onAdd={() => openEditor()}
+          onDecks={tab === 'words' ? () => setDecksOpen(true) : undefined}
+        />
       ) : (
         <Card padding="p-0" className="overflow-hidden">
           <ul className="divide-y divide-line">
@@ -210,6 +228,14 @@ export function WordsPage() {
         open={pickerOpen}
         onClose={() => setPickerOpen(false)}
         onLinked={(summary) => message(t('notion.linked', { count: summary.pulled }))}
+      />
+      <DecksDialog
+        open={decksOpen}
+        onClose={() => setDecksOpen(false)}
+        onDone={(count, pushNeeded) => {
+          message(count > 0 ? t('words.decks.done', { count }) : t('words.decks.nothingNew'))
+          void afterSave(pushNeeded)
+        }}
       />
       <ImportDialog
         open={importOpen}
@@ -285,8 +311,38 @@ function GroupChip({ active, onClick, children }: { active: boolean; onClick: ()
   )
 }
 
-function EmptyState({ searching, hasSources, onAdd }: { searching: boolean; hasSources: boolean; onAdd: () => void }) {
+function EmptyState({
+  searching,
+  hasSources,
+  onAdd,
+  onDecks,
+}: {
+  searching: boolean
+  hasSources: boolean
+  onAdd: () => void
+  /** Offered for an empty word list without a Notion table: the quickest way to start. */
+  onDecks?: () => void
+}) {
   const { t } = useTranslation()
+  if (!searching && !hasSources && onDecks) {
+    return (
+      <Card glow className="flex flex-col items-center gap-3 py-12 text-center">
+        <Layers className="size-10 text-accent" strokeWidth={1.6} />
+        <h3 className="font-display text-lg font-semibold">{t('words.decks.emptyTitle')}</h3>
+        <p className="max-w-sm text-sm text-muted">{t('words.decks.emptyText')}</p>
+        <div className="mt-2 flex flex-wrap justify-center gap-2">
+          <button type="button" className="btn btn-primary" onClick={onDecks}>
+            <Layers className="size-4" />
+            {t('words.decks.choose')}
+          </button>
+          <button type="button" className="btn btn-secondary" onClick={onAdd}>
+            <Plus className="size-4" />
+            {t('words.addWord')}
+          </button>
+        </div>
+      </Card>
+    )
+  }
   return (
     <Card className="flex flex-col items-center gap-3 py-12 text-center">
       <BookOpen className="size-10 text-subtle" strokeWidth={1.6} />

@@ -18,6 +18,7 @@ import { useProfile } from '../stores/profile'
 import { toast } from '../stores/toast'
 import { DisplayName, UserAvatar, VerifiedBadge } from './cosmetics'
 import { Logo } from './Logo'
+import { Onboarding } from './Onboarding'
 import { Toaster } from './Toaster'
 import { ProgressBar } from './ui'
 
@@ -96,6 +97,7 @@ export function AppShell() {
       </main>
       <BottomBar />
       <Toaster />
+      <Onboarding />
     </div>
   )
 }

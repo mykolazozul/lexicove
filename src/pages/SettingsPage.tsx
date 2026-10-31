@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { BellRing, Check, ChevronRight, Coins, ExternalLink, Lock, LogIn, LogOut, Shield, Volume2 } from 'lucide-react'
+import { BellRing, Check, ChevronRight, Coins, ExternalLink, Lock, LogIn, LogOut, Shield, Sparkles, Volume2 } from 'lucide-react'
 import { isAdmin } from '../lib/admin'
 import { siApple, siGithub } from 'simple-icons'
 import { DisplayNameCard, UsernameCard } from '../components/community/FriendsView'
 import { confirmDialog } from '../components/Confirm'
+import { PasswordCard } from '../components/PasswordCard'
 import { ThemePreview } from '../components/cosmetics'
 import { Card, Reveal, SectionTitle, Segmented, Switch } from '../components/ui'
 import { useOwnedThemes } from '../lib/cosmetics'
@@ -153,6 +154,7 @@ export function SettingsPage() {
             <div className="mb-3 flex flex-col gap-3">
               <DisplayNameCard />
               <UsernameCard />
+              {viewer.email && <PasswordCard />}
             </div>
           )}
           <Card className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -263,15 +265,35 @@ function ReminderSetting() {
   }
 
   return (
-    <div className="flex items-center gap-4 border-t border-line pt-5">
-      <BellRing className="size-5 shrink-0 text-muted" />
-      <div className="min-w-0 flex-1">
-        <div className="font-semibold">{t('settings.reminders.title')}</div>
-        <p className="mt-0.5 text-sm text-muted">
-          {support === 'ok' ? t('settings.reminders.hint', { time: clockTime(19, 0, i18n.language) }) : t(`settings.reminders.${support}`)}
-        </p>
+    <>
+      <div className="flex items-center gap-4 border-t border-line pt-5">
+        <BellRing className="size-5 shrink-0 text-muted" />
+        <div className="min-w-0 flex-1">
+          <div className="font-semibold">{t('settings.reminders.title')}</div>
+          <p className="mt-0.5 text-sm text-muted">
+            {support === 'ok' ? t('settings.reminders.hint', { time: clockTime(19, 0, i18n.language) }) : t(`settings.reminders.${support}`)}
+          </p>
+        </div>
+        {support === 'ok' && <Switch checked={on} onChange={(next) => !busy && void toggle(next)} label={t('settings.reminders.title')} />}
       </div>
-      {support === 'ok' && <Switch checked={on} onChange={(next) => !busy && void toggle(next)} label={t('settings.reminders.title')} />}
+      {on && <WordPushSetting />}
+    </>
+  )
+}
+
+/** The word of the day as a 09:00 notification, for everyone who has reminders on. */
+function WordPushSetting() {
+  const { t, i18n } = useTranslation()
+  const wordPush = useProfile((s) => s.profile?.word_push ?? true)
+  const setWordPush = useProfile((s) => s.setWordPush)
+  return (
+    <div className="flex items-center gap-4 pl-9">
+      <Sparkles className="size-5 shrink-0 text-muted" />
+      <div className="min-w-0 flex-1">
+        <div className="font-semibold">{t('settings.reminders.word')}</div>
+        <p className="mt-0.5 text-sm text-muted">{t('settings.reminders.wordHint', { time: clockTime(9, 0, i18n.language) })}</p>
+      </div>
+      <Switch checked={wordPush} onChange={(next) => void setWordPush(next)} label={t('settings.reminders.word')} />
     </div>
   )
 }

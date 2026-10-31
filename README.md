@@ -38,6 +38,9 @@
   checked for bad words and can change once a week (username once a month), the owner has a
   verified badge and can post photos in chats, levels take longer as they rise, and times follow
   the device's 12- or 24-hour clock.
+- **Getting started:** four starter decks from A1 to B2 (40 words each with translations,
+  pronunciation and examples), a word of the day on the home page and as a 09:00 notification,
+  first-visit tips, and password changes by email code in Settings.
 
 Games and duels arrive phase by phase. See the roadmap in [SPEC.md](SPEC.md#16-етапи).
 

@@ -65,6 +65,16 @@
       "text": "Pick a table with words and Lexicove turns it into lessons and games. Words you add here go back to Notion too.",
       "cta": "Connect Notion"
     },
+    "wordOfDay": {
+      "title": "Word of the day",
+      "listen": "Hear the word",
+      "listenExample": "Hear the example",
+      "reveal": "Show the translation",
+      "practise": "Practise now",
+      "add": "Add to my words",
+      "added": "Added to your words",
+      "fromDeck": "From the starter decks. Sign in to get words from your own list."
+    },
     "islands": {
       "title": "Islands of Lexicove",
       "text": "Every word category is an island. Learn its words to unlock it.",
@@ -131,6 +141,19 @@
       "tester": "Tester"
     }
   },
+  "onboarding": {
+    "step": "Step {{step}} of {{total}}",
+    "back": "Back",
+    "skip": "Skip",
+    "next": "Next",
+    "start": "Let’s go",
+    "slides": {
+      "welcome": { "title": "Welcome to Lexicove!", "text": "Your words become short lessons and games here. A few minutes a day, and they stick for good." },
+      "words": { "title": "Where the words come from", "text": "Pick a starter deck, add words by hand, import a CSV or connect a Notion table that syncs both ways." },
+      "daily": { "title": "Learn every day", "text": "A daily goal, a streak flame, XP and coins. Words come back for review just as you start to forget them." },
+      "compete": { "title": "Compete", "text": "Weekly leagues, 1-on-1 duels and tournaments. Spend coins in the shop on avatars, frames and themes." }
+    }
+  },
   "settings": {
     "appearance": "Appearance",
     "appleStyle": "Apple style",
@@ -178,6 +201,15 @@
     "dailyGoalHint": "Answers per day. Reaching it pays +20 Coins and +50 XP.",
     "sounds": "Sounds",
     "soundsHint": "Short cues for answers, Coins and new levels. The sound set can be changed in the shop.",
+    "password": {
+      "title": "Password",
+      "hint": "Changed with a code we email you.",
+      "change": "Change password",
+      "send": "Send the code",
+      "sendText": "We’ll send a code to {{email}} to make sure it’s really you.",
+      "sent": "We sent a code to {{email}}. Type it here.",
+      "newHint": "At least 8 characters. Other devices will need to sign in again."
+    },
     "timeFormat": {
       "title": "Time format",
       "auto": "Like this device",
@@ -186,6 +218,8 @@
       "example": "Example: {{time}}"
     },
     "reminders": {
+      "word": "Word of the day",
+      "wordHint": "Every morning at {{time}}, one word from your list.",
       "title": "Streak reminders",
       "hint": "At {{time}} if you haven’t studied yet and your streak is at risk. At most once a day.",
       "install": "On iPhone and iPad, add Lexicove to your home screen (Share → Add to Home Screen) to get reminders.",
@@ -276,7 +310,7 @@
     "guestTitle": "Learning needs an account",
     "guestText": "Your progress and review schedule live in your account. Sign in to start.",
     "noWords": "Add some words first",
-    "noWordsText": "Connect a Notion table, import a CSV or add a few words by hand.",
+    "noWordsText": "Pick a starter deck, connect a Notion table, import a CSV or add a few words by hand.",
     "lesson": {
       "title": "Today's lesson",
       "text": "To review: {{due}}, new words: {{fresh}}. The modes rotate on their own.",
@@ -402,6 +436,29 @@
     "syncedHint": "Changes go to Notion right after saving, or with the next sync.",
     "guestTitle": "Words live in your account",
     "guestText": "Sign in to add words, import a CSV and connect your Notion.",
+    "decks": {
+      "button": "Decks",
+      "title": "Starter decks",
+      "text": "Ready-made sets of 40 words with translations, pronunciation and examples. Pick your level and start a lesson.",
+      "levels": {
+        "a1": { "name": "A1 · Beginner", "text": "Food, animals, home, time and your first phrasal verbs." },
+        "a2": { "name": "A2 · Elementary", "text": "Travel, work, feelings and everyday phrasal verbs." },
+        "b1": { "name": "B1 · Intermediate", "text": "Careers, character, trips and handy phrasal verbs." },
+        "b2": { "name": "B2 · Upper-intermediate", "text": "Business, nature, emotions and trickier phrasal verbs." }
+      },
+      "progress": "{{added}} of {{count}} added",
+      "add_one": "Add {{count}} word",
+      "add_other": "Add {{count}} words",
+      "allAdded": "All added",
+      "toNotion": "Add them to Notion too",
+      "toNotionHint": "The words appear in your table after a sync.",
+      "done_one": "Added {{count}} word. Time for a lesson!",
+      "done_other": "Added {{count}} words. Time for a lesson!",
+      "nothingNew": "You already have all of these words.",
+      "emptyTitle": "Start with a starter deck",
+      "emptyText": "Pick your level and get 40 words for your first lesson in a minute. Or add your own words or connect Notion.",
+      "choose": "Choose a deck"
+    },
     "csv": {
       "import": "Import CSV",
       "export": "Export CSV",

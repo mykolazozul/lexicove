@@ -1,8 +1,9 @@
-// Streak reminders over Web Push.
+// Streak reminders and the word of the day over Web Push.
 //
 // "public_key" is public: the app needs the VAPID public key to subscribe. On the first call the
 // key pair is created here and stored in Vault, so the private key never leaves the server.
-// "remind" runs every hour from pg_cron and must carry the cron token that lives in Vault.
+// "remind" runs every hour from pg_cron and must carry the cron token that lives in Vault. Each
+// run sends the streak reminders due at 19:00 and the words of the day due at 09:00, local time.
 
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { createVapidKeys, sendPush, type Vapid } from './webpush.ts'
@@ -16,7 +17,10 @@ const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE
 })
 
 type Config = { public_key: string | null; private_jwk: string | null; cron_token: string | null }
-type Target = { id: string; endpoint: string; p256dh: string; auth: string; locale: 'uk' | 'en'; streak: number }
+type Subscription = { id: string; endpoint: string; p256dh: string; auth: string; locale: 'uk' | 'en' }
+type StreakTarget = Subscription & { streak: number }
+type WordTarget = Subscription & { word: string; translation: string }
+type Message = { title: string; body: string; url: string; tag: string }
 
 class HttpError extends Error {
   constructor(public status: number, public code: string) {
@@ -93,7 +97,7 @@ function daysUk(n: number): string {
   return `${n} днів`
 }
 
-function message(target: Target) {
+function streakMessage(target: StreakTarget): Message {
   return target.locale === 'en'
     ? {
         title: `🔥 Your ${target.streak}-day streak is at risk`,
@@ -109,11 +113,30 @@ function message(target: Target) {
       }
 }
 
+function wordMessage(target: WordTarget): Message {
+  const translation = target.translation.length > 90 ? `${target.translation.slice(0, 89)}…` : target.translation
+  return target.locale === 'en'
+    ? { title: `📖 Word of the day: ${target.word}`, body: `${translation}. Tap to practise it.`, url: '/', tag: 'word' }
+    : { title: `📖 Слово дня: ${target.word}`, body: `${translation}. Натисни, щоб повторити.`, url: '/', tag: 'word' }
+}
+
 async function remind(config: Config) {
-  const { data, error } = await admin.rpc('push_targets')
-  if (error) throw error
-  const targets = (data ?? []) as Target[]
   const vapid: Vapid = { publicKey: config.public_key!, privateJwk: JSON.parse(config.private_jwk!), subject: SUBJECT }
+  const streak = await deliver<StreakTarget>('push_targets', 'push_mark', streakMessage, vapid)
+  const words = await deliver<WordTarget>('push_word_targets', 'push_mark_words', wordMessage, vapid)
+  return { streak, words }
+}
+
+/** Sends one kind of message to everyone due, then records who got it and which addresses died. */
+async function deliver<T extends Subscription>(
+  targetsRpc: string,
+  markRpc: string,
+  message: (target: T) => Message,
+  vapid: Vapid,
+) {
+  const { data, error } = await admin.rpc(targetsRpc)
+  if (error) throw error
+  const targets = (data ?? []) as T[]
 
   const sent: string[] = []
   const gone: string[] = []
@@ -135,7 +158,7 @@ async function remind(config: Config) {
   }
 
   if (sent.length || gone.length) {
-    const { error: markError } = await admin.rpc('push_mark', { p_sent: sent, p_gone: gone })
+    const { error: markError } = await admin.rpc(markRpc, { p_sent: sent, p_gone: gone })
     if (markError) throw markError
   }
   return { targets: targets.length, sent: sent.length, gone: gone.length }
