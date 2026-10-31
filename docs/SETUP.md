@@ -47,16 +47,22 @@ for example [Resend](https://resend.com) (100 emails a day on the free plan).
 
 New accounts confirm their email with a one-time code typed on the sign-up page, so no second
 tab opens. Paste [supabase/templates/confirm-signup.html](../supabase/templates/confirm-signup.html)
-into **Authentication → Emails → Templates → Confirm signup** (Source tab), set the subject to
-"Код підтвердження Lexicove", and keep the email OTP expiry at 3600 seconds
+into **Authentication → Emails → Templates → Confirm signup** (Source tab), copy the subject
+from the comment at the top of the file, and keep the email OTP expiry at 3600 seconds
 (**Authentication → Sign In / Providers → Email**). The template shows `{{ .Token }}`, so the
 code works even if the email app opens links in another browser.
 
 Password resets work the same way: paste
 [supabase/templates/reset-password.html](../supabase/templates/reset-password.html) into
-**Templates → Reset password** with the subject "Код для відновлення пароля Lexicove". The
-code is typed on the sign-in page under "Forgot your password?", and the new password is
-chosen right there. Supabase only lets you edit templates once custom SMTP is set up.
+**Templates → Reset password**, again with the subject from its top comment. The code is typed
+on the sign-in page under "Forgot your password?", and the new password is chosen right there.
+Supabase only lets you edit templates once custom SMTP is set up.
+
+Both emails, and their subjects, come in the account's language: English when
+`user_metadata.app_locale` is `en`, Ukrainian otherwise. Sign-up stores the interface language
+there, and the app keeps it in step whenever a signed-in person switches language
+([src/lib/accountLocale.ts](../src/lib/accountLocale.ts)). The subjects are Go templates too, so
+paste them exactly as written.
 
 ### Chat photos
 

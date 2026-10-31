@@ -4,6 +4,7 @@ import { motion } from 'motion/react'
 import { AppShell } from './components/AppShell'
 import { ConfirmHost } from './components/Confirm'
 import { LogoMark } from './components/Logo'
+import { syncAccountLocale } from './lib/accountLocale'
 import { pageOf, track } from './lib/analytics'
 import i18n from './lib/i18n'
 import { ComingSoonPage } from './pages/ComingSoonPage'
@@ -61,6 +62,7 @@ export function App() {
   const init = useAuth((s) => s.init)
   const ready = useAuth((s) => s.ready)
   useEffect(() => init(), [init])
+  useEffect(() => syncAccountLocale(), [])
   useThemeAndLanguage()
 
   // Usage statistics start once we know whether someone is signed in.

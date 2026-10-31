@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
 import { readFlag, writeFlag } from '../lib/storage'
+import { useSettings } from './settings'
 
 export const OAUTH_PROVIDERS = ['google', 'github', 'discord', 'notion'] as const
 export type OAuthProvider = (typeof OAUTH_PROVIDERS)[number]
@@ -81,7 +82,8 @@ export const useAuth = create<AuthState>()((set) => ({
     const { data, error } = await client().auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: `${window.location.origin}/` },
+      // The confirmation email is written in this language (see supabase/templates).
+      options: { emailRedirectTo: `${window.location.origin}/`, data: { app_locale: useSettings.getState().locale } },
     })
     if (error) throw error
     return { needsConfirmation: !data.session }
