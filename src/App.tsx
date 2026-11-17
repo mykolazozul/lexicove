@@ -25,6 +25,7 @@ const ShopPage = page(() => import('./pages/ShopPage'), 'ShopPage')
 const ProfilePage = page(() => import('./pages/ProfilePage'), 'ProfilePage')
 const SettingsPage = page(() => import('./pages/SettingsPage'), 'SettingsPage')
 const CommunityPage = page(() => import('./pages/CommunityPage'), 'CommunityPage')
+const DuelPage = page(() => import('./pages/DuelPage'), 'DuelPage')
 const WordsPage = page(() => import('./pages/WordsPage'), 'WordsPage')
 const NotionCallbackPage = page(() => import('./pages/NotionCallbackPage'), 'NotionCallbackPage')
 const LegalPage = page(() => import('./pages/LegalPage'), 'LegalPage')
@@ -50,6 +51,7 @@ const router = createBrowserRouter([
       { path: 'games', element: <ComingSoonPage section="games" /> },
       { path: 'shop', element: <Lazy><ShopPage /></Lazy> },
       { path: 'community', element: <Lazy><CommunityPage /></Lazy> },
+      { path: 'duel/:id', element: <Lazy><DuelPage /></Lazy> },
       { path: 'profile', element: <Lazy><ProfilePage /></Lazy> },
       { path: 'settings', element: <Lazy><SettingsPage /></Lazy> },
       { path: 'admin', element: <Lazy><AdminPage /></Lazy> },

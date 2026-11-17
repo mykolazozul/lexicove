@@ -41,8 +41,12 @@
 - **Getting started:** four starter decks from A1 to B2 (40 words each with translations,
   pronunciation and examples), a word of the day on the home page and as a 09:00 notification,
   first-visit tips, and password changes by email code in Settings.
+- **Phase 5, competition:** live 1-on-1 duels on ten questions from the starter decks, ranked
+  matchmaking with an ELO rating and a leaderboard, practice against a bot, friendly challenges
+  with coin stakes, one-click rematches, invites that pop up anywhere in the app, and a free
+  weekly single-elimination tournament with prizes.
 
-Games and duels arrive phase by phase. See the roadmap in [SPEC.md](SPEC.md#16-етапи).
+Games arrive in phase 6. See the roadmap in [SPEC.md](SPEC.md#16-етапи).
 
 ## Features (planned)
 

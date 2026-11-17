@@ -47,6 +47,13 @@ The code is public, so the app assumes anyone can read it and call the API direc
 - **Starter decks and the word of the day run with the caller's rights.** `add_starter_deck`,
   `starter_decks` and `word_of_the_day` are SECURITY INVOKER, so the usual policies, column
   grants and the per-user row limit apply; guests only ever see starter-deck words.
+- **Duels can't be won from the browser.** Questions and their answers sit in tables nobody can
+  read; `duel_state` hands out the options once the clock starts and an answer only after it has
+  been given. `duel_answer` takes questions in order, once each, inside the time window, and times
+  them with the server's clock. Stakes are taken from both players when a duel starts and paid
+  out by `duel_settle`; ratings, rewards (ten paid ranked wins a day) and tournament brackets are
+  all computed there, and a minute job settles duels whose time ran out. Challenges go to friends
+  only, banned users can't play, and each person can start at most 60 duels an hour.
 - **Push reminders keep their keys on the server.** The VAPID key pair and the cron token live in
   Vault and are read only by the `push` function with the service role. Subscriptions are accepted
   only for the browsers' own push services, so the function never posts anywhere else.

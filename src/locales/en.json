@@ -141,6 +141,132 @@
       "tester": "Tester"
     }
   },
+  "duels": {
+    "back": "Back to duels",
+    "you": "You",
+    "bot": "Lexi Bot",
+    "rating": "Rating {{rating}}",
+    "progress": "✓ {{correct}} of {{answered}}",
+    "getReady": "Get ready",
+    "question": "Question {{n}} of {{total}}",
+    "direction": {
+      "en_uk": "What is it in Ukrainian?",
+      "uk_en": "What is it in English?"
+    },
+    "yourScore": "Your score: {{correct}} of {{total}}",
+    "waitingOpponent": "Waiting for your opponent to answer every question…",
+    "outcome": {
+      "win": "You won!",
+      "loss": "You lost",
+      "draw": "A draw"
+    },
+    "outcomeText": {
+      "win": "More right answers than your opponent. Keep it up!",
+      "loss": "Your opponent was stronger this time. Rematch?",
+      "draw": "Neck and neck. It happens!"
+    },
+    "ratingChange": "Rating {{change}}",
+    "rematch": "Rematch",
+    "levels": {
+      "mix": "All levels",
+      "a1": "A1 · Beginner",
+      "a2": "A2 · Elementary",
+      "b1": "B1 · Intermediate",
+      "b2": "B2 · Upper-intermediate"
+    },
+    "stake": "Stake {{coins}}",
+    "noStake": "No stake",
+    "noStakeShort": "None",
+    "waiting": {
+      "title": "Waiting for {{name}} to accept",
+      "expires": "The challenge lasts {{seconds}} more s",
+      "cancel": "Cancel the challenge"
+    },
+    "invite": {
+      "title": "{{name}} challenges you to a duel",
+      "rematchTitle": "{{name}} wants a rematch",
+      "accept": "Accept",
+      "decline": "Decline"
+    },
+    "closed": {
+      "cancelled": "The challenge was cancelled",
+      "declined": "The challenge was declined",
+      "expired": "Time to answer ran out"
+    },
+    "activeNow": "You have a duel in progress",
+    "continue": "Continue",
+    "incoming": "Challenges for you",
+    "outgoing": "Your challenges",
+    "waitingShort": "Waiting for an answer",
+    "recent": "Recent duels",
+    "noRecent": "No duels yet. Start with some practice against the bot!",
+    "kinds": {
+      "ranked": "Ranked",
+      "friendly": "Friendly",
+      "bot": "Practice",
+      "tournament": "Tournament"
+    },
+    "outcomeShort": {
+      "win": "Win",
+      "loss": "Loss",
+      "draw": "Draw"
+    },
+    "leaders": "Top by rating",
+    "noLeaders": "No ranked games yet. Be the first!",
+    "rules": "Ten questions, fifteen seconds each. More right answers wins; on a tie the faster player wins. A ranked win pays 10 coins (up to 10 wins a day). In a friendly duel the stake goes to the winner and comes back to both on a draw.",
+    "ratingTitle": "Your rating",
+    "best": "Best: {{rating}}",
+    "unranked": "Play a ranked duel to join the table.",
+    "wins": "Wins",
+    "losses": "Losses",
+    "draws": "Draws",
+    "playTitle": "Play",
+    "playText": "Compete live: both players get the same ten questions.",
+    "findRanked": "Find an opponent",
+    "searching": "Looking for an opponent… {{seconds}} s",
+    "stopSearch": "Cancel",
+    "nobodyYet": "Nobody yet. You can play the bot meanwhile, and we’ll stop the search.",
+    "practice": "Practice with the bot",
+    "practiceText": "No rating, no stakes. Pick the level of the questions.",
+    "level": "Level",
+    "play": "Play",
+    "challengeTitle": "Challenge a friend",
+    "challengeText": "A friendly duel, with a coin stake if you like.",
+    "challenge": "Challenge to a duel",
+    "sendChallenge": "Send the challenge",
+    "changeFriend": "Another friend",
+    "noFriends": "Add some friends on the Friends tab first.",
+    "stakeTitle": "Stake",
+    "stakeHint": "You have {{coins}} coins. The stake is taken from both of you when your friend accepts.",
+    "tournament": {
+      "title": "Tournament of the week",
+      "registration": "Sign up until {{date}} · {{count}} of {{max}} players. Free to enter.",
+      "running": "Round {{round}} of {{rounds}}, until {{date}}.",
+      "finished": "The tournament is over. The next one opens on Monday.",
+      "join": "Join",
+      "joined": "You’re in. The bracket is drawn on Wednesday.",
+      "joinedToast": "You’re signed up for the tournament!",
+      "leave": "Leave",
+      "left": "You left the tournament",
+      "bracket": "Bracket",
+      "out": "You went out in round {{round}}. Better luck next week!",
+      "yourMatch": "Your round {{round}} match is waiting.",
+      "through": "You’re through. Wait for the next round.",
+      "play": "Play the match",
+      "notIn": "You’re not in this tournament. Sign-up for the next one opens on Monday.",
+      "podium": "Winners",
+      "lastPodium": "Last week’s winners",
+      "final": "Final",
+      "round": "Round {{round}}",
+      "later": "Not decided yet",
+      "bye": "No opponent",
+      "matchTitle": "Tournament match",
+      "matchText": "The same ten questions as your opponent, and 150 seconds in all. Play before {{date}}, or the match goes to your opponent.",
+      "opponentPlayed": "Your opponent has already played their part.",
+      "start": "Start",
+      "waiting": "Your score is saved. Your opponent has until {{date}} to play."
+    }
+  },
   "onboarding": {
     "step": "Step {{step}} of {{total}}",
     "back": "Back",
@@ -1017,6 +1143,11 @@
         "title": "Night owl",
         "text": "Study between midnight and 5 am."
       },
+      "duel_win_1": { "title": "First win", "text": "Win your first duel against a real opponent." },
+      "duel_win_10": { "title": "Duellist", "text": "Win 10 duels." },
+      "duel_win_50": { "title": "Duel master", "text": "Win 50 duels." },
+      "rating_1200": { "title": "Rating 1200", "text": "Reach a rating of 1200 in ranked duels." },
+      "tournament_win": { "title": "Champion of the week", "text": "Win a weekly tournament." },
       "early_bird": {
         "title": "Early bird",
         "text": "Study between 5 and 7 am."
@@ -1028,6 +1159,7 @@
     "guestText": "Chat, friends and weekly leagues open once you sign up. It’s free.",
     "tabs": {
       "chat": "Chat",
+      "duels": "Duels",
       "league": "League",
       "friends": "Friends",
       "moderation": "Moderation"
@@ -1216,6 +1348,24 @@
       "images_owner_only": "Only the owner can post photos in chat",
       "bad_image": "That file won’t work: use a photo up to 5 MB",
       "upload_failed": "Couldn’t upload the photo",
+      "too_many_duels": "Too many duels this hour. Take a short break",
+      "already_in_duel": "You’re already in a duel",
+      "not_enough_coins": "Not enough coins for that stake",
+      "opponent_not_enough_coins": "Your opponent no longer has enough coins for this stake",
+      "friends_only": "You can only challenge friends",
+      "bad_opponent": "You can’t challenge this player",
+      "bad_stake": "The stake must be 0 to 100 coins",
+      "bad_level": "Unknown level",
+      "too_many_invites": "Too many challenges at once. Wait for an answer",
+      "no_such_invite": "This challenge is gone",
+      "invite_expired": "Time to answer ran out",
+      "no_such_duel": "Duel not found",
+      "duel_not_active": "This duel is already over",
+      "duel_not_started": "The duel hasn’t started yet",
+      "duel_time_up": "Time’s up",
+      "wrong_question": "That question is already behind you",
+      "registration_closed": "Tournament sign-up is closed",
+      "tournament_full": "The tournament already has 64 players",
       "unknown": "Something went wrong. Please try again."
     }
   },

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'motion/react'
@@ -21,6 +21,9 @@ import { Logo } from './Logo'
 import { Onboarding } from './Onboarding'
 import { Toaster } from './Toaster'
 import { ProgressBar } from './ui'
+
+// Duel invites need the community code, so they load after the first screen.
+const DuelInvites = lazy(() => import('./community/DuelInvites').then((module) => ({ default: module.DuelInvites })))
 
 export function AppShell() {
   const session = useAuth((s) => s.session)
@@ -98,6 +101,11 @@ export function AppShell() {
       <BottomBar />
       <Toaster />
       <Onboarding />
+      {userId && (
+        <Suspense fallback={null}>
+          <DuelInvites />
+        </Suspense>
+      )}
     </div>
   )
 }

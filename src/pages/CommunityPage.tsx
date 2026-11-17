@@ -1,8 +1,9 @@
 import { useCallback } from 'react'
 import { useSearchParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { MessageCircle, ShieldAlert, Trophy, Users } from 'lucide-react'
+import { MessageCircle, ShieldAlert, Swords, Trophy, Users } from 'lucide-react'
 import { ChatView } from '../components/community/ChatView'
+import { DuelsView } from '../components/community/DuelsView'
 import { FriendsView } from '../components/community/FriendsView'
 import { LeagueView } from '../components/community/LeagueView'
 import { ModerationView } from '../components/community/ModerationView'
@@ -14,7 +15,7 @@ import { cx } from '../lib/cx'
 import { useViewer } from '../lib/viewer'
 import { useProfile } from '../stores/profile'
 
-type Tab = 'chat' | 'league' | 'friends' | 'moderation'
+type Tab = 'chat' | 'duels' | 'league' | 'friends' | 'moderation'
 
 export function CommunityPage() {
   const { t } = useTranslation()
@@ -34,6 +35,7 @@ export function CommunityPage() {
 
   const tabs = [
     { value: 'chat' as const, icon: MessageCircle },
+    { value: 'duels' as const, icon: Swords },
     { value: 'league' as const, icon: Trophy },
     { value: 'friends' as const, icon: Users },
     ...(isModerator ? [{ value: 'moderation' as const, icon: ShieldAlert }] : []),
@@ -63,6 +65,7 @@ export function CommunityPage() {
       </Reveal>
 
       {tab === 'chat' && <ChatView initialRoom={room} />}
+      {tab === 'duels' && <DuelsView />}
       {tab === 'league' && <LeagueView onMessage={openDm} />}
       {tab === 'friends' && <FriendsView onMessage={openDm} />}
       {tab === 'moderation' && <ModerationView />}

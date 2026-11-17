@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AtSign, Check, Copy, MessageCircle, Pencil, UserPlus, UserRound, X } from 'lucide-react'
+import { AtSign, Check, Copy, MessageCircle, Pencil, Swords, UserPlus, UserRound, X } from 'lucide-react'
 import { Card, SectionTitle } from '../ui'
+import { ChallengeModal } from './DuelsView'
 import { errorText, StreakFlame, UserCardModal, UserLine, WeekXp } from './People'
-import { community, type FriendEntry } from '../../lib/community'
+import { community, type FriendEntry, type PublicCard } from '../../lib/community'
 import { NameError, useProfile } from '../../stores/profile'
 import { toast } from '../../stores/toast'
 
@@ -15,6 +16,7 @@ export function FriendsView({ onMessage }: { onMessage: (userId: string) => void
   const [search, setSearch] = useState('')
   const [busy, setBusy] = useState(false)
   const [card, setCard] = useState<string | null>(null)
+  const [challenge, setChallenge] = useState<PublicCard | null>(null)
 
   const load = useCallback(() => community.friends().then(setFriends).catch((error) => toast(errorText(t, error), 'error')), [t])
   useEffect(() => {
@@ -116,6 +118,9 @@ export function FriendsView({ onMessage }: { onMessage: (userId: string) => void
                   <WeekXp value={entry.week_xp} />
                   <StreakFlame value={entry.streak} />
                 </span>
+                <button type="button" className="btn btn-secondary h-9 px-3" onClick={() => setChallenge(entry.user)} aria-label={t('duels.challenge')}>
+                  <Swords className="size-4" />
+                </button>
                 <button type="button" className="btn btn-secondary h-9 px-3" onClick={() => onMessage(entry.user.id)} aria-label={t('friends.message')}>
                   <MessageCircle className="size-4" />
                 </button>
@@ -140,6 +145,8 @@ export function FriendsView({ onMessage }: { onMessage: (userId: string) => void
           </Card>
         </section>
       )}
+
+      {challenge && <ChallengeModal friend={challenge} onClose={() => setChallenge(null)} />}
 
       <UserCardModal
         userId={card}
