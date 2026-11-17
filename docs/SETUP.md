@@ -120,7 +120,11 @@ it in Vault, and the migration creates the token that pg_cron uses to call it ev
 
 1. Deploy it with JWT checks off (it checks the cron token itself): `supabase functions deploy push --no-verify-jwt`.
 2. On your own fork, change the project URL in the `streak-reminders` cron job
-   ([`*_push_reminders.sql`](../supabase/migrations)) and `ALLOWED_ORIGINS` in the function.
+   ([`*_push_reminders.sql`](../supabase/migrations)), in `private.duel_invite_push()`
+   ([`*_duel_invite_push.sql`](../supabase/migrations)) and `ALLOWED_ORIGINS` in the function.
+
+The same function sends the word of the day at 09:00 and duel challenges the moment a friend
+sends one (a database trigger calls it). People turn each kind on or off in Settings.
 
 ## 4. Website on Vercel
 

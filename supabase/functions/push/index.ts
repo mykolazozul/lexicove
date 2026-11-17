@@ -1,9 +1,10 @@
-// Streak reminders and the word of the day over Web Push.
+// Streak reminders, the word of the day and duel challenges over Web Push.
 //
 // "public_key" is public: the app needs the VAPID public key to subscribe. On the first call the
 // key pair is created here and stored in Vault, so the private key never leaves the server.
 // "remind" runs every hour from pg_cron and must carry the cron token that lives in Vault. Each
 // run sends the streak reminders due at 19:00 and the words of the day due at 09:00, local time.
+// "duel_invite" comes from a database trigger (with the same token) when a friend is challenged.
 
 import { createClient } from 'npm:@supabase/supabase-js@2'
 import { createVapidKeys, sendPush, type Vapid } from './webpush.ts'
@@ -11,6 +12,7 @@ import { createVapidKeys, sendPush, type Vapid } from './webpush.ts'
 const ALLOWED_ORIGINS = ['https://lexicove.vercel.app', 'http://localhost:5173']
 const SUBJECT = 'https://lexicove.vercel.app'
 const MAX_BODY_BYTES = 4 * 1024
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 
 const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, {
   auth: { persistSession: false, autoRefreshToken: false },
@@ -20,6 +22,7 @@ type Config = { public_key: string | null; private_jwk: string | null; cron_toke
 type Subscription = { id: string; endpoint: string; p256dh: string; auth: string; locale: 'uk' | 'en' }
 type StreakTarget = Subscription & { streak: number }
 type WordTarget = Subscription & { word: string; translation: string }
+type InviteTarget = Subscription & { duel_id: string; name: string; stake: number; level: string; rematch: boolean }
 type Message = { title: string; body: string; url: string; tag: string }
 
 class HttpError extends Error {
@@ -43,18 +46,20 @@ Deno.serve(async (req) => {
     if (req.method !== 'POST') throw new HttpError(405, 'method_not_allowed')
     const text = await req.text()
     if (text.length > MAX_BODY_BYTES) throw new HttpError(413, 'too_large')
-    const body = JSON.parse(text || '{}') as { action?: unknown }
+    const body = JSON.parse(text || '{}') as { action?: unknown; duel?: unknown }
 
     if (body.action === 'public_key') {
       const config = await ensureKeys()
       return new Response(JSON.stringify({ public_key: config.public_key }), { status: 200, headers })
     }
-    if (body.action === 'remind') {
+    if (body.action === 'remind' || body.action === 'duel_invite') {
       const config = await ensureKeys()
       if (!config.cron_token || !sameSecret(req.headers.get('x-cron-token') ?? '', config.cron_token)) {
         throw new HttpError(401, 'unauthorized')
       }
-      return new Response(JSON.stringify(await remind(config)), { status: 200, headers })
+      if (body.action === 'remind') return new Response(JSON.stringify(await remind(config)), { status: 200, headers })
+      if (typeof body.duel !== 'string' || !UUID.test(body.duel)) throw new HttpError(400, 'bad_duel')
+      return new Response(JSON.stringify(await inviteToDuel(config, body.duel)), { status: 200, headers })
     }
     throw new HttpError(400, 'unknown_action')
   } catch (error) {
@@ -120,11 +125,54 @@ function wordMessage(target: WordTarget): Message {
     : { title: `📖 Слово дня: ${target.word}`, body: `${translation}. Натисни, щоб повторити.`, url: '/', tag: 'word' }
 }
 
+const LEVELS: Record<'uk' | 'en', Record<string, string>> = {
+  uk: { mix: 'змішаний', a1: 'A1', a2: 'A2', b1: 'B1', b2: 'B2' },
+  en: { mix: 'mixed', a1: 'A1', a2: 'A2', b1: 'B1', b2: 'B2' },
+}
+
+function inviteMessage(target: InviteTarget): Message {
+  const name = target.name.length > 40 ? `${target.name.slice(0, 39)}…` : target.name
+  const level = LEVELS[target.locale][target.level] ?? target.level
+  const url = `/duel/${target.duel_id}`
+  const tag = `duel-${target.duel_id}`
+  return target.locale === 'en'
+    ? {
+        title: target.rematch ? `⚔️ ${name} wants a rematch` : `⚔️ ${name} challenges you to a duel`,
+        body: `Level: ${level}${target.stake > 0 ? `, stake ${target.stake} coins` : ''}. The challenge lasts 2 minutes.`,
+        url,
+        tag,
+      }
+    : {
+        title: target.rematch ? `⚔️ ${name} хоче реванш` : `⚔️ ${name} викликає тебе на дуель`,
+        body: `Рівень: ${level}${target.stake > 0 ? `, ставка ${target.stake} монет` : ''}. Виклик діє 2 хвилини.`,
+        url,
+        tag,
+      }
+}
+
 async function remind(config: Config) {
-  const vapid: Vapid = { publicKey: config.public_key!, privateJwk: JSON.parse(config.private_jwk!), subject: SUBJECT }
+  const vapid = vapidOf(config)
   const streak = await deliver<StreakTarget>('push_targets', 'push_mark', streakMessage, vapid)
   const words = await deliver<WordTarget>('push_word_targets', 'push_mark_words', wordMessage, vapid)
   return { streak, words }
+}
+
+/** Tells a friend about a challenge right away; it expires in two minutes, and so does the push. */
+async function inviteToDuel(config: Config, duel: string) {
+  const { data, error } = await admin.rpc('push_duel_invite_targets', { p_duel: duel })
+  if (error) throw error
+  const targets = (data ?? []) as InviteTarget[]
+  const { sent, gone } = await sendAll(targets, inviteMessage, vapidOf(config), 120)
+  // Only dead addresses are recorded: an invite isn't the day's reminder.
+  if (gone.length) {
+    const { error: markError } = await admin.rpc('push_mark', { p_sent: [], p_gone: gone })
+    if (markError) throw markError
+  }
+  return { invite: { targets: targets.length, sent: sent.length, gone: gone.length } }
+}
+
+function vapidOf(config: Config): Vapid {
+  return { publicKey: config.public_key!, privateJwk: JSON.parse(config.private_jwk!), subject: SUBJECT }
 }
 
 /** Sends one kind of message to everyone due, then records who got it and which addresses died. */
@@ -137,7 +185,16 @@ async function deliver<T extends Subscription>(
   const { data, error } = await admin.rpc(targetsRpc)
   if (error) throw error
   const targets = (data ?? []) as T[]
+  const { sent, gone } = await sendAll(targets, message, vapid)
 
+  if (sent.length || gone.length) {
+    const { error: markError } = await admin.rpc(markRpc, { p_sent: sent, p_gone: gone })
+    if (markError) throw markError
+  }
+  return { targets: targets.length, sent: sent.length, gone: gone.length }
+}
+
+async function sendAll<T extends Subscription>(targets: T[], message: (target: T) => Message, vapid: Vapid, ttlSeconds?: number) {
   const sent: string[] = []
   const gone: string[] = []
   // A few at a time keeps the function well inside its time limit.
@@ -145,7 +202,7 @@ async function deliver<T extends Subscription>(
     await Promise.all(
       targets.slice(i, i + 20).map(async (target) => {
         try {
-          const status = await sendPush(target, message(target), vapid)
+          const status = await sendPush(target, message(target), vapid, ttlSeconds)
           if (status >= 200 && status < 300) sent.push(target.id)
           // Expired or unsubscribed: the browser won't take messages on this address again.
           else if (status === 404 || status === 410) gone.push(target.id)
@@ -156,10 +213,5 @@ async function deliver<T extends Subscription>(
       }),
     )
   }
-
-  if (sent.length || gone.length) {
-    const { error: markError } = await admin.rpc(markRpc, { p_sent: sent, p_gone: gone })
-    if (markError) throw markError
-  }
-  return { targets: targets.length, sent: sent.length, gone: gone.length }
+  return { sent, gone }
 }

@@ -1,5 +1,6 @@
 // Loaded into the generated service worker (vite.config.ts → workbox.importScripts).
-// Shows streak reminders sent by the push function and opens the app when one is tapped.
+// Shows reminders, the word of the day and duel challenges sent by the push function, and opens
+// the app when one is tapped.
 
 self.addEventListener('push', (event) => {
   let data = {}
@@ -8,14 +9,22 @@ self.addEventListener('push', (event) => {
   } catch {
     data = { body: event.data ? event.data.text() : '' }
   }
-  event.waitUntil(
+  const show = () =>
     self.registration.showNotification(data.title || 'Lexicove', {
       body: data.body || '',
       icon: '/pwa-192x192.png',
       badge: '/pwa-64x64.png',
       tag: data.tag || 'lexicove',
       data: { url: typeof data.url === 'string' && data.url.startsWith('/') ? data.url : '/' },
-    }),
+    })
+  const isDuel = typeof data.tag === 'string' && data.tag.startsWith('duel-')
+  event.waitUntil(
+    isDuel
+      ? // With the app open in front of them, the challenge already shows on screen.
+        self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windows) =>
+          windows.some((client) => client.focused && client.visibilityState === 'visible') ? undefined : show(),
+        )
+      : show(),
   )
 })
 

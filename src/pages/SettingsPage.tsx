@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { BellRing, Check, ChevronRight, Coins, ExternalLink, Lock, LogIn, LogOut, Shield, Sparkles, Volume2 } from 'lucide-react'
+import { BellRing, Check, ChevronRight, Coins, ExternalLink, Lock, LogIn, LogOut, Shield, Sparkles, Swords, Volume2, type LucideIcon } from 'lucide-react'
 import { isAdmin } from '../lib/admin'
 import { siApple, siGithub } from 'simple-icons'
 import { DisplayNameCard, UsernameCard } from '../components/community/FriendsView'
@@ -18,7 +18,7 @@ import { clockTime } from '../lib/time'
 import { useViewer } from '../lib/viewer'
 import { useAuth } from '../stores/auth'
 import { useEconomy } from '../stores/economy'
-import { useProfile } from '../stores/profile'
+import { useProfile, type PushTopic } from '../stores/profile'
 import { toast } from '../stores/toast'
 import { DAILY_GOALS, DARK_THEMES, LIGHT_THEMES, SHOP_THEMES, useSettings, type ThemeChoice } from '../stores/settings'
 
@@ -276,24 +276,33 @@ function ReminderSetting() {
         </div>
         {support === 'ok' && <Switch checked={on} onChange={(next) => !busy && void toggle(next)} label={t('settings.reminders.title')} />}
       </div>
-      {on && <WordPushSetting />}
+      {on && (
+        <>
+          <PushTopicSetting
+            topic="word_push"
+            icon={Sparkles}
+            title={t('settings.reminders.word')}
+            hint={t('settings.reminders.wordHint', { time: clockTime(9, 0, i18n.language) })}
+          />
+          <PushTopicSetting topic="duel_push" icon={Swords} title={t('settings.reminders.duel')} hint={t('settings.reminders.duelHint')} />
+        </>
+      )}
     </>
   )
 }
 
-/** The word of the day as a 09:00 notification, for everyone who has reminders on. */
-function WordPushSetting() {
-  const { t, i18n } = useTranslation()
-  const wordPush = useProfile((s) => s.profile?.word_push ?? true)
-  const setWordPush = useProfile((s) => s.setWordPush)
+/** One kind of notification, for everyone who has reminders on. */
+function PushTopicSetting({ topic, icon: Icon, title, hint }: { topic: PushTopic; icon: LucideIcon; title: string; hint: string }) {
+  const on = useProfile((s) => s.profile?.[topic] ?? true)
+  const setPushTopic = useProfile((s) => s.setPushTopic)
   return (
     <div className="flex items-center gap-4 pl-9">
-      <Sparkles className="size-5 shrink-0 text-muted" />
+      <Icon className="size-5 shrink-0 text-muted" />
       <div className="min-w-0 flex-1">
-        <div className="font-semibold">{t('settings.reminders.word')}</div>
-        <p className="mt-0.5 text-sm text-muted">{t('settings.reminders.wordHint', { time: clockTime(9, 0, i18n.language) })}</p>
+        <div className="font-semibold">{title}</div>
+        <p className="mt-0.5 text-sm text-muted">{hint}</p>
       </div>
-      <Switch checked={wordPush} onChange={(next) => void setWordPush(next)} label={t('settings.reminders.word')} />
+      <Switch checked={on} onChange={(next) => void setPushTopic(topic, next)} label={title} />
     </div>
   )
 }

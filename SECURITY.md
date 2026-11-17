@@ -56,7 +56,10 @@ The code is public, so the app assumes anyone can read it and call the API direc
   only, banned users can't play, and each person can start at most 60 duels an hour.
 - **Push reminders keep their keys on the server.** The VAPID key pair and the cron token live in
   Vault and are read only by the `push` function with the service role. Subscriptions are accepted
-  only for the browsers' own push services, so the function never posts anywhere else.
+  only for the browsers' own push services, so the function never posts anywhere else. Duel
+  challenges reach it from a database trigger carrying the same token; the function only takes a
+  duel id and reads everything else itself, so a caller can't choose who gets notified or what it
+  says.
 - **Policy helpers aren't exposed.** Functions used by policies live in a `private` schema
   that the REST API doesn't serve.
 - **Admin functions check the role first.** `admin_*` functions run as SECURITY DEFINER (they

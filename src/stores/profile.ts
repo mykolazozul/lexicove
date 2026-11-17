@@ -24,7 +24,11 @@ export type Profile = {
   username_changed_at: string | null
   /** Whether the word of the day comes as a notification at 09:00 (when reminders are on). */
   word_push: boolean
+  /** Whether duel challenges come as notifications (when reminders are on). */
+  duel_push: boolean
 }
+
+export type PushTopic = 'word_push' | 'duel_push'
 
 type ProfileState = {
   profile: Profile | null
@@ -32,7 +36,8 @@ type ProfileState = {
   /** Re-reads the signed-in profile, e.g. after the server changed coins or XP. */
   refresh: () => Promise<void>
   setDailyGoal: (goal: number) => Promise<void>
-  setWordPush: (on: boolean) => Promise<void>
+  /** Turns one kind of notification on or off; reminders as a whole are a per-device setting. */
+  setPushTopic: (topic: PushTopic, on: boolean) => Promise<void>
   /** Saves the @name friends search for. Throws a NameError. */
   setUsername: (username: string) => Promise<void>
   /** Saves the name everyone sees. Throws a NameError. */
@@ -103,11 +108,11 @@ export const useProfile = create<ProfileState>()((set, get) => ({
     if (error) set({ profile })
   },
 
-  setWordPush: async (on) => {
+  setPushTopic: async (topic, on) => {
     const profile = get().profile
     if (!supabase || !profile) return
-    set({ profile: { ...profile, word_push: on } })
-    const { error } = await supabase.from('profiles').update({ word_push: on }).eq('id', profile.id)
+    set({ profile: { ...profile, [topic]: on } })
+    const { error } = await supabase.from('profiles').update({ [topic]: on }).eq('id', profile.id)
     if (error) set({ profile })
   },
 

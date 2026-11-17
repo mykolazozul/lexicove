@@ -346,6 +346,8 @@
     "reminders": {
       "word": "Word of the day",
       "wordHint": "Every morning at {{time}}, one word from your list.",
+      "duel": "Duel challenges",
+      "duelHint": "Right away when a friend challenges you, even with the app closed.",
       "title": "Streak reminders",
       "hint": "At {{time}} if you haven’t studied yet and your streak is at risk. At most once a day.",
       "install": "On iPhone and iPad, add Lexicove to your home screen (Share → Add to Home Screen) to get reminders.",
