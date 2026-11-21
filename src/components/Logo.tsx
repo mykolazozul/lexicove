@@ -1,18 +1,12 @@
 import { cx } from '../lib/cx'
 
-/** The app icon: an "L" whose foot curls up like a wave in a cove. Mirrors public/logo.svg. */
+/** The app icon: a cove holding a word like a small boat. Mirrors public/logo.svg. */
 export function LogoMark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 512 512" className={className} aria-hidden="true">
       <rect width="512" height="512" rx="116" fill="#8B5CF6" />
-      <path
-        d="M196 146 V300 Q196 356 252 356 H284 Q326 356 334 314"
-        fill="none"
-        stroke="#FFFFFF"
-        strokeWidth="56"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <path d="M140 214 A116 116 0 0 0 372 214" fill="none" stroke="#FFFFFF" strokeWidth="52" strokeLinecap="round" />
+      <circle cx="256" cy="200" r="36" fill="#FFFFFF" />
     </svg>
   )
 }
