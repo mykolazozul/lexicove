@@ -10,7 +10,8 @@ import { authErrorText } from '../lib/authErrors'
 import { LOCALE_SHORT, LOCALES } from '../lib/locale'
 import { isTauri } from '../lib/platform'
 import { isSupabaseConfigured } from '../lib/supabase'
-import { OAUTH_PROVIDERS, useAuth, type OAuthProvider } from '../stores/auth'
+import { useEnabledProviders } from '../lib/providers'
+import { useAuth, type OAuthProvider } from '../stores/auth'
 import { useSettings } from '../stores/settings'
 import { toast } from '../stores/toast'
 
@@ -124,7 +125,8 @@ function AuthCard() {
 
   // Google refuses to sign in inside embedded webviews, so the desktop app needs a
   // system-browser flow before OAuth can be offered there.
-  const oauthAvailable = isSupabaseConfigured && !isTauri && step === 'form'
+  const providers = useEnabledProviders()
+  const oauthAvailable = isSupabaseConfigured && !isTauri && step === 'form' && providers.length > 0
 
   function openForgot() {
     setError(null)
@@ -192,7 +194,7 @@ function AuthCard() {
 
       {oauthAvailable && (
         <div className="mt-6 grid grid-cols-2 gap-2.5">
-          {OAUTH_PROVIDERS.map((provider) => (
+          {providers.map((provider) => (
             <button
               key={provider}
               type="button"

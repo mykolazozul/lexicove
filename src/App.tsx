@@ -7,6 +7,8 @@ import { LogoMark } from './components/Logo'
 import { syncAccountLocale } from './lib/accountLocale'
 import { pageOf, track } from './lib/analytics'
 import i18n from './lib/i18n'
+import { importFresh } from './lib/reload'
+import { ErrorPage } from './pages/ErrorPage'
 import { HomePage } from './pages/HomePage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { WelcomePage } from './pages/WelcomePage'
@@ -14,8 +16,9 @@ import { useAuth } from './stores/auth'
 import { resolveTheme, useSettings } from './stores/settings'
 
 // Bigger pages load on first visit, so the first screen downloads less.
+// A file gone after a new deploy reloads the page once (src/lib/reload.ts).
 function page<K extends string, P>(load: () => Promise<Record<K, ComponentType<P>>>, name: K) {
-  return lazy(() => load().then((module) => ({ default: module[name] })))
+  return lazy(importFresh(() => load().then((module) => ({ default: module[name] }))))
 }
 const AdminPage = page(() => import('./pages/AdminPage'), 'AdminPage')
 const LearnPage = page(() => import('./pages/LearnPage'), 'LearnPage')
@@ -32,12 +35,13 @@ const NotionCallbackPage = page(() => import('./pages/NotionCallbackPage'), 'Not
 const LegalPage = page(() => import('./pages/LegalPage'), 'LegalPage')
 
 const router = createBrowserRouter([
-  { path: '/welcome', element: <WelcomePage /> },
-  { path: '/privacy', element: <Lazy><LegalPage doc="privacy" /></Lazy> },
-  { path: '/terms', element: <Lazy><LegalPage doc="terms" /></Lazy> },
-  { path: '/rules', element: <Lazy><LegalPage doc="rules" /></Lazy> },
+  { path: '/welcome', element: <WelcomePage />, errorElement: <ErrorPage /> },
+  { path: '/privacy', element: <Lazy><LegalPage doc="privacy" /></Lazy>, errorElement: <ErrorPage /> },
+  { path: '/terms', element: <Lazy><LegalPage doc="terms" /></Lazy>, errorElement: <ErrorPage /> },
+  { path: '/rules', element: <Lazy><LegalPage doc="rules" /></Lazy>, errorElement: <ErrorPage /> },
   {
     path: '/',
+    errorElement: <ErrorPage />,
     element: (
       <RequireViewer>
         <AppShell />
@@ -125,14 +129,12 @@ function Splash() {
 
 function useThemeAndLanguage() {
   const theme = useSettings((s) => s.theme)
-  const appleStyle = useSettings((s) => s.appleStyle)
   const locale = useSettings((s) => s.locale)
 
+  // The Apple-style layer is always on (also set before the first paint by public/theme-init.js).
   useEffect(() => {
-    const root = document.documentElement
-    if (appleStyle) root.dataset.style = 'apple'
-    else delete root.dataset.style
-  }, [appleStyle])
+    document.documentElement.dataset.style = 'apple'
+  }, [])
 
   useEffect(() => {
     const root = document.documentElement

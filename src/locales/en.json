@@ -369,6 +369,13 @@
       "how": "Tap the first letter of a word, then its last."
     }
   },
+  "crash": {
+    "title": "Something went wrong",
+    "text": "This page broke. Reloading usually fixes it.",
+    "outdatedTitle": "A new version is out",
+    "outdatedText": "Lexicove was updated while this page was open. Reload to get the new version.",
+    "reload": "Reload"
+  },
   "onboarding": {
     "step": "Step {{step}} of {{total}}",
     "back": "Back",

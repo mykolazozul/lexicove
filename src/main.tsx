@@ -6,6 +6,12 @@ import './styles/index.css'
 import './lib/i18n'
 import { App } from './App'
 import { isTauri } from './lib/platform'
+import { reloadOnce } from './lib/reload'
+
+// Vite's own signal that a preloaded code file is gone (a new version was deployed).
+window.addEventListener('vite:preloadError', (event) => {
+  if (reloadOnce()) event.preventDefault()
+})
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

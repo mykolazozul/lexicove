@@ -3,14 +3,13 @@
 ;(function () {
   var root = document.documentElement
   var theme = 'midnight'
-  var appleStyle = true
   try {
     var saved = JSON.parse(localStorage.getItem('lexicove-settings') || '{}').state || {}
     theme = saved.theme || theme
-    appleStyle = saved.appleStyle !== false
     if (saved.locale) root.lang = saved.locale
   } catch (e) {}
-  if (appleStyle) root.dataset.style = 'apple'
+  // The Apple-style layer is always on.
+  root.dataset.style = 'apple'
   if (theme === 'auto') {
     theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'daylight' : 'midnight'
   }

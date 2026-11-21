@@ -46,7 +46,7 @@ export function track(name: AnalyticsEvent, path?: string): void {
       platform: platform(),
       locale: settings.locale,
       theme: settings.theme,
-      apple_style: settings.appleStyle,
+      apple_style: true,
     })
     .then(({ error }) => {
       if (error && import.meta.env.DEV) console.warn('analytics', error.message)

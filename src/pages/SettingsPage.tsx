@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { BellRing, Check, ChevronRight, Coins, ExternalLink, Lock, LogIn, LogOut, Shield, Sparkles, Swords, Volume2, type LucideIcon } from 'lucide-react'
 import { isAdmin } from '../lib/admin'
-import { siApple, siGithub } from 'simple-icons'
+import { siGithub } from 'simple-icons'
 import { DisplayNameCard, UsernameCard } from '../components/community/FriendsView'
 import { confirmDialog } from '../components/Confirm'
 import { PasswordCard } from '../components/PasswordCard'
@@ -32,7 +32,7 @@ export function SettingsPage() {
   const navigate = useNavigate()
   const viewer = useViewer()
   const signOut = useAuth((s) => s.signOut)
-  const { theme, setTheme, appleStyle, setAppleStyle, analytics, setAnalytics, sounds, setSounds, locale, setLocale, setDailyGoal, timeFormat, setTimeFormat } =
+  const { theme, setTheme, analytics, setAnalytics, sounds, setSounds, locale, setLocale, setDailyGoal, timeFormat, setTimeFormat } =
     useSettings()
   const saveDailyGoal = useProfile((s) => s.setDailyGoal)
   const owned = useOwnedThemes()
@@ -48,18 +48,6 @@ export function SettingsPage() {
       <Reveal>
         <section>
           <SectionTitle>{t('settings.appearance')}</SectionTitle>
-          <Card className="mb-6 flex items-center gap-4">
-            <span className="grid size-10 shrink-0 place-items-center rounded-control bg-fg text-bg">
-              <svg viewBox="0 0 24 24" className="size-5" fill="currentColor" aria-hidden="true">
-                <path d={siApple.path} />
-              </svg>
-            </span>
-            <div className="min-w-0 flex-1">
-              <div className="font-semibold">{t('settings.appleStyle')}</div>
-              <p className="mt-0.5 text-sm text-muted">{t('settings.appleStyleHint')}</p>
-            </div>
-            <Switch checked={appleStyle} onChange={setAppleStyle} label={t('settings.appleStyle')} />
-          </Card>
           {THEME_GROUPS.map((group) => (
             <div key={group.key} className="mb-5">
               <h3 className="mb-2.5 text-sm font-semibold text-muted">{t(`settings.themeGroups.${group.key}`)}</h3>

@@ -5,6 +5,7 @@ import { ArrowLeft, Loader2, Play, RotateCcw, Trophy } from 'lucide-react'
 import { Confetti } from '../components/Confetti'
 import { Card } from '../components/ui'
 import { formatScore, gameMeta, loadDeckWords, playable, useGames, type GameId, type GameMeta, type GameWord } from '../lib/games'
+import { importFresh } from '../lib/reload'
 import { useViewer } from '../lib/viewer'
 import { useLibrary } from '../stores/library'
 
@@ -12,15 +13,15 @@ export type GameProps = { words: GameWord[]; onFinish: (score: number) => void }
 
 // Each game loads on its own, so opening one doesn't download all nine.
 const GAME_COMPONENTS: Record<GameId, ComponentType<GameProps>> = {
-  pairs: lazy(() => import('../components/games/QuizGames').then((m) => ({ default: m.MatchPairs }))),
-  speed: lazy(() => import('../components/games/QuizGames').then((m) => ({ default: m.SpeedRound }))),
-  truefalse: lazy(() => import('../components/games/QuizGames').then((m) => ({ default: m.TrueOrFalse }))),
-  anagrams: lazy(() => import('../components/games/LetterGames').then((m) => ({ default: m.Anagrams }))),
-  hangman: lazy(() => import('../components/games/LetterGames').then((m) => ({ default: m.Hangman }))),
-  wordle: lazy(() => import('../components/games/LetterGames').then((m) => ({ default: m.Wordle }))),
-  rain: lazy(() => import('../components/games/WordRain').then((m) => ({ default: m.WordRain }))),
-  crossword: lazy(() => import('../components/games/Crossword').then((m) => ({ default: m.Crossword }))),
-  search: lazy(() => import('../components/games/WordSearch').then((m) => ({ default: m.WordSearch }))),
+  pairs: lazy(importFresh(() => import('../components/games/QuizGames').then((m) => ({ default: m.MatchPairs })))),
+  speed: lazy(importFresh(() => import('../components/games/QuizGames').then((m) => ({ default: m.SpeedRound })))),
+  truefalse: lazy(importFresh(() => import('../components/games/QuizGames').then((m) => ({ default: m.TrueOrFalse })))),
+  anagrams: lazy(importFresh(() => import('../components/games/LetterGames').then((m) => ({ default: m.Anagrams })))),
+  hangman: lazy(importFresh(() => import('../components/games/LetterGames').then((m) => ({ default: m.Hangman })))),
+  wordle: lazy(importFresh(() => import('../components/games/LetterGames').then((m) => ({ default: m.Wordle })))),
+  rain: lazy(importFresh(() => import('../components/games/WordRain').then((m) => ({ default: m.WordRain })))),
+  crossword: lazy(importFresh(() => import('../components/games/Crossword').then((m) => ({ default: m.Crossword })))),
+  search: lazy(importFresh(() => import('../components/games/WordSearch').then((m) => ({ default: m.WordSearch })))),
 }
 
 export function GamePage() {

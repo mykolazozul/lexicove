@@ -9,6 +9,7 @@ import { community } from '../lib/community'
 import { useShopThemeGuard } from '../lib/cosmetics'
 import { cx } from '../lib/cx'
 import i18n from '../lib/i18n'
+import { importFresh } from '../lib/reload'
 import { useViewer } from '../lib/viewer'
 import { useAuth } from '../stores/auth'
 import { useEconomy, useEquipped } from '../stores/economy'
@@ -23,7 +24,7 @@ import { Toaster } from './Toaster'
 import { ProgressBar } from './ui'
 
 // Duel invites need the community code, so they load after the first screen.
-const DuelInvites = lazy(() => import('./community/DuelInvites').then((module) => ({ default: module.DuelInvites })))
+const DuelInvites = lazy(importFresh(() => import('./community/DuelInvites').then((module) => ({ default: module.DuelInvites }))))
 
 export function AppShell() {
   const session = useAuth((s) => s.session)
