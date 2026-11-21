@@ -33,12 +33,16 @@ const GamePage = page(() => import('./pages/GamePage'), 'GamePage')
 const WordsPage = page(() => import('./pages/WordsPage'), 'WordsPage')
 const NotionCallbackPage = page(() => import('./pages/NotionCallbackPage'), 'NotionCallbackPage')
 const LegalPage = page(() => import('./pages/LegalPage'), 'LegalPage')
+const DesktopPage = page(() => import('./pages/DesktopPage'), 'DesktopPage')
 
 const router = createBrowserRouter([
   { path: '/welcome', element: <WelcomePage />, errorElement: <ErrorPage /> },
   { path: '/privacy', element: <Lazy><LegalPage doc="privacy" /></Lazy>, errorElement: <ErrorPage /> },
   { path: '/terms', element: <Lazy><LegalPage doc="terms" /></Lazy>, errorElement: <ErrorPage /> },
   { path: '/rules', element: <Lazy><LegalPage doc="rules" /></Lazy>, errorElement: <ErrorPage /> },
+  // The small card window of the desktop app (src-tauri/src/lib.rs), without the app's frame.
+  { path: '/desktop/card', element: <Lazy><DesktopPage mode="card" /></Lazy>, errorElement: <ErrorPage /> },
+  { path: '/desktop/add', element: <Lazy><DesktopPage mode="add" /></Lazy>, errorElement: <ErrorPage /> },
   {
     path: '/',
     errorElement: <ErrorPage />,

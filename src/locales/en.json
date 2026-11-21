@@ -452,6 +452,20 @@
       "h12": "12 hours (AM/PM)",
       "example": "Example: {{time}}"
     },
+    "desktop": {
+      "title": "Desktop app",
+      "cards": "Word cards",
+      "cardsHint": "A small card with a word pops up over other windows so you repeat it on the go.",
+      "off": "Off",
+      "minutes_one": "{{count}} min",
+      "minutes_other": "{{count}} min",
+      "quiet": "Quiet mode",
+      "quietHint": "No cards for now, for meetings and focus time.",
+      "autostart": "Start with the system",
+      "autostartHint": "Lexicove opens quietly in the tray when you turn on the computer.",
+      "hotkey": "Add the highlighted word",
+      "hotkeyHint": "Highlight a word in any app and press the keys to save it."
+    },
     "reminders": {
       "word": "Word of the day",
       "wordHint": "Every morning at {{time}}, one word from your list.",
@@ -976,6 +990,20 @@
   "notFound": {
     "title": "This island isn't on the map",
     "text": "We couldn't find the page you were looking for."
+  },
+  "desktop": {
+    "cardTitle": "Word card",
+    "addTitle": "Add a word",
+    "signIn": "Open Lexicove and sign in first.",
+    "noWords": "No words to repeat yet. Add some in Lexicove.",
+    "reveal": "Show the translation",
+    "forgot": "Didn't know",
+    "knew": "Knew it",
+    "saved": "Saved to your progress.",
+    "another": "One more",
+    "later": "Later",
+    "save": "Save the word",
+    "added": "“{{word}}” is in your words."
   },
   "errors": {
     "generic": "Something went wrong. Please try again."

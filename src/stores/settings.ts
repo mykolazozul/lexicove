@@ -34,6 +34,10 @@ type SettingsState = {
   dailyGoal: number
   /** The first-visit tips were shown (or skipped) on this device. */
   onboarded: boolean
+  /** Desktop app: minutes between word cards, 0 for none. */
+  cardEvery: number
+  /** Desktop app: no cards for now. */
+  quiet: boolean
   setTheme: (theme: ThemeChoice) => void
   setAppleStyle: (appleStyle: boolean) => void
   setAnalytics: (analytics: boolean) => void
@@ -42,6 +46,8 @@ type SettingsState = {
   setLocale: (locale: Locale) => void
   setDailyGoal: (dailyGoal: number) => void
   setOnboarded: (onboarded: boolean) => void
+  setCardEvery: (minutes: number) => void
+  setQuiet: (quiet: boolean) => void
 }
 
 // The storage key is also read by public/theme-init.js before React loads.
@@ -56,6 +62,8 @@ export const useSettings = create<SettingsState>()(
       locale: detectLocale(),
       dailyGoal: 20,
       onboarded: false,
+      cardEvery: 30,
+      quiet: false,
       setTheme: (theme) => set({ theme }),
       setAppleStyle: (appleStyle) => set({ appleStyle }),
       setAnalytics: (analytics) => set({ analytics }),
@@ -64,10 +72,12 @@ export const useSettings = create<SettingsState>()(
       setLocale: (locale) => set({ locale }),
       setDailyGoal: (dailyGoal) => set({ dailyGoal }),
       setOnboarded: (onboarded) => set({ onboarded }),
+      setCardEvery: (cardEvery) => set({ cardEvery }),
+      setQuiet: (quiet) => set({ quiet }),
     }),
     {
       name: 'lexicove-settings',
-      partialize: ({ theme, appleStyle, analytics, sounds, timeFormat, locale, dailyGoal, onboarded }) => ({
+      partialize: ({ theme, appleStyle, analytics, sounds, timeFormat, locale, dailyGoal, onboarded, cardEvery, quiet }) => ({
         theme,
         appleStyle,
         analytics,
@@ -76,6 +86,8 @@ export const useSettings = create<SettingsState>()(
         locale,
         dailyGoal,
         onboarded,
+        cardEvery,
+        quiet,
       }),
     },
   ),

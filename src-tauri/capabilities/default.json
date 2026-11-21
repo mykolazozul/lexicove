@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Permissions for the main window. Kept to the core set until a feature needs more.",
-  "windows": ["main"],
-  "permissions": ["core:default"]
+  "description": "The main window and the word card. Start with the system is switched from Settings; the hotkey and the tray live in Rust and need nothing here.",
+  "windows": ["main", "card"],
+  "permissions": ["core:default", "autostart:allow-enable", "autostart:allow-disable", "autostart:allow-is-enabled"]
 }

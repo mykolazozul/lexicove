@@ -9,6 +9,8 @@ import { community } from '../lib/community'
 import { useShopThemeGuard } from '../lib/cosmetics'
 import { cx } from '../lib/cx'
 import i18n from '../lib/i18n'
+import { showCard } from '../lib/desktop'
+import { isTauri } from '../lib/platform'
 import { importFresh } from '../lib/reload'
 import { useViewer } from '../lib/viewer'
 import { useAuth } from '../stores/auth'
@@ -16,6 +18,7 @@ import { useEconomy, useEquipped } from '../stores/economy'
 import { useLibrary } from '../stores/library'
 import { useStudy } from '../stores/study'
 import { useProfile } from '../stores/profile'
+import { useSettings } from '../stores/settings'
 import { toast } from '../stores/toast'
 import { DisplayName, UserAvatar, VerifiedBadge } from './cosmetics'
 import { Logo } from './Logo'
@@ -78,6 +81,15 @@ export function AppShell() {
       document.removeEventListener('visibilitychange', ping)
     }
   }, [userId])
+
+  // Desktop app: a word card pops up above other windows every so often.
+  const cardEvery = useSettings((s) => s.cardEvery)
+  const quiet = useSettings((s) => s.quiet)
+  useEffect(() => {
+    if (!isTauri || !userId || quiet || cardEvery <= 0) return
+    const timer = setInterval(() => void showCard('/desktop/card').catch(() => {}), cardEvery * 60_000)
+    return () => clearInterval(timer)
+  }, [userId, quiet, cardEvery])
 
   useEffect(() => {
     window.scrollTo({ top: 0 })
