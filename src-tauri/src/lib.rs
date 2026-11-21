@@ -15,9 +15,10 @@ use tauri::{
     menu::{Menu, MenuItem},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
     webview::NewWindowResponse,
-    AppHandle, Manager, Url, WebviewUrl, WebviewWindowBuilder, WindowEvent,
+    AppHandle, Emitter, Manager, Url, WebviewUrl, WebviewWindowBuilder, WindowEvent,
 };
 use tauri_plugin_clipboard_manager::ClipboardExt;
+use tauri_plugin_deep_link::DeepLinkExt;
 use tauri_plugin_global_shortcut::{Code, GlobalShortcutExt, Modifiers, Shortcut, ShortcutState};
 use tauri_plugin_opener::OpenerExt;
 use tauri_plugin_window_state::StateFlags;
@@ -150,6 +151,17 @@ fn show_main(app: &AppHandle) {
     }
 }
 
+/// `lexicove://signin#…`: the website finished a sign-in in the user's browser (Google and the
+/// like refuse embedded browsers). The main window checks the one-time state it started with
+/// and takes the session (src/lib/desktopSignIn.ts); anything else is ignored.
+fn open_link(app: &AppHandle, url: &Url) {
+    if url.scheme() != "lexicove" || url.host_str() != Some("signin") {
+        return;
+    }
+    show_main(app);
+    let _ = app.emit_to("main", "lexicove-signin", url.as_str());
+}
+
 /// Percent-encodes text for a query string.
 fn encode(text: &str) -> String {
     text.bytes()
@@ -190,7 +202,9 @@ pub fn run() {
 
     tauri::Builder::default()
         // A second launch brings the running app forward instead of opening another one.
+        // With the deep-link feature it also hands a lexicove:// link to the running app.
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| show_main(app)))
+        .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
@@ -234,6 +248,16 @@ pub fn run() {
                 .build()?;
 
             app.global_shortcut().register(add_shortcut)?;
+
+            // The installer registers lexicove:// for release builds; development registers it here.
+            #[cfg(all(debug_assertions, any(windows, target_os = "linux")))]
+            let _ = app.deep_link().register_all();
+            let links = handle.clone();
+            app.deep_link().on_open_url(move |event| {
+                for url in event.urls() {
+                    open_link(&links, &url);
+                }
+            });
 
             let open = MenuItem::with_id(app, "open", "Lexicove", true, None::<&str>)?;
             let word = MenuItem::with_id(app, "word", "Word now / Слово зараз", true, None::<&str>)?;

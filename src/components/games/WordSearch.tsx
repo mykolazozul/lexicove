@@ -77,8 +77,8 @@ export function WordSearch({ words, onFinish }: GameProps) {
         </span>
         <span>{t('games.search.found', { found: found.length, total: puzzle.words.length })}</span>
       </GameBar>
-      <Card className="flex flex-col gap-5 lg:flex-row">
-        <div className="mx-auto grid w-full max-w-md shrink-0 gap-0.5 select-none" style={{ gridTemplateColumns: `repeat(${puzzle.size}, minmax(0, 1fr))` }}>
+      <Card padding="p-2.5 sm:p-6" className="flex flex-col gap-5 lg:flex-row">
+        <div className="mx-auto grid w-full max-w-md shrink-0 gap-px select-none sm:gap-0.5" style={{ gridTemplateColumns: `repeat(${puzzle.size}, minmax(0, 1fr))` }}>
           {puzzle.grid.map((row, r) =>
             row.map((letter, c) => {
               const id = `${r},${c}`

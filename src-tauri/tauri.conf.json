@@ -30,6 +30,9 @@
     }
   },
   "plugins": {
+    "deep-link": {
+      "desktop": { "schemes": ["lexicove"] }
+    },
     "updater": {
       "pubkey": "",
       "endpoints": ["https://github.com/mykolazozul/lexicove/releases/latest/download/latest.json"],

@@ -47,7 +47,7 @@ jobs:
         if: matrix.platform == 'ubuntu-22.04'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libxdo-dev
 
       - uses: actions/setup-node@v5
         with:
@@ -71,6 +71,8 @@ jobs:
           KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
         run: |
           if [ -n "$KEY" ] && [ -s src-tauri/updater-key.pub ]; then
+            # The bundler checks the signature against the public key in the config, so add it there.
+            node -e "const fs=require('fs');const c=JSON.parse(fs.readFileSync('src-tauri/tauri.updater.conf.json','utf8'));c.plugins={updater:{pubkey:fs.readFileSync('src-tauri/updater-key.pub','utf8').trim()}};fs.writeFileSync('src-tauri/tauri.updater.conf.json',JSON.stringify(c))"
             echo "UPDATER_ARGS=--config ${{ github.workspace }}/src-tauri/tauri.updater.conf.json" >> "$GITHUB_ENV"
           else
             echo "::warning::No update signing key: this release installs, but installed apps won't update to it."

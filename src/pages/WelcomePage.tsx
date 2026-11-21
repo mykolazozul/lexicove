@@ -8,6 +8,7 @@ import { Logo } from '../components/Logo'
 import { Card, Segmented } from '../components/ui'
 import { authErrorText } from '../lib/authErrors'
 import { LOCALE_SHORT, LOCALES } from '../lib/locale'
+import { cancelDesktopSignIn, startDesktopSignIn } from '../lib/desktopSignIn'
 import { isTauri } from '../lib/platform'
 import { isSupabaseConfigured } from '../lib/supabase'
 import { useEnabledProviders } from '../lib/providers'
@@ -123,10 +124,11 @@ function AuthCard() {
   const step: Step = recovering ? 'newPassword' : sentTo ? 'code' : resetSentTo ? 'resetCode' : forgot ? 'forgot' : 'form'
   const resetting = step === 'forgot' || step === 'resetCode'
 
-  // Google refuses to sign in inside embedded webviews, so the desktop app needs a
-  // system-browser flow before OAuth can be offered there.
+  // Google refuses to sign in inside embedded webviews, so the desktop app signs in through the
+  // user's own browser and comes back through lexicove:// (src/lib/desktopSignIn.ts).
   const providers = useEnabledProviders()
-  const oauthAvailable = isSupabaseConfigured && !isTauri && step === 'form' && providers.length > 0
+  const oauthAvailable = isSupabaseConfigured && step === 'form' && providers.length > 0
+  const [inBrowser, setInBrowser] = useState(false)
 
   function openForgot() {
     setError(null)
@@ -151,6 +153,11 @@ function AuthCard() {
   }
 
   function onProvider(provider: OAuthProvider) {
+    if (isTauri) {
+      startDesktopSignIn(provider)
+      setInBrowser(true)
+      return
+    }
     void run(provider, () => signInWithProvider(provider))
   }
 
@@ -190,7 +197,21 @@ function AuthCard() {
       </p>
 
       {!isSupabaseConfigured && <Notice>{t('welcome.notConfigured')}</Notice>}
-      {isSupabaseConfigured && isTauri && <Notice>{t('welcome.desktopOauth')}</Notice>}
+      {isSupabaseConfigured && isTauri && inBrowser && (
+        <div className="mt-5 flex flex-col gap-3 rounded-control border border-line bg-surface p-3.5 text-sm text-muted">
+          <p>{t('welcome.desktopOauth')}</p>
+          <button
+            type="button"
+            className="btn btn-ghost self-start px-3"
+            onClick={() => {
+              cancelDesktopSignIn()
+              setInBrowser(false)
+            }}
+          >
+            {t('common.cancel')}
+          </button>
+        </div>
+      )}
 
       {oauthAvailable && (
         <div className="mt-6 grid grid-cols-2 gap-2.5">

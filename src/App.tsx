@@ -7,6 +7,7 @@ import { LogoMark } from './components/Logo'
 import { syncAccountLocale } from './lib/accountLocale'
 import { pageOf, track } from './lib/analytics'
 import i18n from './lib/i18n'
+import { completeDesktopSignIn, onDesktopSignInLink } from './lib/desktopSignIn'
 import { importFresh } from './lib/reload'
 import { ErrorPage } from './pages/ErrorPage'
 import { HomePage } from './pages/HomePage'
@@ -14,6 +15,7 @@ import { NotFoundPage } from './pages/NotFoundPage'
 import { WelcomePage } from './pages/WelcomePage'
 import { useAuth } from './stores/auth'
 import { resolveTheme, useSettings } from './stores/settings'
+import { toast } from './stores/toast'
 
 // Bigger pages load on first visit, so the first screen downloads less.
 // A file gone after a new deploy reloads the page once (src/lib/reload.ts).
@@ -34,6 +36,7 @@ const WordsPage = page(() => import('./pages/WordsPage'), 'WordsPage')
 const NotionCallbackPage = page(() => import('./pages/NotionCallbackPage'), 'NotionCallbackPage')
 const LegalPage = page(() => import('./pages/LegalPage'), 'LegalPage')
 const DesktopPage = page(() => import('./pages/DesktopPage'), 'DesktopPage')
+const DesktopSignInPage = page(() => import('./pages/DesktopSignInPage'), 'DesktopSignInPage')
 
 const router = createBrowserRouter([
   { path: '/welcome', element: <WelcomePage />, errorElement: <ErrorPage /> },
@@ -43,6 +46,9 @@ const router = createBrowserRouter([
   // The small card window of the desktop app (src-tauri/src/lib.rs), without the app's frame.
   { path: '/desktop/card', element: <Lazy><DesktopPage mode="card" /></Lazy>, errorElement: <ErrorPage /> },
   { path: '/desktop/add', element: <Lazy><DesktopPage mode="add" /></Lazy>, errorElement: <ErrorPage /> },
+  // Opened in the user's browser by the desktop app to sign in with Google and the like.
+  { path: '/desktop/signin', element: <Lazy><DesktopSignInPage step="start" /></Lazy>, errorElement: <ErrorPage /> },
+  { path: '/desktop/signin/done', element: <Lazy><DesktopSignInPage step="done" /></Lazy>, errorElement: <ErrorPage /> },
   {
     path: '/',
     errorElement: <ErrorPage />,
@@ -75,6 +81,16 @@ export function App() {
   const ready = useAuth((s) => s.ready)
   useEffect(() => init(), [init])
   useEffect(() => syncAccountLocale(), [])
+  // Desktop app: a sign-in finished in the browser comes back as lexicove://signin.
+  useEffect(
+    () =>
+      onDesktopSignInLink((link) => {
+        void completeDesktopSignIn(link).then((ok) => {
+          if (!ok) toast(i18n.t('desktopSignIn.failedTitle'), 'error')
+        })
+      }),
+    [],
+  )
   useThemeAndLanguage()
 
   // Usage statistics start once we know whether someone is signed in.

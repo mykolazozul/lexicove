@@ -230,7 +230,7 @@
   --line: rgb(21 23 42 / 0.08);
   --fg: #15172a;
   --muted: #62667e;
-  --subtle: #9a9db0;
+  --subtle: #6c6f85;
   --accent: #6d4aff;
   --accent-2: #0891b2;
   --on-accent: #ffffff;
@@ -260,11 +260,11 @@
   --line: #f1e0bf;
   --fg: #2b1a40;
   --muted: #7d6a8f;
-  --subtle: #b3a3c0;
+  --subtle: #7f6c91;
   --accent: #ff4d6d;
   --accent-2: #ff9f1c;
   --on-accent: #ffffff;
-  --coin: #f5a300;
+  --coin: #9a6200;
   --fire: #ff5e00;
   --xp: #7b2ff7;
   --success: #22c55e;
@@ -290,7 +290,7 @@
   --line: #e7e7ea;
   --fg: #0a0a0b;
   --muted: #6b6b73;
-  --subtle: #a1a1aa;
+  --subtle: #71717a;
   --accent: #0a0a0b;
   --accent-2: #3f3f46;
   --on-accent: #fafafa;
@@ -1157,4 +1157,18 @@
    cards are decoration, so they stay hidden. */
 .pointer-events-none.absolute.rounded-full:is(.blur-3xl, .blur-\[100px\]) {
   display: none;
+}
+
+/* Rarity colours dark enough to read on the light themes. */
+:is([data-theme="daylight"], [data-theme="arcade"], [data-theme="mono"]) .rarity-common {
+  --rarity: #64748b;
+}
+:is([data-theme="daylight"], [data-theme="arcade"], [data-theme="mono"]) .rarity-rare {
+  --rarity: #0369a1;
+}
+:is([data-theme="daylight"], [data-theme="arcade"], [data-theme="mono"]) .rarity-epic {
+  --rarity: #9333ea;
+}
+:is([data-theme="daylight"], [data-theme="arcade"], [data-theme="mono"]) .rarity-legendary {
+  --rarity: #b45309;
 }

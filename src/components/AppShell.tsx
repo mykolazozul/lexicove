@@ -294,13 +294,14 @@ function StatPill({ icon: Icon, value, label, tone }: { icon: LucideIcon; value:
 
 function BottomBar() {
   const { t } = useTranslation()
+  const { pathname } = useLocation()
   return (
     <nav
       aria-label={t('nav.main')}
       className="pb-safe fixed inset-x-0 bottom-0 z-30 border-t border-line bg-bg/80 backdrop-blur-xl lg:hidden"
     >
       <ul className="mx-auto flex h-16 max-w-md items-stretch justify-around px-1">
-        {NAV.filter((item) => item.inBottomBar).map(({ key, to, icon: Icon }) => (
+        {NAV.filter((item) => item.inBottomBar).map(({ key, to, icon: Icon, also }) => (
           <li key={key} className="min-w-0 flex-1">
             <NavLink
               to={to}
@@ -308,11 +309,13 @@ function BottomBar() {
               className={({ isActive }) =>
                 cx(
                   'flex h-full flex-col items-center justify-center gap-1 text-xs font-semibold transition-colors',
-                  isActive ? 'text-fg' : 'text-subtle',
+                  isActive || also?.some((path) => pathname.startsWith(path)) ? 'text-fg' : 'text-subtle',
                 )
               }
             >
-              {({ isActive }) => (
+              {({ isActive: exact }) => {
+                const isActive = exact || Boolean(also?.some((path) => pathname.startsWith(path)))
+                return (
                 <>
                   <span
                     className={cx(
@@ -324,7 +327,8 @@ function BottomBar() {
                   </span>
                   <span className="max-w-full truncate px-0.5">{t(`nav.${key}`)}</span>
                 </>
-              )}
+                )
+              }}
             </NavLink>
           </li>
         ))}

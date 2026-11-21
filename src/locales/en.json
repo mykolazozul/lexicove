@@ -570,7 +570,7 @@
       "same_password": "The new password must be different from the old one."
     },
     "notConfigured": "The server isn't connected yet, so only guest mode works for now.",
-    "desktopOauth": "In the desktop app, signing in by email works for now. Google, GitHub, Discord and Notion are coming in an update.",
+    "desktopOauth": "We opened your browser. Sign in there, then come back: Lexicove opens by itself.",
     "samples": [
       { "word": "serendipity", "meaning": "a happy accident" },
       { "word": "look forward to", "meaning": "to wait for something with excitement" },
@@ -1024,6 +1024,14 @@
     "later": "Later",
     "save": "Save the word",
     "added": "“{{word}}” is in your words."
+  },
+  "desktopSignIn": {
+    "redirecting": "Taking you to sign in…",
+    "failedTitle": "Could not sign in",
+    "failedText": "Close this tab and try again from the Lexicove app.",
+    "doneTitle": "Signed in",
+    "doneText": "Go back to the Lexicove app. If it didn’t open, press the button. You can close this tab.",
+    "open": "Open Lexicove"
   },
   "errors": {
     "generic": "Something went wrong. Please try again."

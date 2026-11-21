@@ -17,11 +17,13 @@ export type NavItem = {
   icon: LucideIcon
   /** Shown in the phone's bottom bar (it fits five). */
   inBottomBar: boolean
+  /** Other sections that light this item up in the bottom bar, where they have no item of their own. */
+  also?: string[]
 }
 
 export const NAV: NavItem[] = [
   { key: 'home', to: '/', icon: House, inBottomBar: true },
-  { key: 'learn', to: '/learn', icon: GraduationCap, inBottomBar: true },
+  { key: 'learn', to: '/learn', icon: GraduationCap, inBottomBar: true, also: ['/games'] },
   { key: 'words', to: '/words', icon: BookOpen, inBottomBar: true },
   // On phones the games open from the Learn page.
   { key: 'games', to: '/games', icon: Gamepad2, inBottomBar: false },

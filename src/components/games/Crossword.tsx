@@ -160,9 +160,10 @@ export function Crossword({ words, onFinish }: GameProps) {
         </span>
       </GameBar>
 
-      <Card className="flex flex-col gap-5 lg:flex-row">
-        <div className="mx-auto w-full max-w-md shrink-0">
-          <div className="grid gap-0.5" style={{ gridTemplateColumns: `repeat(${puzzle.width}, minmax(0, 1fr))` }}>
+      <Card padding="p-2.5 sm:p-6" className="flex flex-col gap-5 lg:flex-row">
+        {/* On a phone a wide puzzle scrolls sideways instead of shrinking past a finger tip. */}
+        <div className="mx-auto w-full max-w-md shrink-0 overflow-x-auto">
+          <div className="grid gap-0.5" style={{ gridTemplateColumns: `repeat(${puzzle.width}, max(1.625rem, calc((100% - ${(puzzle.width - 1) * 2}px) / ${puzzle.width})))` }}>
             {Array.from({ length: puzzle.height * puzzle.width }, (_, i) => {
               const cell = key(Math.floor(i / puzzle.width), i % puzzle.width)
               const item = cells.get(cell)
