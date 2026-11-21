@@ -54,7 +54,7 @@ and always gets the newest installer:
 
 `https://github.com/mykolazozul/lexicove/releases/latest/download/Lexicove-Setup.exe`
 
-The installer (NSIS) installs into the user's profile (`%LOCALAPPDATA%\Programs\Lexicove`):
+The installer (NSIS) installs into the user's profile (`%LOCALAPPDATA%\Lexicove`):
 **no administrator rights**, and updates don't need them either. It adds Start menu and desktop
 shortcuts. macOS (`.dmg`) and Linux (`.AppImage`, `.deb`) builds are on the same release page.
 

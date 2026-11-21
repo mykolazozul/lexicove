@@ -7,13 +7,15 @@
 # Keep %USERPROFILE%\.tauri\lexicove.key and its password safe: without them, installed apps can't
 # be updated any more.
 
-$ErrorActionPreference = 'Stop'
+# Native tools write progress to stderr; failures are caught by their exit codes instead.
+$ErrorActionPreference = 'Continue'
 $repo = 'mykolazozul/lexicove'
 $dir = Join-Path $env:USERPROFILE '.tauri'
 $key = Join-Path $dir 'lexicove.key'
 
 if (-not (Get-Command gh -ErrorAction SilentlyContinue)) { throw 'GitHub CLI (gh) is needed: https://cli.github.com' }
-gh auth status | Out-Null
+gh auth status 2>&1 | Out-Null
+if ($LASTEXITCODE -ne 0) { throw 'Sign in to GitHub first: gh auth login' }
 
 New-Item -ItemType Directory -Force $dir | Out-Null
 if (Test-Path $key) {
@@ -30,6 +32,7 @@ Write-Host 'Now type the same password for GitHub:'
 gh secret set TAURI_SIGNING_PRIVATE_KEY_PASSWORD -R $repo
 if ($LASTEXITCODE -ne 0) { throw 'Could not save the password on GitHub.' }
 
+if (-not (Test-Path "$key.pub")) { throw "No public key at $key.pub" }
 Copy-Item "$key.pub" (Join-Path $PSScriptRoot '..\src-tauri\updater-key.pub') -Force
 Write-Host ''
 Write-Host 'Done. Commit src-tauri/updater-key.pub (it is public), then release with: npm run desktop:release 0.2.0'
