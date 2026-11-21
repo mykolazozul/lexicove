@@ -89,12 +89,17 @@ Run once on your computer, from the repository folder (needs the [GitHub CLI](ht
 npm run desktop:keys
 ```
 
-It creates `%USERPROFILE%\.tauri\lexicove.key` with a password you choose, saves the key and the
-password as repository secrets (`TAURI_SIGNING_PRIVATE_KEY`, `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`)
-and writes the public key to `src-tauri/updater-key.pub`. Commit that file (it is public).
+Nothing to type. It creates `%USERPROFILE%\.tauri\lexicove.key` with a random password, saves
+the key and the password as repository secrets (`TAURI_SIGNING_PRIVATE_KEY`,
+`TAURI_SIGNING_PRIVATE_KEY_PASSWORD`) and writes the public key to `src-tauri/updater-key.pub`.
+Commit that file (it is public).
 
-**Keep the key file and its password.** Lose them and installed apps can't be updated any more;
-people would have to download the installer again.
+Releases are built on GitHub, so you can release from any device without the key on it.
+The key is only yours: whoever has it can ship updates to everyone's computers.
+
+**Keep a copy of `%USERPROFILE%\.tauri`** (the key and its password). GitHub never shows secrets
+again; lose both and installed apps can't be updated any more, people would have to download
+the installer again.
 
 ### Releasing a new version
 
