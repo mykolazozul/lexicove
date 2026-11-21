@@ -80,7 +80,7 @@ export function ModerationView() {
                     <Badge key={reason}>{t(`community.report.reasons.${reason}`)}</Badge>
                   ))}
                   {report.notes.map((note, index) => (
-                    <span key={index} className="text-xs text-muted italic">“{note}”</span>
+                    <span key={index} className="text-xs text-muted">“{note}”</span>
                   ))}
                 </div>
                 <div className="flex flex-wrap gap-2">

@@ -16,8 +16,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@fontsource-variable/onest": "^5.3.1",
-    "@fontsource-variable/unbounded": "^5.3.0",
+    "@fontsource-variable/manrope": "^5.3.0",
     "@supabase/supabase-js": "^2.118.0",
     "i18next": "^26.5.10",
     "lucide-react": "^1.61.0",

@@ -77,7 +77,7 @@ export function Flashcard({
           >
             <div className="text-2xl font-semibold">{word.translation || '—'}</div>
             {word.category && <div className="mx-auto"><Badge>{word.category}</Badge></div>}
-            {word.examples && <p className="whitespace-pre-line text-muted italic">{word.examples}</p>}
+            {word.examples && <p className="whitespace-pre-line text-muted">{word.examples}</p>}
             {word.explanation && <p className="whitespace-pre-line text-sm text-subtle">{word.explanation}</p>}
             <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
               {GRADES.map(({ grade, key, className }, index) => (

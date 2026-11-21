@@ -532,7 +532,7 @@ function MessageRow({
             </div>
           )}
           {(deleted || message.body) && (
-            <p className={cx('text-[0.95rem] leading-relaxed break-words whitespace-pre-wrap', deleted && 'text-subtle italic')}>
+            <p className={cx('text-[0.95rem] leading-relaxed break-words whitespace-pre-wrap', deleted && 'text-subtle')}>
               {deleted ? t('community.chat.deleted') : <Body text={message.body} />}
             </p>
           )}

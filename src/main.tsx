@@ -1,7 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import '@fontsource-variable/onest'
-import '@fontsource-variable/unbounded'
+import '@fontsource-variable/manrope'
 import './styles/index.css'
 import './lib/i18n'
 import { App } from './App'

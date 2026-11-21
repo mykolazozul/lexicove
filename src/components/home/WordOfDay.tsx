@@ -121,11 +121,11 @@ export function WordOfDayCard() {
       </button>
 
       {example && (
-        <p lang="en" className="mt-3 flex-1 text-sm text-muted italic">
+        <p lang="en" className="mt-3 flex-1 text-sm text-muted">
           {cloze ? (
             <>
               {cloze.before}
-              <strong className="font-semibold text-fg not-italic">{cloze.answer}</strong>
+              <strong className="font-semibold text-fg">{cloze.answer}</strong>
               {cloze.after}
             </>
           ) : (
