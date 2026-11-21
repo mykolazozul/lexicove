@@ -17,32 +17,32 @@
   },
   "dependencies": {
     "@fontsource-variable/manrope": "^5.3.0",
-    "@supabase/supabase-js": "^2.118.0",
+    "@supabase/supabase-js": "^2.119.0",
     "i18next": "^26.5.10",
-    "lucide-react": "^1.61.0",
-    "motion": "^14.6.0",
+    "lucide-react": "^1.75.0",
+    "motion": "^14.14.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-i18next": "^17.1.8",
-    "react-router": "^8.5.0",
-    "simple-icons": "^16.35.0",
+    "react-router": "^8.5.1",
+    "simple-icons": "^16.38.0",
     "ts-fsrs": "^5.4.2",
-    "zustand": "^5.0.16"
+    "zustand": "^5.1.0"
   },
   "devDependencies": {
-    "@secretlint/secretlint-rule-preset-recommend": "^13.0.7",
-    "@tailwindcss/vite": "^4.3.3",
-    "@tauri-apps/cli": "^2.12.4",
-    "@types/node": "^26.6.5",
+    "@secretlint/secretlint-rule-preset-recommend": "^13.1.0",
+    "@tailwindcss/vite": "^4.3.5",
+    "@tauri-apps/cli": "^2.12.5",
+    "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vite-pwa/assets-generator": "^2.0.0",
-    "@vitejs/plugin-react": "^6.1.2",
+    "@vitejs/plugin-react": "^6.3.0",
     "secretlint": "^13.0.7",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
-    "vite": "^8.3.5",
+    "vite": "^8.3.8",
     "vite-plugin-pwa": "^2.0.0",
-    "vitest": "^5.0.5"
+    "vitest": "^5.1.1"
   }
 }
