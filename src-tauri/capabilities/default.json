@@ -1,7 +1,17 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "The main window and the word card. Start with the system is switched from Settings; the hotkey and the tray live in Rust and need nothing here.",
+  "description": "Local pages: the start-up page of src-tauri/shell and, in debug builds, the dev server. The hotkey and the tray live in Rust and need nothing here.",
   "windows": ["main", "card"],
-  "permissions": ["core:default", "autostart:allow-enable", "autostart:allow-disable", "autostart:allow-is-enabled"]
+  "permissions": [
+    "core:default",
+    "autostart:allow-enable",
+    "autostart:allow-disable",
+    "autostart:allow-is-enabled",
+    "allow-show-card",
+    "allow-hide-card",
+    "allow-update-status",
+    "allow-update-check",
+    "allow-update-install"
+  ]
 }

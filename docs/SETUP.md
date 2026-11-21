@@ -141,20 +141,14 @@ npm run tauri dev     # development window
 npm run tauri build   # installers in src-tauri/target/release/bundle
 ```
 
-To publish installers, set `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` as
-**repository variables** (Settings → Secrets and variables → Actions → Variables) and push a tag:
+The desktop app opens the live website, so site changes reach it with every deploy. It updates
+itself from GitHub Releases. To publish it, set up the signing key once and release:
 
-```bash
-git tag v0.1.0
-git push origin v0.1.0
+```powershell
+npm run desktop:keys            # once: signing key, GitHub secrets, src-tauri/updater-key.pub
+npm run desktop:release 0.3.0   # sets the version, tags and pushes; GitHub Actions does the rest
 ```
 
-The [Desktop release](../.github/workflows/release-desktop.yml) workflow builds Windows, macOS
-and Linux installers and attaches them to a draft release.
-
-Installers are not code-signed (that costs money), so Windows shows "Unknown publisher" and
-macOS asks you to confirm opening the app. Both are expected for free open-source apps.
-
-Sign-in with Google, GitHub, Discord and Notion inside the desktop app needs a system-browser
-flow (Google blocks embedded browsers). Until that lands, the desktop app offers email sign-in
-and guest mode.
+How it works, installing, updates and known limits: [desktop.md](desktop.md). If you run your
+own copy, change `APP_URL` in `src-tauri/src/lib.rs`, the address in `capabilities/site.json`,
+`src-tauri/shell/shell.js` and the update address in `src-tauri/src/updates.rs`.

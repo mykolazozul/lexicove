@@ -1,18 +1,20 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Lexicove",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "identifier": "com.lexicove.app",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:5173",
-    "beforeBuildCommand": "npm run build",
-    "frontendDist": "../dist"
+    "beforeBuildCommand": "",
+    "frontendDist": "shell"
   },
   "app": {
     "windows": [
       {
         "label": "main",
+        "create": false,
+        "url": "index.html",
         "title": "Lexicove",
         "width": 1280,
         "height": 820,
@@ -23,15 +25,30 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self' ipc: http://ipc.localhost; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' asset: http://asset.localhost data: blob: https:; font-src 'self' data:; connect-src 'self' ipc: http://ipc.localhost https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'",
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src https://lexicove.vercel.app ipc: http://ipc.localhost; object-src 'none'; base-uri 'self'; form-action 'none'",
       "devCsp": null
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "",
+      "endpoints": ["https://github.com/mykolazozul/lexicove/releases/latest/download/latest.json"],
+      "windows": { "installMode": "passive" }
     }
   },
   "bundle": {
     "active": true,
-    "targets": "all",
+    "targets": ["nsis", "app", "dmg", "appimage", "deb"],
+    "createUpdaterArtifacts": false,
     "category": "Education",
+    "publisher": "Lexicove",
     "shortDescription": "Learn English words from your own Notion tables, as a game.",
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser",
+        "startMenuFolder": "Lexicove"
+      }
+    },
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",

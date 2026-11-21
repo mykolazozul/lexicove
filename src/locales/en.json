@@ -454,6 +454,26 @@
     },
     "desktop": {
       "title": "Desktop app",
+      "update": {
+        "title": "Version {{version}}",
+        "auto": "Updates come by themselves. The lessons and games are always the newest, straight from the website.",
+        "checking": "Looking for a new version…",
+        "none": "This is the newest version.",
+        "downloading": "Downloading version {{version}}: {{percent}}%",
+        "ready": "Version {{version}} is ready. Restart the app to install it.",
+        "error": "Could not check for updates. Lexicove will try again later.",
+        "disabled": "This build does not update itself. Get the newest one from the website.",
+        "check": "Check for updates",
+        "install": "Restart and update",
+        "toast": "A new version of the app is ready. Restart it in Settings."
+      },
+      "download": {
+        "title": "Lexicove for your computer",
+        "text": "Word cards over other windows, a hotkey that saves the highlighted word, start with the system. It updates itself.",
+        "windows": "Download for Windows",
+        "other": "macOS and Linux",
+        "smartscreen": "On the first start Windows may warn about an unknown publisher: choose More info, then Run anyway."
+      },
       "cards": "Word cards",
       "cardsHint": "A small card with a word pops up over other windows so you repeat it on the go.",
       "off": "Off",

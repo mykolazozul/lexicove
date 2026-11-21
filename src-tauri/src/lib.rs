@@ -1,30 +1,93 @@
-// The desktop shell around the web app: a tray icon, a small always-on-top card window for the
-// word of the moment, a global hotkey that adds the highlighted word, and start with the system.
-// Everything the user sees inside the windows is the same React app; this file only manages
-// windows, the tray and the hotkey.
+// The desktop shell around the live website (lexicove.vercel.app). Everything the user sees is the
+// site, so a deploy shows up in the app at once; this frame changes rarely and updates itself from
+// GitHub Releases (updates.rs). It adds what a browser can't: a tray icon, a small always-on-top
+// card window for the word of the moment, a global hotkey that adds the highlighted word, start
+// with the system, a remembered window size, and links to other sites opening in the browser.
+//
+// Start-up: a tiny local page (src-tauri/shell) checks the connection and goes to the site, or
+// shows "no connection" with a retry button. See docs/desktop.md.
+
+mod updates;
 
 use std::{thread, time::Duration};
 
 use tauri::{
     menu::{Menu, MenuItem},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
-    AppHandle, Manager, WebviewUrl, WebviewWindowBuilder, WindowEvent,
+    webview::NewWindowResponse,
+    AppHandle, Manager, Url, WebviewUrl, WebviewWindowBuilder, WindowEvent,
 };
 use tauri_plugin_clipboard_manager::ClipboardExt;
 use tauri_plugin_global_shortcut::{Code, GlobalShortcutExt, Modifiers, Shortcut, ShortcutState};
+use tauri_plugin_opener::OpenerExt;
+use tauri_plugin_window_state::StateFlags;
+
+/// The site the app shows. Debug builds use the Vite dev server instead (`devUrl`).
+const APP_URL: &str = "https://lexicove.vercel.app";
 
 const CARD_WIDTH: f64 = 380.0;
 const CARD_HEIGHT: f64 = 300.0;
 const CARD_MARGIN: f64 = 24.0;
+
+/// The pages a window may show: the site, the local start-up page, and the dev server in debug.
+fn is_ours(url: &Url) -> bool {
+    let host = url.host_str().unwrap_or_default();
+    match url.scheme() {
+        "https" => host == "lexicove.vercel.app",
+        // The local start-up page: tauri://localhost on macOS and Linux, http://tauri.localhost on Windows.
+        "tauri" => host == "localhost",
+        "http" => host == "tauri.localhost" || (cfg!(debug_assertions) && host == "localhost" && url.port() == Some(5173)),
+        "about" => url.as_str() == "about:blank",
+        _ => false,
+    }
+}
+
+/// Anything else goes to the user's browser (web pages and mail only, never files or programs).
+fn open_outside(app: &AppHandle, url: &Url) {
+    if matches!(url.scheme(), "http" | "https" | "mailto") {
+        let _ = app.opener().open_url(url.as_str(), None::<&str>);
+    }
+}
+
+/// A window that only ever shows our pages; links elsewhere and pop-ups open in the browser.
+fn guarded<'a>(app: &'a AppHandle, builder: WebviewWindowBuilder<'a, tauri::Wry, AppHandle>) -> WebviewWindowBuilder<'a, tauri::Wry, AppHandle> {
+    let nav = app.clone();
+    let popup = app.clone();
+    builder
+        .on_navigation(move |url| {
+            let ours = is_ours(url);
+            if !ours {
+                open_outside(&nav, url);
+            }
+            ours
+        })
+        .on_new_window(move |url, _features| {
+            open_outside(&popup, &url);
+            NewWindowResponse::Deny
+        })
+}
+
+/// A route of the site, e.g. `/desktop/card`.
+fn page(path: &str) -> Result<WebviewUrl, String> {
+    if cfg!(debug_assertions) {
+        return Ok(WebviewUrl::App(path.trim_start_matches('/').into()));
+    }
+    let url: Url = format!("{APP_URL}{path}").parse().map_err(|_| "bad path".to_string())?;
+    if !is_ours(&url) {
+        return Err("bad path".into());
+    }
+    Ok(WebviewUrl::External(url))
+}
 
 /// Opens the small card window at a route of the app (`/desktop/card` or `/desktop/add?...`),
 /// in the bottom-right corner, above every other window. An open card is replaced.
 #[tauri::command]
 fn show_card(app: AppHandle, path: String) -> Result<(), String> {
     // Only the app's own desktop routes, never an outside address.
-    if !path.starts_with("/desktop/") {
+    if !path.starts_with("/desktop/") || path.contains("..") || path.contains('\\') {
         return Err("bad path".into());
     }
+    let url = page(&path)?;
     if let Some(card) = app.get_webview_window("card") {
         let _ = card.close();
     }
@@ -41,7 +104,7 @@ fn show_card(app: AppHandle, path: String) -> Result<(), String> {
         None => (CARD_MARGIN, CARD_MARGIN),
     };
 
-    WebviewWindowBuilder::new(&app, "card", WebviewUrl::App(path.trim_start_matches('/').into()))
+    guarded(&app, WebviewWindowBuilder::new(&app, "card", url))
         .title("Lexicove")
         .inner_size(CARD_WIDTH, CARD_HEIGHT)
         .position(x, y)
@@ -49,6 +112,7 @@ fn show_card(app: AppHandle, path: String) -> Result<(), String> {
         .decorations(false)
         .always_on_top(true)
         .skip_taskbar(true)
+        .background_color(tauri::window::Color(0, 0, 0, 255))
         .focused(true)
         .build()
         .map(|_| ())
@@ -61,6 +125,21 @@ fn hide_card(app: AppHandle) {
     if let Some(card) = app.get_webview_window("card") {
         let _ = card.close();
     }
+}
+
+#[tauri::command]
+fn update_status(app: AppHandle) -> updates::UpdateStatus {
+    updates::status(&app)
+}
+
+#[tauri::command]
+fn update_check(app: AppHandle) {
+    tauri::async_runtime::spawn(updates::check(app));
+}
+
+#[tauri::command]
+fn update_install(app: AppHandle) -> Result<(), String> {
+    updates::install(&app)
 }
 
 fn show_main(app: &AppHandle) {
@@ -113,6 +192,15 @@ pub fn run() {
         // A second launch brings the running app forward instead of opening another one.
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| show_main(app)))
         .plugin(tauri_plugin_clipboard_manager::init())
+        .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(
+            // Size, place and "maximized" survive a restart; visibility doesn't (start in the tray).
+            tauri_plugin_window_state::Builder::default()
+                .with_denylist(&["card"])
+                .with_state_flags(StateFlags::all() & !StateFlags::VISIBLE)
+                .build(),
+        )
         .plugin(tauri_plugin_autostart::init(
             tauri_plugin_autostart::MacosLauncher::LaunchAgent,
             Some(vec!["--hidden"]),
@@ -126,8 +214,25 @@ pub fn run() {
                 })
                 .build(),
         )
-        .invoke_handler(tauri::generate_handler![show_card, hide_card])
+        .manage(updates::Updates::default())
+        .invoke_handler(tauri::generate_handler![show_card, hide_card, update_status, update_check, update_install])
         .setup(move |app| {
+            let handle = app.handle().clone();
+
+            // Started with the system: stay in the tray until called.
+            let hidden = std::env::args().any(|arg| arg == "--hidden");
+            let config = app
+                .config()
+                .app
+                .windows
+                .iter()
+                .find(|window| window.label == "main")
+                .cloned()
+                .expect("tauri.conf.json has the main window");
+            guarded(&handle, WebviewWindowBuilder::from_config(&handle, &config)?)
+                .visible(!hidden)
+                .build()?;
+
             app.global_shortcut().register(add_shortcut)?;
 
             let open = MenuItem::with_id(app, "open", "Lexicove", true, None::<&str>)?;
@@ -155,12 +260,7 @@ pub fn run() {
                 })
                 .build(app)?;
 
-            // Started with the system: stay in the tray until called.
-            if std::env::args().any(|arg| arg == "--hidden") {
-                if let Some(window) = app.get_webview_window("main") {
-                    let _ = window.hide();
-                }
-            }
+            updates::start(handle);
             Ok(())
         })
         // Closing the main window keeps Lexicove running in the tray, so the cards keep coming.

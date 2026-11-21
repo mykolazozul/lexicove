@@ -13,7 +13,9 @@
     "test": "vitest run",
     "lint:secrets": "secretlint \"**/*\"",
     "icons": "pwa-assets-generator && tauri icon public/logo.svg",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "desktop:keys": "powershell -ExecutionPolicy Bypass -File scripts/desktop-keys.ps1",
+    "desktop:release": "node scripts/desktop-release.mjs"
   },
   "dependencies": {
     "@fontsource-variable/manrope": "^5.3.0",

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lexicove</title>
+    <link rel="stylesheet" href="shell.css" />
+  </head>
+  <body>
+    <!-- The desktop app's first screen: it checks the connection, then opens the live site. -->
+    <main>
+      <img src="logo.svg" alt="" width="56" height="56" />
+      <div id="loading">
+        <div class="spinner" aria-hidden="true"></div>
+        <p id="loading-text">Opening Lexicove</p>
+      </div>
+      <div id="offline" hidden>
+        <h1 id="offline-title">No connection</h1>
+        <p id="offline-text">Lexicove needs the internet. Check the connection and try again.</p>
+        <button id="retry" type="button">Try again</button>
+      </div>
+    </main>
+    <script src="shell.js"></script>
+  </body>
+</html>

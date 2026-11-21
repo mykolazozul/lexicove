@@ -28,3 +28,47 @@ export async function setStartsWithSystem(on: boolean): Promise<void> {
   const autostart = await import('@tauri-apps/plugin-autostart')
   await (on ? autostart.enable() : autostart.disable())
 }
+
+/** The desktop app's own update (src-tauri/src/updates.rs); the site itself is always the newest. */
+export type UpdateStatus = {
+  state: 'idle' | 'checking' | 'none' | 'downloading' | 'ready' | 'error' | 'disabled'
+  /** Installed version of the desktop app. */
+  current: string
+  /** The newer version, once one is found. */
+  version: string | null
+  percent: number | null
+  error: string | null
+}
+
+export const DESKTOP_DOWNLOAD_URL = 'https://github.com/mykolazozul/lexicove/releases/latest/download/Lexicove-Setup.exe'
+export const DESKTOP_RELEASES_URL = 'https://github.com/mykolazozul/lexicove/releases/latest'
+
+export async function updateStatus(): Promise<UpdateStatus | null> {
+  return isTauri ? ((await invoke('update_status')) as UpdateStatus) : null
+}
+
+export function checkForUpdate(): Promise<unknown> {
+  return isTauri ? invoke('update_check') : Promise.resolve()
+}
+
+/** Installs the downloaded version; the app closes and opens again. */
+export function installUpdate(): Promise<unknown> {
+  return isTauri ? invoke('update_install') : Promise.resolve()
+}
+
+/** Calls back on every change; returns the unsubscribe function. */
+export function onUpdate(callback: (status: UpdateStatus) => void): () => void {
+  if (!isTauri) return () => {}
+  let stop: (() => void) | null = null
+  let stopped = false
+  void import('@tauri-apps/api/event').then(({ listen }) =>
+    listen<UpdateStatus>('lexicove-update', (event) => callback(event.payload)).then((unlisten) => {
+      if (stopped) unlisten()
+      else stop = unlisten
+    }),
+  )
+  return () => {
+    stopped = true
+    stop?.()
+  }
+}

@@ -9,7 +9,7 @@ import { community } from '../lib/community'
 import { useShopThemeGuard } from '../lib/cosmetics'
 import { cx } from '../lib/cx'
 import i18n from '../lib/i18n'
-import { showCard } from '../lib/desktop'
+import { onUpdate, showCard } from '../lib/desktop'
 import { isTauri } from '../lib/platform'
 import { importFresh } from '../lib/reload'
 import { useViewer } from '../lib/viewer'
@@ -90,6 +90,16 @@ export function AppShell() {
     const timer = setInterval(() => void showCard('/desktop/card').catch(() => {}), cardEvery * 60_000)
     return () => clearInterval(timer)
   }, [userId, quiet, cardEvery])
+
+  // Desktop app: say once when a new version of the app itself has downloaded.
+  useEffect(() => {
+    let told = ''
+    return onUpdate((status) => {
+      if (status.state !== 'ready' || !status.version || told === status.version) return
+      told = status.version
+      toast(i18n.t('settings.desktop.update.toast'), 'ok', '⬇️')
+    })
+  }, [])
 
   useEffect(() => {
     window.scrollTo({ top: 0 })

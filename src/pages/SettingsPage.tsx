@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { BellRing, Check, ChevronRight, Coins, ExternalLink, Keyboard, Lock, LogIn, LogOut, Monitor, Moon, Power, Shield, Sparkles, Swords, Volume2, type LucideIcon } from '../components/icons'
+import { BellRing, Check, ChevronRight, Coins, Download, ExternalLink, Keyboard, Lock, LogIn, LogOut, Monitor, Moon, Power, RefreshCw, Shield, Sparkles, Swords, Volume2, type LucideIcon } from '../components/icons'
 import { isAdmin } from '../lib/admin'
 import { siGithub } from 'simple-icons'
 import { DisplayNameCard, UsernameCard } from '../components/community/FriendsView'
@@ -12,7 +12,17 @@ import { Card, Reveal, SectionTitle, Segmented, Switch } from '../components/ui'
 import { useOwnedThemes } from '../lib/cosmetics'
 import { cx } from '../lib/cx'
 import { LOCALES, LOCALE_NAMES } from '../lib/locale'
-import { setStartsWithSystem, startsWithSystem } from '../lib/desktop'
+import {
+  checkForUpdate,
+  DESKTOP_DOWNLOAD_URL,
+  DESKTOP_RELEASES_URL,
+  installUpdate,
+  onUpdate,
+  setStartsWithSystem,
+  startsWithSystem,
+  updateStatus,
+  type UpdateStatus,
+} from '../lib/desktop'
 import { APP_VERSION, isTauri, REPO_URL } from '../lib/platform'
 import { isSubscribed, pushSupport, PushError, subscribe, unsubscribe } from '../lib/push'
 import { clockTime } from '../lib/time'
@@ -112,7 +122,7 @@ export function SettingsPage() {
         </section>
       </Reveal>
 
-      {isTauri && !viewer.isGuest && <DesktopSettings />}
+      {isTauri ? <DesktopSettings signedIn={!viewer.isGuest} /> : <DesktopDownload />}
 
       <Reveal delay={0.05}>
         <section>
@@ -282,11 +292,10 @@ function ReminderSetting() {
   )
 }
 
-/** One kind of notification, for everyone who has reminders on. */
 const CARD_INTERVALS = [0, 15, 30, 60] as const
 
-/** Only in the desktop app (src-tauri): word cards above other windows, start with the system, the hotkey. */
-function DesktopSettings() {
+/** Only in the desktop app (src-tauri): its version and update, word cards, start with the system, the hotkey. */
+function DesktopSettings({ signedIn }: { signedIn: boolean }) {
   const { t } = useTranslation()
   const { cardEvery, setCardEvery, quiet, setQuiet } = useSettings()
   const [autostart, setAutostart] = useState<boolean | null>(null)
@@ -311,32 +320,37 @@ function DesktopSettings() {
       <section>
         <SectionTitle>{t('settings.desktop.title')}</SectionTitle>
         <Card className="flex flex-col gap-5">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex min-w-0 items-start gap-4">
-              <Monitor className="mt-0.5 size-5 shrink-0 text-muted" />
-              <div className="min-w-0">
-                <div className="font-semibold">{t('settings.desktop.cards')}</div>
-                <p className="mt-0.5 text-sm text-muted">{t('settings.desktop.cardsHint')}</p>
+          <DesktopUpdate />
+          {signedIn && (
+            <>
+              <div className="flex flex-col gap-3 border-t border-line pt-5 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex min-w-0 items-start gap-4">
+                  <Monitor className="mt-0.5 size-5 shrink-0 text-muted" />
+                  <div className="min-w-0">
+                    <div className="font-semibold">{t('settings.desktop.cards')}</div>
+                    <p className="mt-0.5 text-sm text-muted">{t('settings.desktop.cardsHint')}</p>
+                  </div>
+                </div>
+                <Segmented
+                  label={t('settings.desktop.cards')}
+                  value={String(cardEvery)}
+                  onChange={(value) => setCardEvery(Number(value))}
+                  options={CARD_INTERVALS.map((minutes) => ({
+                    value: String(minutes),
+                    label: minutes === 0 ? t('settings.desktop.off') : t('settings.desktop.minutes', { count: minutes }),
+                  }))}
+                />
               </div>
-            </div>
-            <Segmented
-              label={t('settings.desktop.cards')}
-              value={String(cardEvery)}
-              onChange={(value) => setCardEvery(Number(value))}
-              options={CARD_INTERVALS.map((minutes) => ({
-                value: String(minutes),
-                label: minutes === 0 ? t('settings.desktop.off') : t('settings.desktop.minutes', { count: minutes }),
-              }))}
-            />
-          </div>
-          <div className="flex items-center gap-4 border-t border-line pt-5">
-            <Moon className="size-5 shrink-0 text-muted" />
-            <div className="min-w-0 flex-1">
-              <div className="font-semibold">{t('settings.desktop.quiet')}</div>
-              <p className="mt-0.5 text-sm text-muted">{t('settings.desktop.quietHint')}</p>
-            </div>
-            <Switch checked={quiet} onChange={setQuiet} label={t('settings.desktop.quiet')} />
-          </div>
+              <div className="flex items-center gap-4 border-t border-line pt-5">
+                <Moon className="size-5 shrink-0 text-muted" />
+                <div className="min-w-0 flex-1">
+                  <div className="font-semibold">{t('settings.desktop.quiet')}</div>
+                  <p className="mt-0.5 text-sm text-muted">{t('settings.desktop.quietHint')}</p>
+                </div>
+                <Switch checked={quiet} onChange={setQuiet} label={t('settings.desktop.quiet')} />
+              </div>
+            </>
+          )}
           <div className="flex items-center gap-4 border-t border-line pt-5">
             <Power className="size-5 shrink-0 text-muted" />
             <div className="min-w-0 flex-1">
@@ -347,20 +361,116 @@ function DesktopSettings() {
               <Switch checked={autostart} onChange={(on) => void toggleAutostart(on)} label={t('settings.desktop.autostart')} />
             )}
           </div>
-          <div className="flex items-center gap-4 border-t border-line pt-5">
-            <Keyboard className="size-5 shrink-0 text-muted" />
-            <div className="min-w-0 flex-1">
-              <div className="font-semibold">{t('settings.desktop.hotkey')}</div>
-              <p className="mt-0.5 text-sm text-muted">{t('settings.desktop.hotkeyHint')}</p>
+          {signedIn && (
+            <div className="flex items-center gap-4 border-t border-line pt-5">
+              <Keyboard className="size-5 shrink-0 text-muted" />
+              <div className="min-w-0 flex-1">
+                <div className="font-semibold">{t('settings.desktop.hotkey')}</div>
+                <p className="mt-0.5 text-sm text-muted">{t('settings.desktop.hotkeyHint')}</p>
+              </div>
+              <kbd className="rounded-md border border-line bg-surface px-2 py-1 text-xs font-semibold">Ctrl Shift E</kbd>
             </div>
-            <kbd className="rounded-md border border-line bg-surface px-2 py-1 text-xs font-semibold">Ctrl Shift E</kbd>
-          </div>
+          )}
         </Card>
       </section>
     </Reveal>
   )
 }
 
+/** The installed version and its update: check, download progress, restart. */
+function DesktopUpdate() {
+  const { t } = useTranslation()
+  const [status, setStatus] = useState<UpdateStatus | null>(null)
+
+  useEffect(() => {
+    void updateStatus()
+      .then(setStatus)
+      .catch(() => {})
+    return onUpdate(setStatus)
+  }, [])
+
+  if (!status) return null
+  const line =
+    status.state === 'checking'
+      ? t('settings.desktop.update.checking')
+      : status.state === 'downloading'
+        ? t('settings.desktop.update.downloading', { version: status.version, percent: status.percent ?? 0 })
+        : status.state === 'ready'
+          ? t('settings.desktop.update.ready', { version: status.version })
+          : status.state === 'none'
+            ? t('settings.desktop.update.none')
+            : status.state === 'error'
+              ? t('settings.desktop.update.error')
+              : status.state === 'disabled'
+                ? t('settings.desktop.update.disabled')
+                : t('settings.desktop.update.auto')
+
+  return (
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex min-w-0 items-start gap-4">
+        <RefreshCw className="mt-0.5 size-5 shrink-0 text-muted" />
+        <div className="min-w-0">
+          <div className="font-semibold">{t('settings.desktop.update.title', { version: status.current })}</div>
+          <p className="mt-0.5 text-sm text-muted" aria-live="polite">
+            {line}
+          </p>
+        </div>
+      </div>
+      {status.state === 'ready' ? (
+        <button
+          type="button"
+          className="btn btn-primary shrink-0"
+          onClick={() => void installUpdate().catch(() => toast(t('settings.desktop.update.error'), 'error'))}
+        >
+          {t('settings.desktop.update.install')}
+        </button>
+      ) : status.state !== 'disabled' ? (
+        <button
+          type="button"
+          className="btn btn-secondary shrink-0"
+          disabled={status.state === 'checking' || status.state === 'downloading'}
+          onClick={() => void checkForUpdate()}
+        >
+          {t('settings.desktop.update.check')}
+        </button>
+      ) : null}
+    </div>
+  )
+}
+
+/** On the website: the desktop app to download. One link always gets the newest installer. */
+function DesktopDownload() {
+  const { t } = useTranslation()
+  return (
+    <Reveal delay={0.04}>
+      <section>
+        <SectionTitle>{t('settings.desktop.title')}</SectionTitle>
+        <Card className="flex flex-col gap-4">
+          <div className="flex items-start gap-4">
+            <Monitor className="mt-0.5 size-5 shrink-0 text-muted" />
+            <div className="min-w-0">
+              <div className="font-semibold">{t('settings.desktop.download.title')}</div>
+              <p className="mt-0.5 text-sm text-muted">{t('settings.desktop.download.text')}</p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <a href={DESKTOP_DOWNLOAD_URL} className="btn btn-primary" rel="noreferrer">
+              <Download className="size-4" />
+              {t('settings.desktop.download.windows')}
+            </a>
+            <a href={DESKTOP_RELEASES_URL} target="_blank" rel="noreferrer" className="btn btn-secondary">
+              {t('settings.desktop.download.other')}
+              <ExternalLink className="size-3.5 text-muted" />
+            </a>
+          </div>
+          <p className="text-xs text-subtle">{t('settings.desktop.download.smartscreen')}</p>
+        </Card>
+      </section>
+    </Reveal>
+  )
+}
+
+/** One kind of notification, for everyone who has reminders on. */
 function PushTopicSetting({ topic, icon: Icon, title, hint }: { topic: PushTopic; icon: LucideIcon; title: string; hint: string }) {
   const on = useProfile((s) => s.profile?.[topic] ?? true)
   const setPushTopic = useProfile((s) => s.setPushTopic)

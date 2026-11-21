@@ -46,7 +46,12 @@
   with coin stakes, one-click rematches, invites that pop up anywhere in the app, and a free
   weekly single-elimination tournament with prizes.
 
-- **Phase 6, games:** nine word games on your own words or the starter decks (guests too): match the pairs, speed round, word rain, hangman, Wordle, crossword, word search, anagrams and true or false, with best scores on the device. Desktop features (word on the desktop, hotkey, tray) come next. See the roadmap in [SPEC.md](SPEC.md#16-етапи).
+- **Phase 6, games:** nine word games on your own words or the starter decks (guests too): match the pairs, speed round, word rain, hangman, Wordle, crossword, word search, anagrams and true or false, with best scores on the device.
+
+- **Phase 7, desktop app:** a frame around the live site that updates itself from GitHub
+  Releases, word cards over other windows, a hotkey that saves the highlighted word, a tray icon
+  and start with the system. Download it from Settings on the site. See
+  [docs/desktop.md](docs/desktop.md) and the roadmap in [SPEC.md](SPEC.md#16-етапи).
 
 ## Features (planned)
 
