@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'motion/react'
-import { Heart } from 'lucide-react'
+import { Heart } from '../icons'
 import { Card } from '../ui'
 import { GameBar } from './QuizGames'
 import { useSound } from '../../lib/cosmetics'
@@ -104,7 +104,7 @@ export function WordRain({ words, onFinish }: GameProps) {
         <span>{t('games.points', { count: score })}</span>
         <span className="ml-auto inline-flex gap-1" aria-label={t('games.rain.lives', { count: lives })}>
           {Array.from({ length: LIVES }, (_, i) => (
-            <Heart key={i} className={cx('size-5', i < lives ? 'fill-danger text-danger' : 'text-line')} />
+            <Heart key={i} weight={i < lives ? 'fill' : 'regular'} className={cx('size-5', i < lives ? 'text-danger' : 'text-line')} />
           ))}
         </span>
       </GameBar>

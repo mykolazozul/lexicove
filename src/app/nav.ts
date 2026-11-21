@@ -7,7 +7,7 @@ import {
   UserRound,
   Users,
   type LucideIcon,
-} from 'lucide-react'
+} from '../components/icons'
 
 export type NavKey = 'home' | 'learn' | 'words' | 'games' | 'shop' | 'community' | 'profile'
 

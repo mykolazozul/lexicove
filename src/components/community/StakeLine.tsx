@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Coins } from 'lucide-react'
+import { Coins } from '../icons'
 
 /** The level of a duel's questions and what's at stake. */
 export function StakeLine({ stake, level }: { stake: number; level: string }) {

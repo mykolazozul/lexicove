@@ -157,7 +157,7 @@
       "a1": "A1 · Beginner",
       "a2": "A2 · Elementary",
       "b1": "B1 · Intermediate",
-      "b2": "B2 · Upper-intermediate"
+      "b2": "B2 · Upper intermediate"
     },
     "stake": "Stake {{coins}}",
     "noStake": "No stake",
@@ -238,7 +238,7 @@
       "yourMatch": "Your round {{round}} match is waiting.",
       "through": "You’re through. Wait for the next round.",
       "play": "Play the match",
-      "notIn": "You’re not in this tournament. Sign-up for the next one opens on Monday.",
+      "notIn": "You’re not in this tournament. Registration for the next one opens on Monday.",
       "podium": "Winners",
       "lastPodium": "Last week’s winners",
       "final": "Final",
@@ -386,7 +386,7 @@
       "welcome": { "title": "Welcome to Lexicove!", "text": "Your words become short lessons and games here. A few minutes a day, and they stick for good." },
       "words": { "title": "Where the words come from", "text": "Pick a starter deck, add words by hand, import a CSV or connect a Notion table that syncs both ways." },
       "daily": { "title": "Learn every day", "text": "A daily goal, a streak flame, XP and coins. Words come back for review just as you start to forget them." },
-      "compete": { "title": "Compete", "text": "Weekly leagues, 1-on-1 duels and tournaments. Spend coins in the shop on avatars, frames and themes." }
+      "compete": { "title": "Compete", "text": "Weekly leagues, one on one duels and tournaments. Spend coins in the shop on avatars, frames and themes." }
     }
   },
   "settings": {
@@ -448,8 +448,8 @@
     "timeFormat": {
       "title": "Time format",
       "auto": "Like this device",
-      "h24": "24-hour",
-      "h12": "12-hour (AM/PM)",
+      "h24": "24 hours",
+      "h12": "12 hours (AM/PM)",
       "example": "Example: {{time}}"
     },
     "reminders": {
@@ -471,7 +471,7 @@
     "language": "Language",
     "privacy": "Privacy",
     "analytics": "Usage statistics",
-    "analyticsHint": "Helps us see what works in Lexicove: which sections people open, on which device, in which language and theme. No ads, no third-party trackers.",
+    "analyticsHint": "Helps us see what works in Lexicove: which sections people open, on which device, in which language and theme. No ads, no outside trackers.",
     "privacyLink": "What exactly is collected",
     "account": "Account",
     "signedInAs": "Account: {{name}}",
@@ -485,7 +485,7 @@
     "line1": "Your words.",
     "line2": "Your Notion.",
     "line3": "Your game.",
-    "subtitle": "Lexicove turns your word lists into spaced-repetition lessons, games and duels. Free and open source.",
+    "subtitle": "Lexicove turns your word lists into lessons with spaced repetition, games and duels. Free and open source.",
     "cardTitle": "Let's begin",
     "cardText": "Sign in to keep your progress on every device.",
     "continueWith": "Continue with {{provider}}",
@@ -536,7 +536,7 @@
       "same_password": "The new password must be different from the old one."
     },
     "notConfigured": "The server isn't connected yet, so only guest mode works for now.",
-    "desktopOauth": "In the desktop app, email sign-in works for now. Google, GitHub, Discord and Notion are coming in an update.",
+    "desktopOauth": "In the desktop app, signing in by email works for now. Google, GitHub, Discord and Notion are coming in an update.",
     "samples": [
       { "word": "serendipity", "meaning": "a happy accident" },
       { "word": "look forward to", "meaning": "to wait for something with excitement" },
@@ -676,12 +676,12 @@
     "decks": {
       "button": "Decks",
       "title": "Starter decks",
-      "text": "Ready-made sets of 40 words with translations, pronunciation and examples. Pick your level and start a lesson.",
+      "text": "Prepared sets of 40 words with translations, pronunciation and examples. Pick your level and start a lesson.",
       "levels": {
         "a1": { "name": "A1 · Beginner", "text": "Food, animals, home, time and your first phrasal verbs." },
         "a2": { "name": "A2 · Elementary", "text": "Travel, work, feelings and everyday phrasal verbs." },
         "b1": { "name": "B1 · Intermediate", "text": "Careers, character, trips and handy phrasal verbs." },
-        "b2": { "name": "B2 · Upper-intermediate", "text": "Business, nature, emotions and trickier phrasal verbs." }
+        "b2": { "name": "B2 · Upper intermediate", "text": "Business, nature, emotions and trickier phrasal verbs." }
       },
       "progress": "{{added}} of {{count}} added",
       "add_one": "Add {{count}} word",
@@ -833,7 +833,7 @@
       "retention": "Come back after a week"
     },
     "charts": {
-      "signups": "Sign-ups",
+      "signups": "New accounts",
       "active": "Active users",
       "last30": "Last 30 days, Kyiv time",
       "heatmap": "When people use Lexicove",
@@ -848,7 +848,7 @@
       "opens_one": "{{count, number}} app open in 30 days",
       "opens_other": "{{count, number}} app opens in 30 days",
       "locales": "Interface language",
-      "providers": "Sign-in method",
+      "providers": "How people sign in",
       "themes": "Themes",
       "appleStyle": "Apple style",
       "pages": "Popular sections",
@@ -895,7 +895,7 @@
       "none": "Nobody has linked a table yet"
     },
     "system": {
-      "limits": "Supabase free-plan limits",
+      "limits": "Limits of the Supabase free plan",
       "limitsHint": "When a bar turns amber, it's time to optimise or consider a paid plan.",
       "database": "Database",
       "mau": "Monthly active users",
@@ -939,7 +939,7 @@
         },
         {
           "title": "What happens if you break them",
-          "body": "The auto filter hides swear words with asterisks and gives a 15-minute mute for frequent swearing. Moderators can delete messages, warn, stop you from posting for a while (mute) or ban you from the community. Learning keeps working either way."
+          "body": "The auto filter hides swear words with asterisks and gives a mute for 15 minutes for frequent swearing. Moderators can delete messages, warn, stop you from posting for a while (mute) or ban you from the community. Learning keeps working either way."
         },
         {
           "title": "Reports",
@@ -951,9 +951,9 @@
       "title": "Privacy policy",
       "sections": [
         { "title": "What we store", "body": "Your account email and name, settings, the words and rules you add or sync, and your learning progress: answers, streaks, XP, Coins, shop purchases, achievements and quests. If you connect Notion, a copy of the rows from the tables you choose and an encrypted Notion access token." },
-        { "title": "Usage statistics", "body": "The app records a few events: opening it, viewing a section (just its name, no ids) and actions such as \"word saved\" or \"Notion synced\". Each event carries the platform (browser, installed app or desktop program), interface language, theme and the Apple-style switch.\nWhen you are signed in, the event is linked to your account. For guests no identifier is stored at all. No IP addresses, no tracking cookies and no third-party analytics are used. Events are deleted automatically after 90 days.\nYou can turn statistics off at any time in Settings → Privacy." },
+        { "title": "Usage statistics", "body": "The app records a few events: opening it, viewing a section (just its name, no ids) and actions such as \"word saved\" or \"Notion synced\". Each event carries the platform (browser, installed app or desktop program), interface language, theme and the Apple style.\nWhen you are signed in, the event is linked to your account. For guests no identifier is stored at all. No IP addresses, no tracking cookies and no outside analytics are used. Events are deleted automatically after 90 days.\nYou can turn statistics off at any time in Settings → Privacy." },
         { "title": "Why", "body": "Only to run and improve the app: show your words, sync them with Notion, keep your progress on every device and understand which features help. We don't sell data or show ads." },
-        { "title": "Who sees the data", "body": "Only you see your words and rules. The owner and administrators of Lexicove see, in the admin panel, your email, name, sign-in method, sign-up date, last activity time, number of words, the names of linked Notion tables and sync errors, plus aggregated statistics. This is needed to run the service and help with problems. The content of your words is not shown in the admin panel." },
+        { "title": "Who sees the data", "body": "Only you see your words and rules. The owner and administrators of Lexicove see, in the admin panel, your email, name, how you sign in, when you joined, last activity time, number of words, the names of linked Notion tables and sync errors, plus aggregated statistics. This is needed to run the service and help with problems. The content of your words is not shown in the admin panel." },
         { "title": "Community and notifications", "body": "Other users can see your name, username, avatar, level, the shop items you wear, your league and streak. Messages in chat rooms are visible to everyone signed in and kept for 180 days. Direct messages are seen only by the two of you; a moderator sees only what was reported. Friends can see when you were last online. You can change your name once every 7 days and your username once every 30; the server checks both for offensive and reserved words.\nIf you turn on reminders, your browser’s push subscription address is stored; it is deleted when you turn reminders off." },
         { "title": "Where", "body": "Data is stored with Supabase (servers in the EU, Frankfurt). The website is served by Vercel. The Notion token is stored encrypted and is only available to a server function, never to the browser." },
         { "title": "Notion", "body": "Lexicove only sees the pages you allowed when connecting. You can disconnect Notion at any time on the Words page, which deletes the token." },
@@ -964,11 +964,11 @@
     "terms": {
       "title": "Terms of use",
       "sections": [
-        { "title": "The service", "body": "Lexicove is a free, open-source app for learning English. It is provided as is, without a guarantee of uninterrupted service." },
+        { "title": "The service", "body": "Lexicove is a free and open source app for learning English. It is provided as is, without a guarantee of uninterrupted service." },
         { "title": "Your account", "body": "You are responsible for keeping your account secure. One account per person; the community is open from age 13." },
         { "title": "Your content", "body": "Your words, rules and other content stay yours. You allow Lexicove to store and process them only to run the app." },
         { "title": "Community rules", "body": "No harassment, spam, scams or illegal content. Moderators may warn, temporarily restrict or ban an account." },
-        { "title": "Coins", "body": "Coins are an in-app reward for studying. They can't be bought, sold, exchanged for money or moved to another account. The server adds and spends them; in case of abuse (for example, automated answers) balances and purchases may be adjusted." },
+        { "title": "Coins", "body": "Coins are a reward inside the app for studying. They can't be bought, sold, exchanged for money or moved to another account. The server adds and spends them; in case of abuse (for example, automated answers) balances and purchases may be adjusted." },
         { "title": "Changes", "body": "These terms may be updated; the date at the top shows the latest version." }
       ]
     }
@@ -1045,7 +1045,7 @@
       "title_wizard": "Word wizard",
       "title_night_owl": "Night owl",
       "title_unstoppable": "Unstoppable",
-      "title_all_rounder": "All-rounder",
+      "title_all_rounder": "Jack of all trades",
       "title_dictionary": "Walking dictionary",
       "title_legend": "Legend",
       "card_dots": "Dots",
@@ -1475,7 +1475,7 @@
       "duel_not_started": "The duel hasn’t started yet",
       "duel_time_up": "Time’s up",
       "wrong_question": "That question is already behind you",
-      "registration_closed": "Tournament sign-up is closed",
+      "registration_closed": "Tournament registration is closed",
       "tournament_full": "The tournament already has 64 players",
       "unknown": "Something went wrong. Please try again."
     }

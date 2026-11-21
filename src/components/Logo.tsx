@@ -41,7 +41,7 @@ export function Logo({ className, compact = false }: { className?: string; compa
       <LogoMark className="size-8 drop-shadow-[0_6px_16px_rgb(139_92_246/0.45)]" />
       <span
         className={cx(
-          'font-display text-[1.05rem] font-semibold tracking-tight',
+          'font-display text-base font-semibold tracking-tight',
           compact && 'hidden min-[400px]:inline',
         )}
       >

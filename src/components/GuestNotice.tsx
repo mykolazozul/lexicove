@@ -1,6 +1,6 @@
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { UserPlus } from 'lucide-react'
+import { UserPlus } from './icons'
 import { Card } from './ui'
 
 /** Shown in place of features that need an account. */

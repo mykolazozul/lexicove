@@ -1,6 +1,6 @@
 import { useEffect, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Snail, Volume2 } from 'lucide-react'
+import { Snail, Volume2 } from '../icons'
 import { cx } from '../../lib/cx'
 import { canSpeak, speak } from '../../lib/speech'
 

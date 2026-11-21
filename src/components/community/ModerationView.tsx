@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Ban, Check, RefreshCw, Trash2, VolumeX } from 'lucide-react'
+import { Ban, Check, RefreshCw, Trash2, VolumeX } from '../icons'
 import { Badge, Card, SectionTitle, Select, Switch } from '../ui'
 import { errorText, reasonText, UserCardModal, UserLine } from './People'
 import { community, type ChatRoom, type Report, type Sanction } from '../../lib/community'

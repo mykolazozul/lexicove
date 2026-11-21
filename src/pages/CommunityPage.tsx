@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useSearchParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { MessageCircle, ShieldAlert, Swords, Trophy, Users } from 'lucide-react'
+import { MessageCircle, ShieldAlert, Swords, Trophy, Users } from '../components/icons'
 import { ChatView } from '../components/community/ChatView'
 import { DuelsView } from '../components/community/DuelsView'
 import { FriendsView } from '../components/community/FriendsView'

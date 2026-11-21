@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FileUp, Loader2 } from 'lucide-react'
+import { FileUp, Loader2 } from '../icons'
 import { suggestMapping, type WordField } from '../../../supabase/functions/notion/mapping'
 import { parseCsv } from '../../lib/csv'
 import { useLibrary, type WordInput } from '../../stores/library'

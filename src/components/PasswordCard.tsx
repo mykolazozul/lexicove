@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { KeyRound, Loader2, Mail } from 'lucide-react'
+import { KeyRound, Loader2, Mail } from './icons'
 import { authErrorText } from '../lib/authErrors'
 import { useAuth } from '../stores/auth'
 import { toast } from '../stores/toast'

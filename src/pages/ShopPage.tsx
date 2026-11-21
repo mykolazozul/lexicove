@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { Check, Coins, Lock, Sparkles } from 'lucide-react'
+import { Check, Coins, Lock, Sparkles } from '../components/icons'
 import { Banner, DisplayName, ItemPreview, TitleBadge, UserAvatar, VerifiedBadge } from '../components/cosmetics'
 import { Modal } from '../components/Modal'
 import { Card, Reveal } from '../components/ui'
@@ -245,7 +245,7 @@ function ItemCard({
         <div className="pointer-events-none contents">
           <ItemPreview item={item} name={viewer.name} url={viewer.avatarUrl} equipped={equipped} />
           <span
-            className="absolute top-2 left-2 rounded-full px-2 py-0.5 text-[0.65rem] font-bold tracking-wide uppercase backdrop-blur"
+            className="absolute top-2 left-2 rounded-full px-2 py-0.5 text-xs font-bold tracking-wide uppercase backdrop-blur"
             style={{ color: 'var(--rarity)', background: 'color-mix(in oklab, var(--bg) 70%, transparent)' }}
           >
             {t(`shop.rarity.${item.rarity}`)}

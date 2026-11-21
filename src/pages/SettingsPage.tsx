@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { BellRing, Check, ChevronRight, Coins, ExternalLink, Lock, LogIn, LogOut, Shield, Sparkles, Swords, Volume2, type LucideIcon } from 'lucide-react'
+import { BellRing, Check, ChevronRight, Coins, ExternalLink, Lock, LogIn, LogOut, Shield, Sparkles, Swords, Volume2, type LucideIcon } from '../components/icons'
 import { isAdmin } from '../lib/admin'
 import { siGithub } from 'simple-icons'
 import { DisplayNameCard, UsernameCard } from '../components/community/FriendsView'

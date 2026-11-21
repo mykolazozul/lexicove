@@ -1,7 +1,7 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState, type ComponentProps, type KeyboardEvent, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { motion } from 'motion/react'
-import { Check, ChevronDown } from 'lucide-react'
+import { Check, ChevronDown } from './icons'
 import { cx } from '../lib/cx'
 
 // Every control here replaces a native one (checkbox, radio, select, details), so the whole app

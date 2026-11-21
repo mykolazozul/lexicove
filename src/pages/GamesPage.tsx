@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { Trophy } from 'lucide-react'
+import { Trophy } from '../components/icons'
 import { Card, Reveal, Segmented, Select } from '../components/ui'
 import { DECK_LEVELS, formatScore, GAMES, playable, useGames, type GameMeta } from '../lib/games'
 import { useViewer } from '../lib/viewer'

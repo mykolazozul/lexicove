@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useState, type ComponentType } from 'react'
 import { Link, Navigate, useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { ArrowLeft, Loader2, Play, RotateCcw, Trophy } from 'lucide-react'
+import { ArrowLeft, Loader2, Play, RotateCcw, Trophy } from '../components/icons'
 import { Confetti } from '../components/Confetti'
 import { Card } from '../components/ui'
 import { formatScore, gameMeta, loadDeckWords, playable, useGames, type GameId, type GameMeta, type GameWord } from '../lib/games'

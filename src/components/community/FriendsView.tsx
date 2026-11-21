@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AtSign, Check, Copy, MessageCircle, Pencil, Swords, UserPlus, UserRound, X } from 'lucide-react'
+import { AtSign, Check, Copy, MessageCircle, Pencil, Swords, UserPlus, UserRound, X } from '../icons'
 import { Card, SectionTitle } from '../ui'
 import { ChallengeModal } from './DuelsView'
 import { errorText, StreakFlame, UserCardModal, UserLine, WeekXp } from './People'

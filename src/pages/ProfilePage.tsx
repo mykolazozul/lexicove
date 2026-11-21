@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { Brush, CalendarDays, Coins, Flame, ListChecks, Target, Trophy, UserPlus } from 'lucide-react'
+import { Brush, CalendarDays, Coins, Flame, ListChecks, Target, Trophy, UserPlus } from '../components/icons'
 import { ActivityCalendar, BarList, ColumnChart, formatNumber } from '../components/charts'
 import { Banner, DisplayName, TitleBadge, UserAvatar, VerifiedBadge } from '../components/cosmetics'
 import { Badge, Card, ProgressBar, Reveal, SectionTitle } from '../components/ui'

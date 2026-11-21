@@ -18,7 +18,7 @@ import {
   UserPlus,
   Users,
   VolumeX,
-} from 'lucide-react'
+} from '../components/icons'
 import { BarList, ColumnChart, formatNumber, Heatmap, Meter, type Point } from '../components/charts'
 import { BrandIcon } from '../components/BrandIcon'
 import { ModerationView } from '../components/community/ModerationView'

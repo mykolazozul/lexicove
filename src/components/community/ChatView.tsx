@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { AnimatePresence, motion } from 'motion/react'
 import { create } from 'zustand'
-import { ArrowDown, CornerUpLeft, Flag, ImagePlus, Lock, MessageCircle, Send, ShieldAlert, SmilePlus, Timer, Trash2, X } from 'lucide-react'
+import { ArrowDown, CornerUpLeft, Flag, ImagePlus, Lock, MessageCircle, Send, ShieldAlert, SmilePlus, Timer, Trash2, X } from '../icons'
 import { Modal } from '../Modal'
 import { Card, Checkbox, RadioCards } from '../ui'
 import { errorText, PersonAvatar, PersonName, reasonText, UserCardModal, UserLine } from './People'
@@ -526,13 +526,13 @@ function MessageRow({
               ) : (
                 <span className="h-4 w-24 animate-pulse rounded bg-surface" />
               )}
-              <time className="shrink-0 text-[0.7rem] text-subtle" dateTime={message.created_at}>
+              <time className="shrink-0 text-xs text-subtle" dateTime={message.created_at}>
                 {time}
               </time>
             </div>
           )}
           {(deleted || message.body) && (
-            <p className={cx('text-[0.95rem] leading-relaxed break-words whitespace-pre-wrap', deleted && 'text-subtle')}>
+            <p className={cx('text-sm leading-relaxed break-words whitespace-pre-wrap', deleted && 'text-subtle')}>
               {deleted ? t('community.chat.deleted') : <Body text={message.body} />}
             </p>
           )}
@@ -800,7 +800,7 @@ function Composer({
           <Send className="size-4" />
         </button>
       </div>
-      <div className="mt-1 flex justify-between gap-3 text-[0.7rem] text-subtle">
+      <div className="mt-1 flex justify-between gap-3 text-xs text-subtle">
         {/* The keyboard hint only makes sense with a keyboard. */}
         <span className={cx(error ? 'text-danger' : 'hidden sm:inline')}>{error ?? (status && !status.links_allowed ? t('community.chat.noLinksYet') : t('community.chat.hint'))}</span>
         {text.length > MAX_LENGTH - 100 && <span className="tabular-nums">{text.length}/{MAX_LENGTH}</span>}

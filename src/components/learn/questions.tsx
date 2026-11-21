@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AnimatePresence, motion } from 'motion/react'
-import { Eye, Lightbulb, Loader2, Mic, RotateCcw } from 'lucide-react'
+import { Eye, Lightbulb, Loader2, Mic, RotateCcw } from '../icons'
 import { cx } from '../../lib/cx'
 import { listen, SpeechError } from '../../lib/speech'
 import { formatInterval, previewDue, Rating, type Grade, type ProgressRow } from '../../lib/srs'

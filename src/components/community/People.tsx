@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { Ban, BadgeCheck, Flame, MessageCircle, Shield, ShieldAlert, Trophy, UserCheck, UserMinus, UserPlus, VolumeX } from 'lucide-react'
+import { Ban, BadgeCheck, Flame, MessageCircle, Shield, ShieldAlert, Trophy, UserCheck, UserMinus, UserPlus, VolumeX } from '../icons'
 import { Banner, DisplayName, TitleBadge, UserAvatar, VerifiedBadge } from '../cosmetics'
 import { Modal } from '../Modal'
 import { Badge, Disclosure } from '../ui'
@@ -29,7 +29,7 @@ export function RoleBadge({ role }: { role: PublicCard['role'] }) {
   const { t } = useTranslation()
   if (ROLE_RANK[role] < ROLE_RANK.moderator) return null
   return (
-    <span className="inline-flex items-center gap-0.5 rounded-full bg-accent/12 px-1.5 py-px text-[0.65rem] font-bold text-accent" title={t(`profile.roles.${role}`)}>
+    <span className="inline-flex items-center gap-0.5 rounded-full bg-accent/12 px-1.5 py-px text-xs font-bold text-accent" title={t(`profile.roles.${role}`)}>
       <Shield className="size-3" strokeWidth={2.6} />
       {t(`community.roleShort.${role}`)}
     </span>
@@ -49,7 +49,7 @@ export function PersonName({ user }: { user: PublicCard }) {
       <DisplayName name={user.display_name} color={look.nameColor} className="truncate font-semibold" />
       {user.verified && <VerifiedBadge />}
       <RoleBadge role={user.role} />
-      <span className="shrink-0 rounded-full bg-surface px-1.5 text-[0.65rem] font-bold text-muted tabular-nums">{levelFromXp(user.xp).level}</span>
+      <span className="shrink-0 rounded-full bg-surface px-1.5 text-xs font-bold text-muted tabular-nums">{levelFromXp(user.xp).level}</span>
     </span>
   )
 }

@@ -57,7 +57,7 @@ export function ColumnChart({ points, caption, height = 168 }: { points: Point[]
   return (
     <figure className="relative">
       <div className="flex gap-3">
-        <div className="flex flex-col justify-between pb-6 text-right text-[0.7rem] text-subtle tabular-nums" style={{ height }}>
+        <div className="flex flex-col justify-between pb-6 text-right text-xs text-subtle tabular-nums" style={{ height }}>
           <span>{compact(max)}</span>
           <span>{compact(max / 2)}</span>
           <span>0</span>
@@ -90,7 +90,7 @@ export function ColumnChart({ points, caption, height = 168 }: { points: Point[]
               </button>
             ))}
           </div>
-          <div className="relative mt-1.5 h-4 text-[0.7rem] text-subtle">
+          <div className="relative mt-1.5 h-4 text-xs text-subtle">
             {points.map((point, index) =>
               labelled.has(index) ? (
                 <span
@@ -222,7 +222,7 @@ export function ActivityCalendar({
     <figure>
       <div className="overflow-x-auto pb-1">
         <div className="inline-flex min-w-full flex-col gap-1.5">
-          <div className="grid gap-[3px] text-[0.65rem] text-subtle" style={{ gridTemplateColumns: `repeat(${weeks}, minmax(11px, 16px))` }}>
+          <div className="grid gap-[3px] text-xs text-subtle" style={{ gridTemplateColumns: `repeat(${weeks}, minmax(11px, 16px))` }}>
             {columns.map((column, index) => {
               const first = column[0]!.date
               const showMonth = index === 0 || first.getDate() <= 7
@@ -290,7 +290,7 @@ export function Heatmap({
   return (
     <figure>
       <div className="overflow-x-auto pb-1">
-        <div className="inline-grid min-w-full grid-cols-[2rem_repeat(24,minmax(12px,1fr))] gap-[2px] text-[0.65rem] text-subtle">
+        <div className="inline-grid min-w-full grid-cols-[2rem_repeat(24,minmax(12px,1fr))] gap-[2px] text-xs text-subtle">
           <span />
           {Array.from({ length: 24 }, (_, hour) => (
             <span key={hour} className="text-center">

@@ -2,7 +2,7 @@ import { useEffect, useId, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { AnimatePresence, motion } from 'motion/react'
-import { X } from 'lucide-react'
+import { X } from './icons'
 import { cx } from '../lib/cx'
 
 /** A dialog that slides up from the bottom on phones and sits centred on larger screens. */

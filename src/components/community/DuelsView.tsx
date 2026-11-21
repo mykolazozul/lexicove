@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { Bot, Coins, Info, Loader2, Medal, Swords, Trophy, Users, X } from 'lucide-react'
+import { Bot, Coins, Info, Loader2, Medal, Swords, Trophy, Users, X } from '../icons'
 import { Modal } from '../Modal'
 import { Card, IconChip, SectionTitle, Segmented, Select } from '../ui'
 import { errorText, PersonAvatar, PersonName, UserLine } from './People'

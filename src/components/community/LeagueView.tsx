@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ArrowDown, ArrowUp, Clock, Coins } from 'lucide-react'
+import { ArrowDown, ArrowUp, Clock, Coins } from '../icons'
 import { Card, Segmented } from '../ui'
 import { errorText, UserCardModal, UserLine, WeekXp } from './People'
 import { community, TIER_COLORS, TIER_ICONS, TIERS, type FriendEntry, type League } from '../../lib/community'
@@ -138,7 +138,7 @@ export function LeagueView({ onMessage }: { onMessage: (userId: string) => void 
 function ZoneLine({ tone }: { tone: 'up' | 'down' }) {
   const { t } = useTranslation()
   return (
-    <div className={cx('flex items-center gap-2 px-4 py-1 text-[0.7rem] font-semibold tracking-wide uppercase', tone === 'up' ? 'text-success' : 'text-danger')}>
+    <div className={cx('flex items-center gap-2 px-4 py-1 text-xs font-semibold tracking-wide uppercase', tone === 'up' ? 'text-success' : 'text-danger')}>
       {tone === 'up' ? <ArrowUp className="size-3.5" /> : <ArrowDown className="size-3.5" />}
       {t(tone === 'up' ? 'league.promoteZone' : 'league.demoteZone')}
       <span className={cx('h-px flex-1', tone === 'up' ? 'bg-success/40' : 'bg-danger/40')} />

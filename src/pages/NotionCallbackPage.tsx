@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { AlertTriangle, Loader2 } from 'lucide-react'
+import { AlertTriangle, Loader2 } from '../components/icons'
 import { BrandIcon } from '../components/BrandIcon'
 import { notionErrorText } from '../components/words/notionErrors'
 import { Card } from '../components/ui'

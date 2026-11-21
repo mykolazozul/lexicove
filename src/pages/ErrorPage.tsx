@@ -1,6 +1,6 @@
 import { useRouteError } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { RefreshCw, TriangleAlert } from 'lucide-react'
+import { RefreshCw, TriangleAlert } from '../components/icons'
 import { isChunkError } from '../lib/reload'
 
 /** What a crashed screen shows instead of the router's developer message. */

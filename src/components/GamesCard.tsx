@@ -1,6 +1,6 @@
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight } from './icons'
 import { GAMES } from '../lib/games'
 import { Card } from './ui'
 

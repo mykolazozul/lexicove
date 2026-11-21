@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { ArrowRight, BookOpen, Flame, Layers, Lock } from 'lucide-react'
+import { ArrowRight, BookOpen, Flame, Layers, Lock } from '../components/icons'
 import { MODES } from '../app/modes'
 import { GamesCard } from '../components/GamesCard'
 import { GuestNotice } from '../components/GuestNotice'

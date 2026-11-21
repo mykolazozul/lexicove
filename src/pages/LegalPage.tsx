@@ -1,6 +1,6 @@
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft } from '../components/icons'
 import { Logo } from '../components/Logo'
 import { Card } from '../components/ui'
 import { REPO_URL } from '../lib/platform'

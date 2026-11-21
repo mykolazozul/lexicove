@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { CornerDownLeft, Delete, Eye, SkipForward } from 'lucide-react'
+import { CornerDownLeft, Delete, Eye, SkipForward } from '../icons'
 import { Card } from '../ui'
 import { GameBar } from './QuizGames'
 import { useSound } from '../../lib/cosmetics'

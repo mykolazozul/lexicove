@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AlertTriangle, Info, Loader2, Plus, RefreshCw, Unplug, X } from 'lucide-react'
+import { AlertTriangle, Info, Loader2, Plus, RefreshCw, Unplug, X } from '../icons'
 import { canConnectHere, notionCall, notionRedirectUri } from '../../lib/notion'
 import { useLibrary, type Source } from '../../stores/library'
 import { BrandIcon } from '../BrandIcon'

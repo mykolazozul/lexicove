@@ -1,6 +1,6 @@
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { ArrowRight, Coins, Flame, Lock, Sparkles, Target, Trophy } from 'lucide-react'
+import { ArrowRight, Coins, Flame, Lock, Sparkles, Target, Trophy } from '../components/icons'
 import { BrandIcon } from '../components/BrandIcon'
 import { GamesCard } from '../components/GamesCard'
 import { ChestCard, QuestsCard } from '../components/home/Rewards'
@@ -204,7 +204,7 @@ function StreakCard({ streak, locale, activeDays }: { streak: number; locale: st
             >
               <Flame className="size-3.5" />
             </span>
-            <span className={cx('text-[0.7rem] font-semibold uppercase', day.isToday ? 'text-fg' : 'text-subtle')}>
+            <span className={cx('text-xs font-semibold uppercase', day.isToday ? 'text-fg' : 'text-subtle')}>
               {day.label}
             </span>
           </li>

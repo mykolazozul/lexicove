@@ -11,7 +11,7 @@ import {
   Sparkles,
   TextCursorInput,
   type LucideIcon,
-} from 'lucide-react'
+} from '../components/icons'
 import type { ChipTone } from '../components/ui'
 import type { Mode } from '../lib/study'
 

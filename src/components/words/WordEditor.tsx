@@ -1,6 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Loader2, Trash2 } from 'lucide-react'
+import { Loader2, Trash2 } from '../icons'
 import { useLibrary, type Rule, type Word } from '../../stores/library'
 import { confirmDialog } from '../Confirm'
 import { Field, Modal } from '../Modal'

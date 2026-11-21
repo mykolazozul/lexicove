@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'motion/react'
-import { Coins, Flame, Settings, Shield, Sparkles, Zap, type LucideIcon } from 'lucide-react'
+import { Coins, Flame, Settings, Shield, Sparkles, Zap, type LucideIcon } from './icons'
 import { isAdmin } from '../lib/admin'
 import { NAV, type NavKey } from '../app/nav'
 import { community } from '../lib/community'
@@ -170,7 +170,7 @@ function SidebarLink({ to, icon: Icon, label }: { to: string; icon: LucideIcon; 
       end={to === '/'}
       className={({ isActive }) =>
         cx(
-          'group relative flex items-center gap-3 rounded-control px-3 py-2.5 text-[0.95rem] font-medium transition-colors',
+          'group relative flex items-center gap-3 rounded-control px-3 py-2.5 text-sm font-medium transition-colors',
           isActive ? 'text-fg' : 'text-muted hover:bg-surface hover:text-fg',
         )
       }
@@ -285,7 +285,7 @@ function BottomBar() {
               end={to === '/'}
               className={({ isActive }) =>
                 cx(
-                  'flex h-full flex-col items-center justify-center gap-1 text-[0.68rem] font-semibold transition-colors',
+                  'flex h-full flex-col items-center justify-center gap-1 text-xs font-semibold transition-colors',
                   isActive ? 'text-fg' : 'text-subtle',
                 )
               }

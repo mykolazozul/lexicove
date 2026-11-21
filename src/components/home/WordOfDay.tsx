@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { ArrowRight, BookmarkPlus, Check, Eye, Loader2, Sparkles, Volume2 } from 'lucide-react'
+import { ArrowRight, BookmarkPlus, Check, Eye, Loader2, Sparkles, Volume2 } from '../icons'
 import { canSpeak, speak } from '../../lib/speech'
 import { makeCloze, sentencesOf } from '../../lib/study'
 import { supabase } from '../../lib/supabase'

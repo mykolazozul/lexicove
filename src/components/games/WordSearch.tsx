@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Check, Clock } from 'lucide-react'
+import { Check, Clock } from '../icons'
 import { Card } from '../ui'
 import { GameBar } from './QuizGames'
 import { useSound } from '../../lib/cosmetics'

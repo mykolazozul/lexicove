@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Check, Loader2 } from 'lucide-react'
+import { Check, Loader2 } from '../icons'
 import { FIELDS, READABLE_TYPES, type Kind } from '../../../supabase/functions/notion/mapping'
 import { track } from '../../lib/analytics'
 import { cx } from '../../lib/cx'

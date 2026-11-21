@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { BadgeCheck, Crown, Volume2 } from 'lucide-react'
+import { BadgeCheck, Crown, Volume2 } from './icons'
 import type { ReactNode } from 'react'
 import { cx } from '../lib/cx'
 import { play, type Pack } from '../lib/sounds'
@@ -68,7 +68,7 @@ export function VerifiedBadge({ className }: { className?: string }) {
   const { t } = useTranslation()
   return (
     <span className={cx('inline-flex shrink-0', className)} title={t('profile.verified')} role="img" aria-label={t('profile.verified')}>
-      <BadgeCheck className="size-[1.15em] fill-[#1d9bf0] text-white" strokeWidth={2.4} />
+      <BadgeCheck weight="fill" className="size-[1.15em] text-[#1d9bf0]" />
     </span>
   )
 }

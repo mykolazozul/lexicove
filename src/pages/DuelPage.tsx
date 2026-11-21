@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState, type Dispatch, type SetStateA
 import { Link, useNavigate, useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { AnimatePresence, motion } from 'motion/react'
-import { ArrowLeft, Bot, Check, Clock, Coins, Loader2, RotateCcw, Swords, Trophy, X } from 'lucide-react'
+import { ArrowLeft, Bot, Check, Clock, Coins, Loader2, RotateCcw, Swords, Trophy, X } from '../components/icons'
 import { Confetti } from '../components/Confetti'
 import { errorText, PersonAvatar, PersonName } from '../components/community/People'
 import { StakeLine } from '../components/community/StakeLine'

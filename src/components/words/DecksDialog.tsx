@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Check, Loader2 } from 'lucide-react'
+import { Check, Loader2 } from '../icons'
 import { addDeck, DECKS, fetchDecks, type DeckId, type DeckInfo } from '../../lib/decks'
 import { useLibrary } from '../../stores/library'
 import { Modal } from '../Modal'
