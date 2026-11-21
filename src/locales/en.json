@@ -87,21 +87,6 @@
       "feelings": "Feelings"
     }
   },
-  "soon": {
-    "badge": "In progress",
-    "planned": "What's coming",
-    "games": {
-      "title": "Games",
-      "text": "Quick memory and speed games built from your own words.",
-      "features": [
-        "Match pairs and a 60-second speed round",
-        "Word rain: type each word before it lands",
-        "Hangman, Wordle and crosswords from your words",
-        "Word search and anagrams",
-        "True or false blitz"
-      ]
-    }
-  },
   "profile": {
     "guestTitle": "You're in guest mode",
     "guestText": "Create an account to keep your progress on every device and unlock chat, duels and leagues.",
@@ -265,6 +250,123 @@
       "opponentPlayed": "Your opponent has already played their part.",
       "start": "Start",
       "waiting": "Your score is saved. Your opponent has until {{date}} to play."
+    }
+  },
+  "games": {
+    "title": "Games",
+    "subtitle": "Nine word games for speed, logic and memory. Best scores stay on this device.",
+    "cardTitle": "Word games",
+    "cardText": "Pairs, Wordle, a crossword, word rain and five more, on your own words or the starter decks.",
+    "cardCta": "Play",
+    "source": "Words for the games",
+    "mine_one": "Mine ({{count}})",
+    "mine_other": "Mine ({{count}})",
+    "deck": "Starter decks",
+    "level": "Level",
+    "noBest": "Not played yet",
+    "usesDeck": "Uses the decks",
+    "all": "All games",
+    "best": "Best: {{score}}",
+    "newBest": "New best!",
+    "start": "Start",
+    "again": "Play again",
+    "fromMine_one": "Played on your words ({{count}})",
+    "fromMine_other": "Played on your words ({{count}})",
+    "fromDeck_one": "Words from the starter decks ({{count}})",
+    "fromDeck_other": "Words from the starter decks ({{count}})",
+    "notEnough": "Not enough words for this game. Add a few more or pick the starter decks.",
+    "points_one": "{{count}} point",
+    "points_other": "{{count}} points",
+    "seconds_one": "{{count}} second",
+    "seconds_other": "{{count}} seconds",
+    "round": "Round {{n}} of {{total}}",
+    "mistakes_one": "{{count}} mistake",
+    "mistakes_other": "{{count}} mistakes",
+    "hint": "Hint",
+    "showHint": "Show the translation",
+    "skip": "Skip",
+    "enter": "Enter",
+    "erase": "Erase",
+    "items": {
+      "pairs": {
+        "name": "Match the pairs",
+        "short": "Match words with their translations, fast.",
+        "rules": "Three boards of six pairs. Tap a word, then its translation. The time counts, and every slip adds 3 seconds."
+      },
+      "speed": {
+        "name": "Speed round",
+        "short": "How many translations in 60 seconds?",
+        "rules": "Pick the right translation out of four. One minute in all; keys 1–4 work too."
+      },
+      "rain": {
+        "name": "Word rain",
+        "short": "Type the word before it lands.",
+        "rules": "Translations fall from the top. Type the English word to catch one. Three misses and it’s over, and the rain keeps speeding up."
+      },
+      "hangman": {
+        "name": "Hangman",
+        "short": "Guess the word letter by letter from a hint.",
+        "rules": "The translation is your hint. Guess letters before the drawing is done: six mistakes a word. It goes on until you lose."
+      },
+      "wordle": {
+        "name": "Wordle",
+        "short": "Five letters, six tries.",
+        "rules": "Green: the right letter in the right place. Yellow: in the word, but elsewhere. Guess it and the next word comes; your streak counts."
+      },
+      "crossword": {
+        "name": "Crossword",
+        "short": "The clues are translations; fill in the English.",
+        "rules": "Tap a square and type. Tap it again to switch direction. The time counts, and every hint adds 15 seconds."
+      },
+      "search": {
+        "name": "Word search",
+        "short": "Find the words hidden in a square of letters.",
+        "rules": "Words hide across, down and diagonally. Tap a word’s first letter, then its last. The time counts."
+      },
+      "anagrams": {
+        "name": "Anagrams",
+        "short": "Unscramble the letters into a word.",
+        "rules": "Ten words, 10 points each and up to 5 more for speed. Type on your keyboard or tap the letters."
+      },
+      "truefalse": {
+        "name": "True or false",
+        "short": "A blitz: is the translation right?",
+        "rules": "For a minute, say whether each translation is right. A right call is +1, a wrong one −1. The ← and → keys work too."
+      }
+    },
+    "truefalse": {
+      "true": "True",
+      "false": "False",
+      "actually": "Actually: {{translation}}"
+    },
+    "hangman": {
+      "solved_one": "{{count}} word guessed",
+      "solved_other": "{{count}} words guessed",
+      "lives_one": "{{count}} try left",
+      "lives_other": "{{count}} tries left"
+    },
+    "wordle": {
+      "streak_one": "Streak: {{count}} word",
+      "streak_other": "Streak: {{count}} words",
+      "answer": "The word was"
+    },
+    "rain": {
+      "lives_one": "{{count}} life",
+      "lives_other": "{{count}} lives",
+      "missed": "Missed",
+      "placeholder": "Type the English word…"
+    },
+    "crossword": {
+      "failed": "Couldn’t build a crossword from these words. Try again or pick other words.",
+      "hint": "Letter",
+      "check": "Check",
+      "across": "Across",
+      "down": "Down",
+      "cell": "A square of word {{number}}"
+    },
+    "search": {
+      "found": "{{found}} of {{total}} found",
+      "how": "Tap the first letter of a word, then its last."
     }
   },
   "onboarding": {

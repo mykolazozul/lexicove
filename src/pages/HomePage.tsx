@@ -2,6 +2,7 @@ import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { ArrowRight, Coins, Flame, Lock, Sparkles, Target, Trophy } from 'lucide-react'
 import { BrandIcon } from '../components/BrandIcon'
+import { GamesCard } from '../components/GamesCard'
 import { ChestCard, QuestsCard } from '../components/home/Rewards'
 import { WordOfDayCard } from '../components/home/WordOfDay'
 import { Card, IconChip, ProgressRing, Reveal, type ChipTone } from '../components/ui'
@@ -98,9 +99,12 @@ export function HomePage() {
         </div>
       </Reveal>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Reveal delay={0.17}>
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <Reveal delay={0.17} className="md:col-span-2 lg:col-span-1">
           <WordOfDayCard />
+        </Reveal>
+        <Reveal delay={0.18}>
+          <GamesCard />
         </Reveal>
         <Reveal delay={0.19}>
           <Card className="flex h-full flex-col">

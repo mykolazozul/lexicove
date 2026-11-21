@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { ArrowRight, BookOpen, Flame, Layers, Lock } from 'lucide-react'
 import { MODES } from '../app/modes'
+import { GamesCard } from '../components/GamesCard'
 import { GuestNotice } from '../components/GuestNotice'
 import { Card, IconChip, ProgressRing, Reveal } from '../components/ui'
 import { cx } from '../lib/cx'
@@ -145,6 +146,10 @@ export function LearnPage() {
             )
           })}
         </div>
+      </Reveal>
+
+      <Reveal delay={0.15}>
+        <GamesCard />
       </Reveal>
     </div>
   )

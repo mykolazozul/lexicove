@@ -23,16 +23,10 @@ export const NAV: NavItem[] = [
   { key: 'home', to: '/', icon: House, inBottomBar: true },
   { key: 'learn', to: '/learn', icon: GraduationCap, inBottomBar: true },
   { key: 'words', to: '/words', icon: BookOpen, inBottomBar: true },
+  // On phones the games open from the Learn page.
   { key: 'games', to: '/games', icon: Gamepad2, inBottomBar: false },
   // On phones the shop opens from the Coins pill in the top bar.
   { key: 'shop', to: '/shop', icon: ShoppingBag, inBottomBar: false },
   { key: 'community', to: '/community', icon: Users, inBottomBar: true },
   { key: 'profile', to: '/profile', icon: UserRound, inBottomBar: true },
 ]
-
-/** Sections that are planned but not built yet, with the phase from SPEC.md that delivers them. */
-export const UPCOMING = {
-  games: { phase: 6, icon: Gamepad2 },
-} as const
-
-export type UpcomingKey = keyof typeof UPCOMING

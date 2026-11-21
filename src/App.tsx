@@ -7,7 +7,6 @@ import { LogoMark } from './components/Logo'
 import { syncAccountLocale } from './lib/accountLocale'
 import { pageOf, track } from './lib/analytics'
 import i18n from './lib/i18n'
-import { ComingSoonPage } from './pages/ComingSoonPage'
 import { HomePage } from './pages/HomePage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { WelcomePage } from './pages/WelcomePage'
@@ -26,6 +25,8 @@ const ProfilePage = page(() => import('./pages/ProfilePage'), 'ProfilePage')
 const SettingsPage = page(() => import('./pages/SettingsPage'), 'SettingsPage')
 const CommunityPage = page(() => import('./pages/CommunityPage'), 'CommunityPage')
 const DuelPage = page(() => import('./pages/DuelPage'), 'DuelPage')
+const GamesPage = page(() => import('./pages/GamesPage'), 'GamesPage')
+const GamePage = page(() => import('./pages/GamePage'), 'GamePage')
 const WordsPage = page(() => import('./pages/WordsPage'), 'WordsPage')
 const NotionCallbackPage = page(() => import('./pages/NotionCallbackPage'), 'NotionCallbackPage')
 const LegalPage = page(() => import('./pages/LegalPage'), 'LegalPage')
@@ -48,7 +49,8 @@ const router = createBrowserRouter([
       { path: 'learn/:mode', element: <Lazy><SessionPage /></Lazy> },
       { path: 'words', element: <Lazy><WordsPage /></Lazy> },
       { path: 'notion/callback', element: <Lazy><NotionCallbackPage /></Lazy> },
-      { path: 'games', element: <ComingSoonPage section="games" /> },
+      { path: 'games', element: <Lazy><GamesPage /></Lazy> },
+      { path: 'games/:id', element: <Lazy><GamePage /></Lazy> },
       { path: 'shop', element: <Lazy><ShopPage /></Lazy> },
       { path: 'community', element: <Lazy><CommunityPage /></Lazy> },
       { path: 'duel/:id', element: <Lazy><DuelPage /></Lazy> },

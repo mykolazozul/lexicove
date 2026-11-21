@@ -46,7 +46,7 @@
   with coin stakes, one-click rematches, invites that pop up anywhere in the app, and a free
   weekly single-elimination tournament with prizes.
 
-Games arrive in phase 6. See the roadmap in [SPEC.md](SPEC.md#16-етапи).
+- **Phase 6, games:** nine word games on your own words or the starter decks (guests too): match the pairs, speed round, word rain, hangman, Wordle, crossword, word search, anagrams and true or false, with best scores on the device. Desktop features (word on the desktop, hotkey, tray) come next. See the roadmap in [SPEC.md](SPEC.md#16-етапи).
 
 ## Features (planned)
 
