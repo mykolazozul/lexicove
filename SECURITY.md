@@ -39,7 +39,7 @@ The code is public, so the app assumes anyone can read it and call the API direc
   a username. The verified badge is a server-managed column that only the owner can set through
   `admin_set_verified`, which is audited.
 - **Sign-up is confirmed with a one-time code** from the email, entered on the same page; the
-  code expires after an hour.
+  code expires after 15 minutes.
 - **Password resets use a one-time code too.** The page answers the same way whether or not an
   account exists, so nobody can probe addresses, and saving the new password signs the account
   out on every other device. Changing the password in Settings asks for the same emailed code,
