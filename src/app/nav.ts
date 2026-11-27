@@ -23,12 +23,12 @@ export type NavItem = {
 
 export const NAV: NavItem[] = [
   { key: 'home', to: '/', icon: House, inBottomBar: true },
-  { key: 'learn', to: '/learn', icon: GraduationCap, inBottomBar: true, also: ['/games'] },
+  { key: 'learn', to: '/learn', icon: GraduationCap, inBottomBar: true },
   { key: 'words', to: '/words', icon: BookOpen, inBottomBar: true },
-  // On phones the games open from the Learn page.
-  { key: 'games', to: '/games', icon: Gamepad2, inBottomBar: false },
+  { key: 'games', to: '/games', icon: Gamepad2, inBottomBar: true },
   // On phones the shop opens from the Coins pill in the top bar.
   { key: 'shop', to: '/shop', icon: ShoppingBag, inBottomBar: false },
-  { key: 'community', to: '/community', icon: Users, inBottomBar: true },
-  { key: 'profile', to: '/profile', icon: UserRound, inBottomBar: true },
+  { key: 'community', to: '/community', icon: Users, inBottomBar: true, also: ['/decks'] },
+  // On phones the profile opens from the avatar in the top bar.
+  { key: 'profile', to: '/profile', icon: UserRound, inBottomBar: false },
 ]

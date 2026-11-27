@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { BellRing, Check, ChevronRight, Coins, Download, ExternalLink, Keyboard, Lock, LogIn, LogOut, Monitor, Moon, Power, RefreshCw, Shield, Sparkles, Swords, Volume2, type LucideIcon } from '../components/icons'
+import { BellRing, Check, ChevronRight, Coins, Download, ExternalLink, Keyboard, Lock, LogIn, LogOut, Monitor, Moon, Power, RefreshCw, Shield, Sparkles, Swords, Vibrate, Volume2, type LucideIcon } from '../components/icons'
 import { isAdmin } from '../lib/admin'
 import { siGithub } from 'simple-icons'
 import { DisplayNameCard, UsernameCard } from '../components/community/FriendsView'
@@ -9,7 +9,7 @@ import { confirmDialog } from '../components/Confirm'
 import { PasswordCard } from '../components/PasswordCard'
 import { ThemePreview } from '../components/cosmetics'
 import { Card, Reveal, SectionTitle, Segmented, Switch } from '../components/ui'
-import { useOwnedThemes } from '../lib/cosmetics'
+import { canVibrate, useOwnedThemes } from '../lib/cosmetics'
 import { cx } from '../lib/cx'
 import { LOCALES, LOCALE_NAMES } from '../lib/locale'
 import {
@@ -18,6 +18,7 @@ import {
   DESKTOP_RELEASES_URL,
   installUpdate,
   onUpdate,
+  setHotkey,
   setStartsWithSystem,
   startsWithSystem,
   updateStatus,
@@ -43,7 +44,7 @@ export function SettingsPage() {
   const navigate = useNavigate()
   const viewer = useViewer()
   const signOut = useAuth((s) => s.signOut)
-  const { theme, setTheme, analytics, setAnalytics, sounds, setSounds, locale, setLocale, setDailyGoal, timeFormat, setTimeFormat } =
+  const { theme, setTheme, analytics, setAnalytics, sounds, setSounds, vibration, setVibration, locale, setLocale, setDailyGoal, timeFormat, setTimeFormat } =
     useSettings()
   const saveDailyGoal = useProfile((s) => s.setDailyGoal)
   const owned = useOwnedThemes()
@@ -117,6 +118,16 @@ export function SettingsPage() {
               </div>
               <Switch checked={sounds} onChange={setSounds} label={t('settings.sounds')} />
             </div>
+            {canVibrate && (
+              <div className="flex items-center gap-4 border-t border-line pt-5">
+                <Vibrate className="size-5 shrink-0 text-muted" />
+                <div className="min-w-0 flex-1">
+                  <div className="font-semibold">{t('settings.vibration')}</div>
+                  <p className="mt-0.5 text-sm text-muted">{t('settings.vibrationHint')}</p>
+                </div>
+                <Switch checked={vibration} onChange={setVibration} label={t('settings.vibration')} />
+              </div>
+            )}
             {!viewer.isGuest && <ReminderSetting />}
           </Card>
         </section>
@@ -368,12 +379,53 @@ function DesktopSettings({ signedIn }: { signedIn: boolean }) {
                 <div className="font-semibold">{t('settings.desktop.hotkey')}</div>
                 <p className="mt-0.5 text-sm text-muted">{t('settings.desktop.hotkeyHint')}</p>
               </div>
-              <kbd className="rounded-md border border-line bg-surface px-2 py-1 text-xs font-semibold">Ctrl Shift E</kbd>
+              <HotkeyPicker />
             </div>
           )}
         </Card>
       </section>
     </Reveal>
+  )
+}
+
+/** Ctrl+Shift plus a letter or digit the user presses; the desktop app re-registers it at once. */
+function HotkeyPicker() {
+  const { t } = useTranslation()
+  const hotkey = useSettings((s) => s.hotkey)
+  const saveHotkey = useSettings((s) => s.setHotkey)
+  const [listening, setListening] = useState(false)
+
+  useEffect(() => {
+    if (!listening) return
+    function onKey(event: KeyboardEvent) {
+      event.preventDefault()
+      if (event.key === 'Escape') {
+        setListening(false)
+        return
+      }
+      const key = /^(Key|Digit)([A-Z0-9])$/.exec(event.code)?.[2]
+      if (!key) return
+      setListening(false)
+      void setHotkey(key)
+        .then(() => {
+          saveHotkey(key)
+          toast(t('settings.desktop.hotkeySaved', { keys: `Ctrl Shift ${key}` }))
+        })
+        .catch(() => toast(t('settings.desktop.hotkeyTaken', { keys: `Ctrl Shift ${key}` }), 'error'))
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [listening, saveHotkey, t])
+
+  return (
+    <div className="flex shrink-0 flex-col items-end gap-1.5">
+      <kbd className="rounded-md border border-line bg-surface px-2 py-1 text-xs font-semibold">
+        {listening ? t('settings.desktop.hotkeyPress') : `Ctrl Shift ${hotkey}`}
+      </kbd>
+      <button type="button" className="btn btn-ghost h-8 px-2.5 text-xs" onClick={() => setListening((on) => !on)}>
+        {listening ? t('common.cancel') : t('settings.desktop.hotkeyChange')}
+      </button>
+    </div>
   )
 }
 
@@ -414,6 +466,12 @@ function DesktopUpdate() {
           <p className="mt-0.5 text-sm text-muted" aria-live="polite">
             {line}
           </p>
+          {status.notes && (status.state === 'ready' || status.state === 'downloading') && (
+            <div className="mt-3 rounded-control border border-line bg-surface p-3">
+              <div className="text-xs font-semibold tracking-wide text-subtle uppercase">{t('settings.desktop.update.whatsNew')}</div>
+              <p className="mt-1 text-sm whitespace-pre-line">{status.notes}</p>
+            </div>
+          )}
         </div>
       </div>
       {status.state === 'ready' ? (

@@ -7,7 +7,7 @@ import { persist } from 'zustand/middleware'
 import { shuffle, type StudyWord } from './study'
 import { supabase } from './supabase'
 
-export type GameId = 'pairs' | 'speed' | 'rain' | 'hangman' | 'wordle' | 'crossword' | 'search' | 'anagrams' | 'truefalse'
+export type GameId = 'pairs' | 'speed' | 'rain' | 'balloons' | 'wordle' | 'crossword' | 'search' | 'anagrams' | 'truefalse'
 
 export type GameMeta = {
   id: GameId
@@ -24,7 +24,7 @@ export const GAMES: GameMeta[] = [
   { id: 'pairs', emoji: '🧩', better: 'lower', needs: 6 },
   { id: 'speed', emoji: '⚡', better: 'higher', needs: 4 },
   { id: 'rain', emoji: '🌧️', better: 'higher', needs: 6 },
-  { id: 'hangman', emoji: '🪢', better: 'higher', needs: 3, letters: [3, 12] },
+  { id: 'balloons', emoji: '🎈', better: 'higher', needs: 3, letters: [3, 12] },
   { id: 'wordle', emoji: '🟩', better: 'higher', needs: 1, letters: [5, 5] },
   { id: 'crossword', emoji: '✏️', better: 'lower', needs: 6, letters: [3, 10] },
   { id: 'search', emoji: '🔎', better: 'lower', needs: 6, letters: [3, 9] },
@@ -115,7 +115,19 @@ export const useGames = create<GamesState>()(
         return better
       },
     }),
-    { name: 'lexicove-games' },
+    {
+      name: 'lexicove-games',
+      version: 1,
+      // Balloons took the place of the old letter-guessing game; its best score carries over.
+      migrate: (state, version) => {
+        const saved = state as { best?: Record<string, number> }
+        if (version < 1 && saved.best && 'hangman' in saved.best) {
+          const { hangman, ...rest } = saved.best
+          saved.best = { ...rest, balloons: hangman }
+        }
+        return saved as GamesState
+      },
+    },
   ),
 )
 

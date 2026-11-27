@@ -27,6 +27,8 @@ type SettingsState = {
   analytics: boolean
   /** Short sounds for answers, coins and level-ups (src/lib/sounds.ts). */
   sounds: boolean
+  /** A short buzz for right and wrong answers on phones that can (src/lib/cosmetics.ts). */
+  vibration: boolean
   /** 19:00 or 7:00 PM; "auto" follows the device (src/lib/time.ts). */
   timeFormat: TimeFormat
   locale: Locale
@@ -38,16 +40,20 @@ type SettingsState = {
   cardEvery: number
   /** Desktop app: no cards for now. */
   quiet: boolean
+  /** Desktop app: the key of the add-a-word hotkey, with Ctrl+Shift. */
+  hotkey: string
   setTheme: (theme: ThemeChoice) => void
   setAppleStyle: (appleStyle: boolean) => void
   setAnalytics: (analytics: boolean) => void
   setSounds: (sounds: boolean) => void
+  setVibration: (vibration: boolean) => void
   setTimeFormat: (timeFormat: TimeFormat) => void
   setLocale: (locale: Locale) => void
   setDailyGoal: (dailyGoal: number) => void
   setOnboarded: (onboarded: boolean) => void
   setCardEvery: (minutes: number) => void
   setQuiet: (quiet: boolean) => void
+  setHotkey: (hotkey: string) => void
 }
 
 // The storage key is also read by public/theme-init.js before React loads.
@@ -58,36 +64,42 @@ export const useSettings = create<SettingsState>()(
       appleStyle: true,
       analytics: true,
       sounds: true,
+      vibration: true,
       timeFormat: 'auto',
       locale: detectLocale(),
       dailyGoal: 20,
       onboarded: false,
       cardEvery: 30,
       quiet: false,
+      hotkey: 'E',
       setTheme: (theme) => set({ theme }),
       setAppleStyle: (appleStyle) => set({ appleStyle }),
       setAnalytics: (analytics) => set({ analytics }),
       setSounds: (sounds) => set({ sounds }),
+      setVibration: (vibration) => set({ vibration }),
       setTimeFormat: (timeFormat) => set({ timeFormat }),
       setLocale: (locale) => set({ locale }),
       setDailyGoal: (dailyGoal) => set({ dailyGoal }),
       setOnboarded: (onboarded) => set({ onboarded }),
       setCardEvery: (cardEvery) => set({ cardEvery }),
       setQuiet: (quiet) => set({ quiet }),
+      setHotkey: (hotkey) => set({ hotkey }),
     }),
     {
       name: 'lexicove-settings',
-      partialize: ({ theme, appleStyle, analytics, sounds, timeFormat, locale, dailyGoal, onboarded, cardEvery, quiet }) => ({
+      partialize: ({ theme, appleStyle, analytics, sounds, vibration, timeFormat, locale, dailyGoal, onboarded, cardEvery, quiet, hotkey }) => ({
         theme,
         appleStyle,
         analytics,
         sounds,
+        vibration,
         timeFormat,
         locale,
         dailyGoal,
         onboarded,
         cardEvery,
         quiet,
+        hotkey,
       }),
     },
   ),

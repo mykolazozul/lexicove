@@ -29,6 +29,8 @@ pub struct UpdateStatus {
     version: Option<String>,
     percent: Option<u8>,
     error: Option<String>,
+    /// What the new version brings, from the release notes.
+    notes: Option<String>,
 }
 
 #[derive(Default)]
@@ -36,6 +38,7 @@ pub struct Updates {
     status: Mutex<Option<UpdateStatus>>,
     ready: Mutex<Option<(Update, Vec<u8>)>>,
     busy: Mutex<bool>,
+    notes: Mutex<Option<String>>,
 }
 
 fn enabled() -> bool {
@@ -43,7 +46,8 @@ fn enabled() -> bool {
 }
 
 fn set(app: &AppHandle, state: &'static str, version: Option<String>, percent: Option<u8>, error: Option<String>) {
-    let status = UpdateStatus { state, current: app.package_info().version.to_string(), version, percent, error };
+    let notes = app.state::<Updates>().notes.lock().unwrap().clone();
+    let status = UpdateStatus { state, current: app.package_info().version.to_string(), version, percent, error, notes };
     *app.state::<Updates>().status.lock().unwrap() = Some(status.clone());
     let _ = app.emit("lexicove-update", status);
 }
@@ -55,6 +59,7 @@ pub fn status(app: &AppHandle) -> UpdateStatus {
         version: None,
         percent: None,
         error: None,
+        notes: None,
     })
 }
 
@@ -89,6 +94,7 @@ async fn fetch(app: &AppHandle) -> Result<(), tauri_plugin_updater::Error> {
         return Ok(());
     };
     let version = update.version.clone();
+    *app.state::<Updates>().notes.lock().unwrap() = update.body.clone().map(|notes| notes.trim().to_string()).filter(|notes| !notes.is_empty());
     set(app, "downloading", Some(version.clone()), Some(0), None);
 
     let mut received = 0u64;

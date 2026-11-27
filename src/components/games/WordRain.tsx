@@ -145,6 +145,7 @@ export function WordRain({ words, onFinish }: GameProps) {
           autoComplete="off"
           autoCorrect="off"
           autoCapitalize="off"
+          enterKeyHint="done"
           spellCheck={false}
           lang="en"
           aria-label={t('games.rain.placeholder')}

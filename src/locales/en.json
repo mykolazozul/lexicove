@@ -303,10 +303,10 @@
         "short": "Type the word before it lands.",
         "rules": "Translations fall from the top. Type the English word to catch one. Three misses and it’s over, and the rain keeps speeding up."
       },
-      "hangman": {
-        "name": "Hangman",
-        "short": "Guess the word letter by letter from a hint.",
-        "rules": "The translation is your hint. Guess letters before the drawing is done: six mistakes a word. It goes on until you lose."
+      "balloons": {
+        "name": "Balloons",
+        "short": "Keep the parcel in the air: guess the word letter by letter.",
+        "rules": "A parcel hangs on six balloons and the translation is your hint. Every wrong letter lets a balloon fly away. Guess the word and the parcel floats on to the next one; it goes on until a parcel lands."
       },
       "wordle": {
         "name": "Wordle",
@@ -339,11 +339,13 @@
       "false": "False",
       "actually": "Actually: {{translation}}"
     },
-    "hangman": {
-      "solved_one": "{{count}} word guessed",
-      "solved_other": "{{count}} words guessed",
-      "lives_one": "{{count}} try left",
-      "lives_other": "{{count}} tries left"
+    "balloons": {
+      "solved_one": "{{count}} parcel delivered",
+      "solved_other": "{{count}} parcels delivered",
+      "left_one": "{{count}} balloon left",
+      "left_other": "{{count}} balloons left",
+      "away": "Up it goes! Next parcel.",
+      "grounded": "The parcel landed. Here is the word."
     },
     "wordle": {
       "streak_one": "Streak: {{count}} word",
@@ -366,7 +368,7 @@
     },
     "search": {
       "found": "{{found}} of {{total}} found",
-      "how": "Tap the first letter of a word, then its last."
+      "how": "Draw a line across a word with your finger, or tap its first letter and then its last."
     }
   },
   "crash": {
@@ -436,6 +438,8 @@
     "dailyGoalHint": "Answers per day. Reaching it pays +20 Coins and +50 XP.",
     "sounds": "Sounds",
     "soundsHint": "Short cues for answers, Coins and new levels. The sound set can be changed in the shop.",
+    "vibration": "Vibration",
+    "vibrationHint": "A short buzz for right and wrong answers in lessons and games.",
     "password": {
       "title": "Password",
       "hint": "Changed with a code we email you.",
@@ -465,6 +469,7 @@
         "disabled": "This build does not update itself. Get the newest one from the website.",
         "check": "Check for updates",
         "install": "Restart and update",
+        "whatsNew": "What's new",
         "toast": "A new version of the app is ready. Restart it in Settings."
       },
       "download": {
@@ -484,7 +489,11 @@
       "autostart": "Start with the system",
       "autostartHint": "Lexicove opens quietly in the tray when you turn on the computer.",
       "hotkey": "Add the highlighted word",
-      "hotkeyHint": "Highlight a word in any app and press the keys to save it."
+      "hotkeyHint": "Highlight a word in any app and press the keys to save it.",
+      "hotkeyChange": "Change",
+      "hotkeyPress": "Press a letter or digit",
+      "hotkeySaved": "The hotkey is now {{keys}}.",
+      "hotkeyTaken": "{{keys}} is taken by another program. Try another key."
     },
     "reminders": {
       "word": "Word of the day",
@@ -1033,6 +1042,103 @@
     "doneText": "Go back to the Lexicove app. If it didn’t open, press the button. You can close this tab.",
     "open": "Open Lexicove"
   },
+  "decks": {
+    "title": "Community decks",
+    "text": "Word lists other learners share. Copy one into your words (and your Notion) in one tap, or share your own.",
+    "share": "Share a deck",
+    "shareFirst": "Share the first deck",
+    "signInToShare": "Sign in to share",
+    "signInToCopy": "Sign in to copy",
+    "fromWords": "Community decks",
+    "search": "Search decks",
+    "level": "Level",
+    "more": "Show more",
+    "by": "by {{name}}",
+    "words_one": "{{count}} word",
+    "words_other": "{{count}} words",
+    "likes_one": "{{count}} like",
+    "likes_other": "{{count}} likes",
+    "copies_one": "{{count}} copy",
+    "copies_other": "{{count}} copies",
+    "empty": "No decks here yet. Be the first to share one.",
+    "emptyMine": "You haven't shared a deck yet.",
+    "emptySearch": "Nothing matches that search.",
+    "hiddenShort": "Hidden",
+    "hiddenText": "A moderator hid this deck. Only you and the moderators can see it.",
+    "copy_one": "Copy {{count}} word",
+    "copy_other": "Copy {{count}} words",
+    "copyAgain": "Copy new words again",
+    "copied_one": "{{count}} new word is in your list.",
+    "copied_other": "{{count}} new words are in your list.",
+    "copiedNone": "You already have every word from this deck.",
+    "edit": "Edit",
+    "editTitle": "Edit the deck",
+    "save": "Save",
+    "saved": "Deck saved.",
+    "delete": "Delete",
+    "deleteTitle": "Delete this deck?",
+    "deleteText": "It disappears for everyone. Words people already copied stay in their lists.",
+    "deleted": "Deck deleted.",
+    "hide": "Hide",
+    "show": "Show again",
+    "shareTitle": "Share a deck",
+    "publish_one": "Publish {{count}} word",
+    "publish_other": "Publish {{count}} words",
+    "published": "Your deck is live.",
+    "pickShown": "Pick all shown",
+    "pickNone": "Clear",
+    "filter": "Filter your words",
+    "noWords": "Add some words first, then share them as a deck.",
+    "fields": {
+      "title": "Name",
+      "titleHint": "Travel basics",
+      "description": "Description",
+      "descriptionHint": "What the words are for and who they suit",
+      "words_one": "Words · {{count}} picked",
+      "words_other": "Words · {{count}} picked"
+    },
+    "problems": {
+      "title": "Give the deck a name of 3 to 60 characters.",
+      "description": "The description is too long.",
+      "few": "Pick at least {{min}} words.",
+      "many": "A deck holds up to {{max}} words."
+    },
+    "sort": {
+      "label": "Sort decks",
+      "top": "Top",
+      "new": "New",
+      "mine": "Mine"
+    },
+    "levels": {
+      "all": "All levels",
+      "a1": "A1, beginner",
+      "a2": "A2, elementary",
+      "b1": "B1, intermediate",
+      "b2": "B2, upper intermediate",
+      "c1": "C1, advanced",
+      "mixed": "Mixed"
+    },
+    "levelsShort": {
+      "a1": "A1",
+      "a2": "A2",
+      "b1": "B1",
+      "b2": "B2",
+      "c1": "C1",
+      "mixed": "Mix"
+    },
+    "errors": {
+      "sign_in_first": "Sign in first.",
+      "restricted": "You can't share decks while your account is limited.",
+      "bad_text": "Check the name and the description.",
+      "bad_words": "The name or description has words that aren’t allowed.",
+      "bad_level": "Pick a level.",
+      "word_count": "A deck needs 5 to 300 of your words.",
+      "too_many": "You’ve shared a lot of decks today. Try again tomorrow.",
+      "not_found": "This deck is gone.",
+      "not_allowed": "You can't do that with this deck.",
+      "unknown": "Something went wrong. Please try again."
+    }
+  },
   "errors": {
     "generic": "Something went wrong. Please try again."
   },
@@ -1327,6 +1433,7 @@
     "tabs": {
       "chat": "Chat",
       "duels": "Duels",
+      "decks": "Decks",
       "league": "League",
       "friends": "Friends",
       "moderation": "Moderation"

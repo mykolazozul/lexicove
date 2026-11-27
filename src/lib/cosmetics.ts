@@ -4,14 +4,24 @@ import { useEconomy, useEquipped } from '../stores/economy'
 import { isShopTheme, useSettings, type ShopTheme } from '../stores/settings'
 import { play, type Cue, type Pack } from './sounds'
 
-/** Plays an interface sound in the equipped pack, unless sounds are off in Settings. */
+/** Phones that can buzz: Android browsers and installed apps; iPhones don't allow it. */
+export const canVibrate = typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function'
+
+const BUZZ: Record<Cue, number | number[]> = { correct: 12, wrong: [40, 50, 40], coin: 10, level: [20, 60, 20, 60, 40] }
+
+/**
+ * Plays an interface sound in the equipped pack, and buzzes on phones, unless either is off in
+ * Settings.
+ */
 export function useSound() {
   const enabled = useSettings((s) => s.sounds)
+  const vibration = useSettings((s) => s.vibration)
   const { sound } = useEquipped()
   const pack = (sound?.data.pack as Pack | undefined) ?? 'classic'
   return useCallback((cue: Cue) => {
     if (enabled) play(cue, pack)
-  }, [enabled, pack])
+    if (vibration && canVibrate) navigator.vibrate(BUZZ[cue])
+  }, [enabled, vibration, pack])
 }
 
 /** Shop themes this account owns. */

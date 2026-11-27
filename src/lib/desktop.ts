@@ -38,6 +38,8 @@ export type UpdateStatus = {
   version: string | null
   percent: number | null
   error: string | null
+  /** What the new version brings (the release notes), once one is found. */
+  notes: string | null
 }
 
 export const DESKTOP_DOWNLOAD_URL = 'https://github.com/mykolazozul/lexicove/releases/latest/download/Lexicove-Setup.exe'
@@ -71,4 +73,14 @@ export function onUpdate(callback: (status: UpdateStatus) => void): () => void {
     stopped = true
     stop?.()
   }
+}
+
+/** The key of the add-a-word hotkey, used with Ctrl+Shift (one letter or digit). */
+export function setHotkey(key: string): Promise<unknown> {
+  return isTauri ? invoke('set_hotkey', { key }) : Promise.resolve()
+}
+
+/** A full-screen game, video or presentation is in front: no word cards now. */
+export async function userBusy(): Promise<boolean> {
+  return isTauri ? Boolean(await invoke('user_busy')) : false
 }

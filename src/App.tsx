@@ -29,6 +29,7 @@ const ShopPage = page(() => import('./pages/ShopPage'), 'ShopPage')
 const ProfilePage = page(() => import('./pages/ProfilePage'), 'ProfilePage')
 const SettingsPage = page(() => import('./pages/SettingsPage'), 'SettingsPage')
 const CommunityPage = page(() => import('./pages/CommunityPage'), 'CommunityPage')
+const DecksPage = page(() => import('./pages/DecksPage'), 'DecksPage')
 const DuelPage = page(() => import('./pages/DuelPage'), 'DuelPage')
 const GamesPage = page(() => import('./pages/GamesPage'), 'GamesPage')
 const GamePage = page(() => import('./pages/GamePage'), 'GamePage')
@@ -67,6 +68,8 @@ const router = createBrowserRouter([
       { path: 'games/:id', element: <Lazy><GamePage /></Lazy> },
       { path: 'shop', element: <Lazy><ShopPage /></Lazy> },
       { path: 'community', element: <Lazy><CommunityPage /></Lazy> },
+      // Community decks for everyone, guests too (the Community page itself needs an account).
+      { path: 'decks', element: <Lazy><DecksPage /></Lazy> },
       { path: 'duel/:id', element: <Lazy><DuelPage /></Lazy> },
       { path: 'profile', element: <Lazy><ProfilePage /></Lazy> },
       { path: 'settings', element: <Lazy><SettingsPage /></Lazy> },

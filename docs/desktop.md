@@ -31,9 +31,9 @@ The app is a **frame around the live website**, not a second copy of it. Its win
 | **Start** | A tiny local page ([`src-tauri/shell`](../src-tauri/shell)) checks the connection and goes to the site. Offline, it says so with a "Try again" button and retries by itself when the network comes back. |
 | **One copy** | A second launch only brings the open window forward (single instance plugin). |
 | **Size and place** | Remembered between starts (window state plugin). |
-| **Tray** | Closing the window keeps Lexicove in the tray, so word cards keep coming. Menu: open, word now, quit. |
-| **Word cards** | A small always-on-top window in the bottom-right corner, every 15, 30 or 60 minutes (Settings). |
-| **Hotkey** | Ctrl+Shift+E copies the highlighted text in any app and opens the quick add card. |
+| **Tray** | Closing the window keeps Lexicove in the tray, so word cards keep coming. Menu: open, word now, check for updates, quit. |
+| **Word cards** | A small always-on-top window in the bottom-right corner, every 15, 30 or 60 minutes (Settings). Skipped while a full-screen game, video or presentation is in front. |
+| **Hotkey** | Ctrl+Shift+E (or Ctrl+Shift with another letter or digit, Settings) copies the highlighted text in any app and opens the quick add card. |
 | **Start with the system** | Optional (Settings); starts hidden in the tray. |
 | **Links** | The windows only show the site and the start page. Any other address opens in the default browser (web pages and mail only). Pop-ups are never opened inside the app. |
 | **Updates** | See below. |
@@ -104,10 +104,10 @@ the installer again.
 ### Releasing a new version
 
 ```powershell
-npm run desktop:release 0.3.0
+npm run desktop:release 0.4.0 "Word cards pause during full-screen games. Pick your own hotkey."
 ```
 
-It sets the version in `src-tauri/tauri.conf.json` and `Cargo.toml`, commits, tags `v0.3.0` and
+The text in quotes is optional: it shows up as "What's new" next to "Restart and update" in the app and on the release page. It sets the version in `src-tauri/tauri.conf.json` and `Cargo.toml`, commits, tags `v0.3.0` and
 pushes. The [Desktop release](../.github/workflows/release-desktop.yml) workflow then:
 
 1. creates a draft release;

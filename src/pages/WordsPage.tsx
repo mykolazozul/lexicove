@@ -1,8 +1,8 @@
 import { useDeferredValue, useEffect, useMemo, useState } from 'react'
-import { useLocation, useNavigate, useSearchParams } from 'react-router'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { AnimatePresence, motion } from 'motion/react'
-import { BookOpen, CloudOff, Download, History, Layers, Plus, Search, Upload } from '../components/icons'
+import { BookOpen, Cards, CloudOff, Download, History, Layers, Plus, Search, Upload } from '../components/icons'
 import { GuestNotice } from '../components/GuestNotice'
 import { DecksDialog } from '../components/words/DecksDialog'
 import { ImportDialog } from '../components/words/ImportDialog'
@@ -151,6 +151,12 @@ export function WordsPage() {
               <Layers className="size-4" />
               <span className="hidden sm:inline">{t('words.decks.button')}</span>
             </button>
+          )}
+          {tab === 'words' && (
+            <Link to="/decks" className="btn btn-ghost">
+              <Cards className="size-4" />
+              <span className="hidden sm:inline">{t('decks.fromWords')}</span>
+            </Link>
           )}
           {tab === 'words' && (
             <button type="button" className="btn btn-ghost" onClick={() => setImportOpen(true)}>

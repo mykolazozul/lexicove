@@ -17,7 +17,7 @@ const GAME_COMPONENTS: Record<GameId, ComponentType<GameProps>> = {
   speed: lazy(importFresh(() => import('../components/games/QuizGames').then((m) => ({ default: m.SpeedRound })))),
   truefalse: lazy(importFresh(() => import('../components/games/QuizGames').then((m) => ({ default: m.TrueOrFalse })))),
   anagrams: lazy(importFresh(() => import('../components/games/LetterGames').then((m) => ({ default: m.Anagrams })))),
-  hangman: lazy(importFresh(() => import('../components/games/LetterGames').then((m) => ({ default: m.Hangman })))),
+  balloons: lazy(importFresh(() => import('../components/games/LetterGames').then((m) => ({ default: m.Balloons })))),
   wordle: lazy(importFresh(() => import('../components/games/LetterGames').then((m) => ({ default: m.Wordle })))),
   rain: lazy(importFresh(() => import('../components/games/WordRain').then((m) => ({ default: m.WordRain })))),
   crossword: lazy(importFresh(() => import('../components/games/Crossword').then((m) => ({ default: m.Crossword })))),
@@ -27,6 +27,8 @@ const GAME_COMPONENTS: Record<GameId, ComponentType<GameProps>> = {
 export function GamePage() {
   const { id = '' } = useParams()
   const meta = gameMeta(id)
+  // The old letter-guessing game became Balloons; old links still land on it.
+  if (id === 'hangman') return <Navigate to="/games/balloons" replace />
   if (!meta) return <Navigate to="/games" replace />
   return <GameShell key={meta.id} meta={meta} />
 }

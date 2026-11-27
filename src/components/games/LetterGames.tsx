@@ -37,7 +37,7 @@ function Keyboard({
   states: Map<string, Mark | 'used'>
   onKey: (key: string) => void
   withEnter?: boolean
-  /** Letters already tried can't be pressed again (Hangman). */
+  /** Letters already tried can't be pressed again (Balloons). */
   lockUsed?: boolean
 }) {
   const { t } = useTranslation()
@@ -208,12 +208,16 @@ function AnagramRound({ word, onDone }: { word: GameWord; onDone: (points: numbe
   )
 }
 
-// ---------- Hangman ----------
+// ---------- Balloons ----------
 
-const LIVES = 6
+const BALLOONS = 6
+const BALLOON_COLOURS = ['var(--accent)', 'var(--accent-2)', 'var(--coin)', 'var(--fire)', 'var(--success)', 'var(--xp)']
 
-/** Guess the word letter by letter before the drawing is finished; it goes on until one is missed. */
-export function Hangman({ words, onFinish }: GameProps) {
+/**
+ * A parcel hangs on six balloons. Every wrong letter lets one fly away; guess the word first and
+ * the parcel floats off to the next one. It goes on until a parcel stays on the ground.
+ */
+export function Balloons({ words, onFinish }: GameProps) {
   const { t } = useTranslation()
   const queue = useMemo(() => shuffle(words), [words])
   const [index, setIndex] = useState(0)
@@ -222,9 +226,9 @@ export function Hangman({ words, onFinish }: GameProps) {
   return (
     <div className="flex flex-col gap-4">
       <GameBar>
-        <span>{t('games.hangman.solved', { count: score })}</span>
+        <span>{t('games.balloons.solved', { count: score })}</span>
       </GameBar>
-      <HangmanRound
+      <BalloonsRound
         key={index}
         word={queue[index % queue.length]!}
         onSolved={() => {
@@ -237,22 +241,22 @@ export function Hangman({ words, onFinish }: GameProps) {
   )
 }
 
-function HangmanRound({ word, onSolved, onLost }: { word: GameWord; onSolved: () => void; onLost: () => void }) {
+function BalloonsRound({ word, onSolved, onLost }: { word: GameWord; onSolved: () => void; onLost: () => void }) {
   const { t } = useTranslation()
   const sound = useSound()
   const target = word.word.toUpperCase()
   const [guessed, setGuessed] = useState<Set<string>>(new Set())
   const misses = [...guessed].filter((letter) => !target.includes(letter)).length
   const solved = target.split('').every((letter) => guessed.has(letter))
-  const lost = misses >= LIVES
+  const lost = misses >= BALLOONS
 
   useEffect(() => {
     if (solved) {
-      const timer = setTimeout(onSolved, 900)
+      const timer = setTimeout(onSolved, 1100)
       return () => clearTimeout(timer)
     }
     if (lost) {
-      const timer = setTimeout(onLost, 1600)
+      const timer = setTimeout(onLost, 1800)
       return () => clearTimeout(timer)
     }
   }, [solved, lost, onSolved, onLost])
@@ -269,14 +273,14 @@ function HangmanRound({ word, onSolved, onLost }: { word: GameWord; onSolved: ()
 
   return (
     <Card glow className="flex flex-col items-center gap-5">
-      <Gallows misses={misses} />
+      <BalloonBunch left={BALLOONS - misses} flying={solved} grounded={lost} />
       <div className="flex flex-wrap justify-center gap-1.5">
         {target.split('').map((letter, i) => (
           <span
             key={i}
             className={cx(
               'grid h-11 w-9 place-items-center border-b-2 font-display text-2xl font-bold',
-              lost && !guessed.has(letter) ? 'border-danger text-danger' : solved ? 'border-success text-success' : 'border-line',
+              lost && !guessed.has(letter) ? 'border-accent text-accent' : solved ? 'border-success text-success' : 'border-line',
             )}
           >
             {guessed.has(letter) || lost ? letter : ''}
@@ -284,7 +288,9 @@ function HangmanRound({ word, onSolved, onLost }: { word: GameWord; onSolved: ()
         ))}
       </div>
       <Hint word={word} />
-      <p className="text-sm text-muted">{t('games.hangman.lives', { count: LIVES - misses })}</p>
+      <p className="text-sm text-muted" aria-live="polite">
+        {solved ? t('games.balloons.away') : lost ? t('games.balloons.grounded') : t('games.balloons.left', { count: BALLOONS - misses })}
+      </p>
       <div className="w-full max-w-lg">
         <Keyboard states={states} onKey={guess} lockUsed />
       </div>
@@ -292,24 +298,50 @@ function HangmanRound({ word, onSolved, onLost }: { word: GameWord; onSolved: ()
   )
 }
 
-function Gallows({ misses }: { misses: number }) {
-  const parts = [
-    <circle key="head" cx="70" cy="34" r="9" />,
-    <line key="body" x1="70" y1="43" x2="70" y2="72" />,
-    <line key="arm-l" x1="70" y1="52" x2="58" y2="62" />,
-    <line key="arm-r" x1="70" y1="52" x2="82" y2="62" />,
-    <line key="leg-l" x1="70" y1="72" x2="60" y2="88" />,
-    <line key="leg-r" x1="70" y1="72" x2="80" y2="88" />,
+/** The parcel and its balloons; a balloon let go drifts up and fades, a solved word lifts it all. */
+function BalloonBunch({ left, flying, grounded }: { left: number; flying: boolean; grounded: boolean }) {
+  const spots = [
+    { x: 30, y: 34 },
+    { x: 52, y: 22 },
+    { x: 76, y: 16 },
+    { x: 100, y: 22 },
+    { x: 122, y: 34 },
+    { x: 76, y: 42 },
   ]
   return (
-    <svg viewBox="0 0 110 100" className="h-32 w-36 text-muted" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" aria-hidden="true">
-      <line x1="10" y1="96" x2="60" y2="96" />
-      <line x1="25" y1="96" x2="25" y2="8" />
-      <line x1="25" y1="8" x2="70" y2="8" />
-      <line x1="70" y1="8" x2="70" y2="25" />
-      <g className="text-danger" stroke="currentColor">
-        {parts.slice(0, misses)}
+    <svg
+      viewBox="0 0 152 150"
+      className="h-40 w-44 overflow-visible"
+      aria-hidden="true"
+      style={{ transform: flying ? 'translateY(-36px)' : undefined, transition: 'transform 1s var(--ease-out)' }}
+    >
+      {spots.map((spot, i) => {
+        const gone = i >= left
+        return (
+          <g
+            key={i}
+            style={{
+              transform: gone ? `translate(${(i - 2.5) * 6}px, -90px)` : undefined,
+              opacity: gone ? 0 : 1,
+              transition: 'transform 1.2s var(--ease-out), opacity 1.2s var(--ease-out)',
+            }}
+          >
+            <path
+              d={`M${spot.x} ${spot.y + 15} Q${spot.x + (76 - spot.x) * 0.4} ${spot.y + 60} 76 ${grounded ? 128 : 104}`}
+              fill="none"
+              stroke="var(--muted)"
+              strokeWidth="1.2"
+            />
+            <ellipse cx={spot.x} cy={spot.y} rx="13" ry="15" fill={BALLOON_COLOURS[i]} />
+            <ellipse cx={spot.x - 4} cy={spot.y - 5} rx="3" ry="4.5" fill="#fff" opacity="0.35" />
+          </g>
+        )
+      })}
+      <g style={{ transform: grounded ? 'translateY(24px)' : undefined, transition: 'transform 0.8s var(--ease-out)' }}>
+        <rect x="62" y="104" width="28" height="22" rx="4" fill="var(--coin)" />
+        <path d="M76 104 V126 M62 115 H90" stroke="var(--bg)" strokeWidth="2.5" />
       </g>
+      <line x1="20" y1="149" x2="132" y2="149" stroke="var(--line)" strokeWidth="2" />
     </svg>
   )
 }

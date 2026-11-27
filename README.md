@@ -46,7 +46,7 @@
   with coin stakes, one-click rematches, invites that pop up anywhere in the app, and a free
   weekly single-elimination tournament with prizes.
 
-- **Phase 6, games:** nine word games on your own words or the starter decks (guests too): match the pairs, speed round, word rain, hangman, Wordle, crossword, word search, anagrams and true or false, with best scores on the device.
+- **Phase 6, games:** nine word games on your own words or the starter decks (guests too): match the pairs, speed round, word rain, balloons (guess the word letter by letter), Wordle, crossword, word search, anagrams and true or false, with best scores on the device.
 
 - **Phase 7, desktop app:** a frame around the live site that updates itself from GitHub
   Releases, word cards over other windows, a hotkey that saves the highlighted word, a tray icon
@@ -58,7 +58,7 @@
 - **Your own words:** two-way sync with Notion, words added in the app, CSV/Excel import
 - **Learning:** spaced-repetition flashcards (FSRS), multiple choice, spelling, fill in the blank,
   sentence builder, listening, dictation, pronunciation with a microphone, grammar quizzes
-- **Games:** match pairs, speed round, word rain, hangman, Wordle, crosswords, word search
+- **Games:** match pairs, speed round, word rain, balloons, Wordle, crosswords, word search
 - **Motivation:** XP and levels, streaks, daily goals, achievements, quests, detailed stats
 - **Economy:** coins earned only by learning, a shop with animated avatars, frames and themes
 - **Community:** chat rooms, friends, real-time duels, weekly leagues, clans, moderation tools

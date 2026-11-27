@@ -17,14 +17,20 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       id: ${{ steps.release.outputs.id }}
+      notes: ${{ steps.release.outputs.notes }}
     steps:
       - id: release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ github.ref_name }}
         run: |
-          gh release create "$TAG" -R "$GITHUB_REPOSITORY" --draft --title "Lexicove $TAG" \
-            --notes "Windows: download Lexicove-Setup.exe and run it. Installed apps update themselves."
+          # What's new: the message of the annotated tag (npm run desktop:release 0.4.0 "...").
+          ref=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$TAG" --jq '.object.type + " " + .object.sha')
+          notes=''
+          if [ "${ref% *}" = tag ]; then notes=$(gh api "repos/$GITHUB_REPOSITORY/git/tags/${ref#* }" --jq .message); fi
+          printf '%s\n\nWindows: download Lexicove-Setup.exe and run it. Installed apps update themselves.\n' "$notes" > notes.md
+          gh release create "$TAG" -R "$GITHUB_REPOSITORY" --draft --title "Lexicove $TAG" --notes-file notes.md
+          { echo 'notes<<NOTES_END'; echo "$notes"; echo 'NOTES_END'; } >> "$GITHUB_OUTPUT"
           echo "id=$(gh release view "$TAG" -R "$GITHUB_REPOSITORY" --json databaseId -q .databaseId)" >> "$GITHUB_OUTPUT"
 
   build:
@@ -85,6 +91,8 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           releaseId: ${{ needs.create-release.outputs.id }}
+          # Shown in the app next to "Restart and update" (the notes in latest.json).
+          releaseBody: ${{ needs.create-release.outputs.notes }}
           args: ${{ matrix.args }} ${{ env.UPDATER_ARGS }}
 
       # The same file under a name without the version, so one link always gets the newest:

@@ -1,5 +1,5 @@
 // Releases a new version of the desktop app (docs/desktop.md):
-//   npm run desktop:release 0.3.0
+//   npm run desktop:release 0.4.0 "What's new, shown in the app before updating"
 // Sets the version in src-tauri/tauri.conf.json and Cargo.toml, commits that, tags v0.3.0 and
 // pushes. GitHub Actions then builds the installers and publishes the release; installed apps
 // pick it up within a few hours (or at once with "Check for updates").
@@ -8,6 +8,7 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 
 const version = process.argv[2]
+const notes = (process.argv[3] ?? '').trim().slice(0, 1000)
 if (!/^\d+\.\d+\.\d+$/.test(version ?? '')) {
   console.error('Usage: npm run desktop:release 0.3.0')
   process.exit(1)
@@ -56,6 +57,7 @@ try {
 const files = [confPath, cargoPath, 'src-tauri/Cargo.lock']
 git('add', ...files)
 if (git('diff', '--cached', '--name-only')) git('commit', '-m', `Desktop app ${version}`)
-git('tag', tag)
+if (notes) git('tag', '-a', tag, '-m', notes)
+else git('tag', tag)
 git('push', 'origin', 'HEAD', tag)
 console.log(`Pushed ${tag}. The release builds in about 15 minutes: https://github.com/mykolazozul/lexicove/actions`)

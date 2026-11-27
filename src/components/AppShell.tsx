@@ -9,7 +9,7 @@ import { community } from '../lib/community'
 import { useShopThemeGuard } from '../lib/cosmetics'
 import { cx } from '../lib/cx'
 import i18n from '../lib/i18n'
-import { onUpdate, showCard } from '../lib/desktop'
+import { onUpdate, setHotkey, showCard, userBusy } from '../lib/desktop'
 import { isTauri } from '../lib/platform'
 import { importFresh } from '../lib/reload'
 import { useViewer } from '../lib/viewer'
@@ -87,9 +87,20 @@ export function AppShell() {
   const quiet = useSettings((s) => s.quiet)
   useEffect(() => {
     if (!isTauri || !userId || quiet || cardEvery <= 0) return
-    const timer = setInterval(() => void showCard('/desktop/card').catch(() => {}), cardEvery * 60_000)
+    const timer = setInterval(() => {
+      // Not over a full-screen game, video or presentation; the next round will try again.
+      void userBusy()
+        .then((busy) => (busy ? undefined : showCard('/desktop/card')))
+        .catch(() => {})
+    }, cardEvery * 60_000)
     return () => clearInterval(timer)
   }, [userId, quiet, cardEvery])
+
+  // Desktop app: the user's own hotkey key (Ctrl+Shift+E until they pick another).
+  const hotkey = useSettings((s) => s.hotkey)
+  useEffect(() => {
+    if (isTauri) void setHotkey(hotkey).catch(() => {})
+  }, [hotkey])
 
   // Desktop app: say once when a new version of the app itself has downloaded.
   useEffect(() => {
@@ -137,6 +148,7 @@ function currentKey(pathname: string): NavKey | 'settings' | 'admin' | null {
   if (pathname === '/') return 'home'
   if (pathname.startsWith('/settings')) return 'settings'
   if (pathname.startsWith('/admin')) return 'admin'
+  if (pathname.startsWith('/decks')) return 'community'
   return NAV.find((item) => item.to !== '/' && pathname.startsWith(item.to))?.key ?? null
 }
 
@@ -252,8 +264,8 @@ function TopBar() {
           >
             <Settings className="size-5" />
           </Link>
-          <Link to="/profile" aria-label={t('nav.profile')} className="hidden rounded-full lg:block">
-            <UserAvatar name={viewer.name} url={viewer.avatarUrl} size={40} avatar={equipped.avatar} frame={equipped.frame} />
+          <Link to="/profile" aria-label={t('nav.profile')} className="rounded-full">
+            <UserAvatar name={viewer.name} url={viewer.avatarUrl} size={36} avatar={equipped.avatar} frame={equipped.frame} />
           </Link>
         </div>
       </div>

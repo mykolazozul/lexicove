@@ -9,7 +9,7 @@
 
 mod updates;
 
-use std::{thread, time::Duration};
+use std::{sync::Mutex, thread, time::Duration};
 
 use tauri::{
     menu::{Menu, MenuItem},
@@ -19,7 +19,7 @@ use tauri::{
 };
 use tauri_plugin_clipboard_manager::ClipboardExt;
 use tauri_plugin_deep_link::DeepLinkExt;
-use tauri_plugin_global_shortcut::{Code, GlobalShortcutExt, Modifiers, Shortcut, ShortcutState};
+use tauri_plugin_global_shortcut::{GlobalShortcutExt, ShortcutState};
 use tauri_plugin_opener::OpenerExt;
 use tauri_plugin_window_state::StateFlags;
 
@@ -143,6 +143,55 @@ fn update_install(app: AppHandle) -> Result<(), String> {
     updates::install(&app)
 }
 
+/// The hotkey's key with Ctrl+Shift (Settings → Desktop app). Only a letter or digit, so the
+/// copy that follows can't collide with the user's other modifiers.
+struct Hotkey(Mutex<String>);
+
+fn hotkey_text(key: &str) -> String {
+    format!("CmdOrCtrl+Shift+{key}")
+}
+
+#[tauri::command]
+fn set_hotkey(app: AppHandle, key: String) -> Result<(), String> {
+    let key = key.trim().to_uppercase();
+    if key.len() != 1 || !key.chars().all(|c| c.is_ascii_alphanumeric()) {
+        return Err("bad key".into());
+    }
+    let state = app.state::<Hotkey>();
+    let mut current = state.0.lock().unwrap();
+    if *current == key {
+        return Ok(());
+    }
+    let shortcuts = app.global_shortcut();
+    let _ = shortcuts.unregister(hotkey_text(&current).as_str());
+    if let Err(error) = shortcuts.register(hotkey_text(&key).as_str()) {
+        // Taken by another program: keep the old one working.
+        let _ = shortcuts.register(hotkey_text(&current).as_str());
+        return Err(error.to_string());
+    }
+    *current = key;
+    Ok(())
+}
+
+/// True while a full-screen game, video or presentation is in front: no word cards then.
+#[tauri::command]
+fn user_busy() -> bool {
+    #[cfg(windows)]
+    {
+        use windows_sys::Win32::UI::Shell::{
+            SHQueryUserNotificationState, QUNS_BUSY, QUNS_PRESENTATION_MODE, QUNS_RUNNING_D3D_FULL_SCREEN,
+        };
+        let mut state = 0;
+        // SAFETY: the function only writes the state into the integer we pass.
+        let ok = unsafe { SHQueryUserNotificationState(&mut state) } >= 0;
+        ok && matches!(state, QUNS_BUSY | QUNS_RUNNING_D3D_FULL_SCREEN | QUNS_PRESENTATION_MODE)
+    }
+    #[cfg(not(windows))]
+    {
+        false
+    }
+}
+
 fn show_main(app: &AppHandle) {
     if let Some(window) = app.get_webview_window("main") {
         let _ = window.unminimize();
@@ -182,6 +231,7 @@ fn add_highlighted(app: AppHandle) {
             if let Ok(mut keys) = Enigo::new(&Settings::default()) {
                 // The hotkey's own modifiers may still be held; let go of them first.
                 let _ = keys.key(Key::Shift, Direction::Release);
+                let _ = keys.key(Key::Meta, Direction::Release);
                 let _ = keys.key(Key::Control, Direction::Press);
                 let _ = keys.key(Key::Unicode('c'), Direction::Click);
                 let _ = keys.key(Key::Control, Direction::Release);
@@ -198,8 +248,6 @@ fn add_highlighted(app: AppHandle) {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    let add_shortcut = Shortcut::new(Some(Modifiers::CONTROL | Modifiers::SHIFT), Code::KeyE);
-
     tauri::Builder::default()
         // A second launch brings the running app forward instead of opening another one.
         // With the deep-link feature it also hands a lexicove:// link to the running app.
@@ -221,15 +269,25 @@ pub fn run() {
         ))
         .plugin(
             tauri_plugin_global_shortcut::Builder::new()
-                .with_handler(move |app, shortcut, event| {
-                    if shortcut == &add_shortcut && event.state() == ShortcutState::Released {
+                // The only shortcut is the add-a-word one (set_hotkey keeps it to one).
+                .with_handler(|app, _shortcut, event| {
+                    if event.state() == ShortcutState::Released {
                         add_highlighted(app.clone());
                     }
                 })
                 .build(),
         )
         .manage(updates::Updates::default())
-        .invoke_handler(tauri::generate_handler![show_card, hide_card, update_status, update_check, update_install])
+        .manage(Hotkey(Mutex::new("E".into())))
+        .invoke_handler(tauri::generate_handler![
+            show_card,
+            hide_card,
+            update_status,
+            update_check,
+            update_install,
+            set_hotkey,
+            user_busy
+        ])
         .setup(move |app| {
             let handle = app.handle().clone();
 
@@ -247,7 +305,10 @@ pub fn run() {
                 .visible(!hidden)
                 .build()?;
 
-            app.global_shortcut().register(add_shortcut)?;
+            // Ctrl+Shift+E until the site sets the user's own key (Settings → Desktop app).
+            if let Err(error) = app.global_shortcut().register(hotkey_text("E").as_str()) {
+                eprintln!("hotkey: {error}");
+            }
 
             // The installer registers lexicove:// for release builds; development registers it here.
             #[cfg(all(debug_assertions, any(windows, target_os = "linux")))]
@@ -261,8 +322,9 @@ pub fn run() {
 
             let open = MenuItem::with_id(app, "open", "Lexicove", true, None::<&str>)?;
             let word = MenuItem::with_id(app, "word", "Word now / Слово зараз", true, None::<&str>)?;
+            let update = MenuItem::with_id(app, "update", "Check for updates / Перевірити оновлення", true, None::<&str>)?;
             let quit = MenuItem::with_id(app, "quit", "Quit / Вийти", true, None::<&str>)?;
-            let menu = Menu::with_items(app, &[&open, &word, &quit])?;
+            let menu = Menu::with_items(app, &[&open, &word, &update, &quit])?;
 
             TrayIconBuilder::with_id("main")
                 .icon(app.default_window_icon().cloned().expect("the app has an icon"))
@@ -273,6 +335,11 @@ pub fn run() {
                     "open" => show_main(app),
                     "word" => {
                         let _ = show_card(app.clone(), "/desktop/card".into());
+                    }
+                    // The site shows the progress and the restart button (and a toast when ready).
+                    "update" => {
+                        show_main(app);
+                        tauri::async_runtime::spawn(updates::check(app.clone()));
                     }
                     "quit" => app.exit(0),
                     _ => {}
