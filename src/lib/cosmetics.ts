@@ -5,7 +5,13 @@ import { isShopTheme, useSettings, type ShopTheme } from '../stores/settings'
 import { play, type Cue, type Pack } from './sounds'
 
 /** Phones that can buzz: Android browsers and installed apps; iPhones don't allow it. */
-export const canVibrate = typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function'
+// Desktop browsers and the desktop app have the function too but can't buzz, so also ask for a
+// touch screen as the main pointer.
+export const canVibrate =
+  typeof navigator !== 'undefined' &&
+  typeof navigator.vibrate === 'function' &&
+  typeof window !== 'undefined' &&
+  window.matchMedia('(pointer: coarse)').matches
 
 const BUZZ: Record<Cue, number | number[]> = { correct: 12, wrong: [40, 50, 40], coin: 10, level: [20, 60, 20, 60, 40] }
 
